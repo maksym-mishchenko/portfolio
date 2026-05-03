@@ -38,7 +38,7 @@ export const PROJECTS: Project[] = [
     description:
       "Stranger Things-themed interactive guide to investing basics — built for my English teacher who was curious how to start investing.",
     tech: ["Next.js", "TypeScript", "Tailwind CSS"],
-    live: "https://investing-map.vercel.app",
+    live: "https://investing.mmishchenko.dev",
     github: "https://github.com/maksym-mishchenko/investing-treasure-map",
   },
 ];

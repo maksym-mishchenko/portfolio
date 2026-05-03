@@ -22,7 +22,6 @@ export const PROJECTS: Project[] = [
     description:
       "Personal AI assistant running on Azure VM — Telegram bot orchestrating coding agents, monitoring, and automation across all my projects.",
     tech: ["Python", "Telegram API", "Azure VM", "LiteLLM"],
-    github: "https://github.com/maksym-mishchenko/openclaw",
     featured: true,
   },
   {
@@ -30,7 +29,6 @@ export const PROJECTS: Project[] = [
     description:
       "AI-powered wardrobe management with outfit recommendations. FastAPI backend with Next.js frontend, deployed on Azure.",
     tech: ["FastAPI", "Next.js", "OpenAI", "Azure"],
-    github: "https://github.com/maksym-mishchenko/smart-wardrobe",
     live: "https://wardrobe.mmishchenko.dev",
   },
   {
@@ -38,28 +36,24 @@ export const PROJECTS: Project[] = [
     description:
       "Telegram Mini App for vocabulary learning with spaced repetition, HMAC-SHA256 auth, and 19 API routes.",
     tech: ["Next.js", "FastAPI", "Telegram API"],
-    github: "https://github.com/maksym-mishchenko/english-helper-app",
   },
   {
     title: "Devlog Publisher",
     description:
       "AI content studio that generates LinkedIn posts from GitHub activity, with a blog publishing pipeline that auto-commits MDX to my portfolio.",
     tech: ["Next.js", "GPT-4o", "GitHub API", "Vercel KV"],
-    github: "https://github.com/maksym-mishchenko/devlog-publisher",
   },
   {
     title: "Stock Bot",
     description:
       "Telegram bot for portfolio tracking with IBKR integration, real-time P&L, and automated market summaries.",
     tech: ["Python", "IBKR API", "Telegram API", "SQLite"],
-    github: "https://github.com/maksym-mishchenko/stock-bot",
   },
   {
     title: "PowerBI Buddy",
     description:
       "AI assistant for Power BI — helps write DAX formulas, optimize data models, and troubleshoot reports.",
     tech: ["Next.js", "OpenAI", "Vercel AI SDK", "Tailwind"],
-    github: "https://github.com/maksym-mishchenko/powerbi-buddy",
     live: "https://powerbi-buddy.vercel.app",
   },
 ];

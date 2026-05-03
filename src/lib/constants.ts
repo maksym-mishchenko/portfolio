@@ -25,28 +25,6 @@ export const PROJECTS: Project[] = [
     github: "https://github.com/maksym-mishchenko/english-helper-app",
     featured: true,
   },
-  {
-    title: "Stock Intelligence Bot",
-    description:
-      "Automated weekly stock reports combining Discord sentiment, YouTube analysis, and portfolio tracking.",
-    tech: ["Python", "IBKR API", "Discord", "Telegram"],
-    github: "https://github.com/maksym-mishchenko/stock-bot",
-  },
-  {
-    title: "OpenClaw",
-    description:
-      "Personal AI assistant ecosystem with multi-agent architecture, task routing, and Telegram interface.",
-    tech: ["Python", "FastAPI", "Multi-Agent", "Azure VM"],
-    github: "https://github.com/maksym-mishchenko/openclaw",
-  },
-  {
-    title: "PowerBI Buddy",
-    description:
-      "AI assistant for Power BI — helps write DAX, optimize models, and troubleshoot reports.",
-    tech: ["Next.js", "OpenAI API", "Vercel"],
-    github: "https://github.com/maksym-mishchenko/powerbi-buddy",
-    live: "https://powerbi-buddy.vercel.app",
-  },
 ];
 
 export interface JourneyNode {

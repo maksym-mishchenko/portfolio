@@ -20,7 +20,7 @@ export default function Home() {
         <Contact />
       </main>
       <footer className="py-8 text-center text-sm text-muted border-t border-border">
-        <p>© {new Date().getFullYear()} Maksym Mishchenko. Built with Next.js & Framer Motion.</p>
+        <p>© {new Date().getFullYear()} Maksym Mishchenko.</p>
       </footer>
     </>
   );

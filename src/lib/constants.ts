@@ -33,6 +33,14 @@ export const PROJECTS: Project[] = [
     live: "https://mmishchenko.dev",
     github: "https://github.com/maksym-mishchenko/portfolio",
   },
+  {
+    title: "Investing Treasure Map",
+    description:
+      "Stranger Things-themed interactive guide to investing basics — built for my English teacher who was curious how to start investing.",
+    tech: ["Next.js", "TypeScript", "Tailwind CSS"],
+    live: "https://investing-map.vercel.app",
+    github: "https://github.com/maksym-mishchenko/investing-treasure-map",
+  },
 ];
 
 export interface JourneyNode {

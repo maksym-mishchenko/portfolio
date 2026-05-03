@@ -50,6 +50,30 @@ html {
   background: var(--color-muted);
 }
 
+/* Focus visible — keyboard navigation */
+*:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Skip to content link */
+.skip-to-content {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  padding: 0.75rem 1.5rem;
+  background: var(--color-accent);
+  color: var(--color-foreground);
+  font-weight: 600;
+  border-radius: 0 0 0.5rem 0;
+  transition: left 0.15s;
+}
+.skip-to-content:focus {
+  left: 0;
+}
+
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   *,

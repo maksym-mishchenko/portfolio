@@ -11,7 +11,7 @@ export default function Home() {
   return (
     <>
       <ScrollProgress />
-      <main>
+      <main id="main">
         <Hero />
         <Projects />
         <ZeroTrustDemo />

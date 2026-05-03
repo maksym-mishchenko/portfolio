@@ -49,6 +49,9 @@ export default function RootLayout({
     >
       {/* <!-- Hey there, curious dev! Welcome to the source. Built with Next.js, Tailwind & Framer Motion. --> */}
       <body className="min-h-screen bg-background text-foreground font-sans antialiased">
+        <a href="#main" className="skip-to-content">
+          Skip to content
+        </a>
         {children}
       </body>
     </html>

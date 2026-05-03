@@ -1,0 +1,95 @@
+---
+title: "How I Built This Portfolio in a Weekend"
+date: "2025-05-03"
+description: "A behind-the-scenes look at building a developer portfolio with Next.js 16, MDX blog, Resend email, and Cloudflare — all wired up in one sitting."
+tags: ["next.js", "portfolio", "devlog"]
+---
+
+I've had "build portfolio" on my todo list for months. This weekend I finally did it — and I'm writing this post from the blog I built as part of it.
+
+## The Stack
+
+- **Next.js 16** with App Router and React 19
+- **Tailwind CSS v4** for styling
+- **Framer Motion** for scroll animations
+- **MDX** blog with syntax highlighting via [sugar-high](https://github.com/huozhi/sugar-high) (1KB!)
+- **Resend** for the contact form
+- **Cloudflare** for DNS + email routing
+- **Vercel** for hosting
+
+## Design Decisions
+
+### No template, no CMS
+
+I started from `create-next-app` and built every component by hand. The entire site is ~20 components. No template means I understand every line, and it's trivial to modify.
+
+### MDX in the repo
+
+I considered headless CMS options (Notion API, Contentlayer, Sanity) but went with plain `.mdx` files in a `content/blog/` directory. Why?
+
+- Zero external dependencies for content
+- Git history on every edit
+- Works with `generateStaticParams` for zero-cost static generation
+- I can write posts in my editor, not a browser
+
+### sugar-high over Shiki/Prism
+
+For syntax highlighting, the usual choices are Shiki (~200KB) or Prism (~50KB). I went with sugar-high — it's 1KB, renders on the client, and covers every language I'll write about. For a portfolio blog, that's the right tradeoff.
+
+## The Contact Form
+
+The contact form uses a Next.js API route that sends email via Resend:
+
+```typescript
+const res = await fetch("https://api.resend.com/emails", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+  },
+  body: JSON.stringify({
+    from: "Portfolio <maksym@mmishchenko.dev>",
+    to: "maksimus2998@gmail.com",
+    subject: `Portfolio contact from ${name}`,
+    text: `Name: ${name}\nEmail: ${email}\n\n${message}`,
+  }),
+});
+```
+
+Rate-limited to 3 requests per minute per IP, with Zod validation on all inputs. Simple and effective.
+
+## Email Setup
+
+I wanted `maksym@mmishchenko.dev` to work for both sending and receiving:
+
+- **Receiving**: Cloudflare Email Routing forwards to Gmail (free)
+- **Sending**: Resend handles transactional email from the contact form
+- **DNS**: DKIM, SPF, and DMARC records for deliverability
+
+Total cost: $0/month.
+
+## CI/CD
+
+A simple GitHub Actions workflow runs on every PR:
+
+```yaml
+steps:
+  - run: npm ci
+  - run: npm run lint
+  - run: npx tsc --noEmit
+  - run: npm run build
+```
+
+Vercel auto-deploys on push to main, so the CI pipeline is purely for quality gates.
+
+## What I'd Do Differently
+
+If I did this again, I'd probably start with the blog first. Writing about the build process *while building* would have captured more details. Instead I'm reconstructing from memory.
+
+## What's Next
+
+- More blog posts (security topics, AI agents, dev tooling)
+- Add more projects to the portfolio
+- Maybe a `/uses` page
+
+The source is on [GitHub](https://github.com/maksym-mishchenko/portfolio) if you want to see how it's put together.

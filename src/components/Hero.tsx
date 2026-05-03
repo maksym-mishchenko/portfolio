@@ -48,6 +48,12 @@ export function Hero() {
             View Projects ↓
           </button>
           <a
+            href="/blog"
+            className="border border-[#27272a] hover:border-[#3b82f6] text-[#a1a1aa] hover:text-[#fafafa] px-6 py-3 rounded-lg font-medium transition-colors"
+          >
+            Blog →
+          </a>
+          <a
             href="https://github.com/maksym-mishchenko"
             target="_blank"
             rel="noopener noreferrer"

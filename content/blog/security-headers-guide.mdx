@@ -1,0 +1,94 @@
+---
+title: "Security Headers Every Developer Should Set"
+date: "2026-03-20"
+description: "A practical guide to HTTP security headers — what they do, why they matter, and how to configure them in Next.js."
+tags: ["security", "web", "next.js"]
+---
+
+Most web apps ship with zero security headers. Here's how to fix that in under 10 minutes.
+
+## Why Security Headers?
+
+Security headers tell browsers how to behave when handling your site's content. Without them, you're leaving doors open for:
+
+- **Clickjacking** — your site embedded in a malicious iframe
+- **MIME sniffing** — browsers guessing content types incorrectly
+- **Protocol downgrades** — falling back to HTTP from HTTPS
+
+## The Essential Headers
+
+### 1. Strict-Transport-Security (HSTS)
+
+Forces HTTPS for all future requests. Once set, browsers won't even try HTTP.
+
+```typescript
+{
+  key: "Strict-Transport-Security",
+  value: "max-age=31536000; includeSubDomains; preload"
+}
+```
+
+The `preload` directive submits your domain to browser preload lists — meaning even the *first* visit uses HTTPS.
+
+### 2. Content-Security-Policy (CSP)
+
+The most powerful (and complex) security header. It controls what resources can load on your page.
+
+```typescript
+{
+  key: "Content-Security-Policy",
+  value: [
+    "default-src 'self'",
+    "script-src 'self' 'unsafe-inline'",
+    "style-src 'self' 'unsafe-inline'",
+    "img-src 'self' data: blob:",
+    "frame-ancestors 'none'",
+  ].join("; ")
+}
+```
+
+> Start strict, then loosen only what you need. Never use `'unsafe-eval'` in production unless absolutely necessary.
+
+### 3. X-Frame-Options
+
+Prevents your site from being embedded in iframes. Simple and effective.
+
+```typescript
+{ key: "X-Frame-Options", value: "DENY" }
+```
+
+### 4. Permissions-Policy
+
+Controls which browser features your site can use. If you don't need the camera, microphone, or geolocation — disable them.
+
+```typescript
+{
+  key: "Permissions-Policy",
+  value: "camera=(), microphone=(), geolocation=()"
+}
+```
+
+## Setting Headers in Next.js
+
+In `next.config.ts`, use the `headers()` function:
+
+```typescript
+const nextConfig: NextConfig = {
+  async headers() {
+    return [
+      {
+        source: "/(.*)",
+        headers: securityHeaders,
+      },
+    ];
+  },
+};
+```
+
+This applies headers to every route — including API routes and static assets.
+
+## Testing Your Headers
+
+Visit [securityheaders.com](https://securityheaders.com) and scan your domain. Aim for an **A+** rating.
+
+The portfolio you're reading this on? It scores A+.

@@ -1,0 +1,66 @@
+---
+title: "Building AI Agents That Actually Work"
+date: "2026-04-15"
+description: "Lessons learned from building a multi-agent system that manages infrastructure, monitors services, and automates daily workflows."
+tags: ["AI", "agents", "automation"]
+---
+
+Building AI agents is easy. Building ones that work reliably in production is a different story entirely.
+
+Over the past year, I've been building **OpenClaw** — a personal AI assistant ecosystem that runs on an Azure VM. It handles everything from monitoring my services to automating stock reports. Here's what I've learned.
+
+## The Architecture
+
+The system is built around three layers:
+
+- **Telegram Bot** — the interface layer. Natural language in, structured actions out
+- **Agent Orchestrator** — routes tasks to specialized agents based on intent
+- **Tool Layer** — actual implementations: SSH, GitHub API, database queries, HTTP calls
+
+```python
+class AgentRouter:
+    def route(self, intent: str) -> Agent:
+        if intent in ("deploy", "restart", "logs"):
+            return DevOpsAgent()
+        if intent in ("stock", "portfolio", "market"):
+            return FinanceAgent()
+        return GeneralAgent()
+```
+
+## Lesson 1: Agents Need Guardrails
+
+The first version had no restrictions. The agent could run any shell command, modify any file, call any API. This is terrifying in production.
+
+Now every tool call goes through a **governance layer** that checks:
+
+- Is this tool allowed for this agent?
+- Does the action match the user's intent?
+- Are there rate limits being hit?
+
+## Lesson 2: Keep State Simple
+
+I tried fancy state machines, event sourcing, even a graph database. What actually works? A SQLite database and a JSON config file.
+
+```typescript
+// This is all you need
+const state = {
+  lastRun: new Date(),
+  status: "idle",
+  pendingTasks: [],
+};
+```
+
+## Lesson 3: Observability > Intelligence
+
+A "dumb" agent with great logging beats a "smart" agent you can't debug. Every action gets logged with:
+
+- What was the intent?
+- What tool was called?
+- What was the result?
+- How long did it take?
+
+## What's Next
+
+I'm working on multi-agent collaboration — having agents delegate subtasks to other agents while maintaining a trust chain. The key challenge is preventing privilege escalation in the delegation chain.
+
+More on that in a future post.

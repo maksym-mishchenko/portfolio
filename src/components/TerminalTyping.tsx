@@ -7,7 +7,7 @@ const lines = [
   { prompt: "> title", response: "  Software Engineer II @ Microsoft Security" },
   {
     prompt: "> cat interests.txt",
-    response: "  Security · Full-Stack · AI Automation",
+    response: "  Backend · Distributed Systems · Security · Agent Automation",
   },
 ];
 

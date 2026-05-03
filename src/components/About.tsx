@@ -46,8 +46,8 @@ export function About() {
                 experience across Java, .NET, Python, and TypeScript.
               </p>
               <p className="text-lg leading-relaxed text-muted mb-8">
-                Passionate about security, automation, and building tools that solve real problems.
-                Outside of work — building AI assistants, contributing to open source, and documenting the journey.
+                Passionate about backend systems, security, and automation with AI agents.
+                Outside of work — building side projects, experimenting with distributed systems, and documenting the journey.
               </p>
 
               <div className="flex gap-4">

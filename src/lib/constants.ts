@@ -57,7 +57,7 @@ export const JOURNEY: JourneyNode[] = [
     year: "2022",
     icon: "💼",
     title: "EPAM Systems",
-    detail: "Software Engineer → Senior SE — Java libraries, DevOps tooling",
+    detail: "SW Engineer → Senior SE — DevEx, licensing & package management in CI/CD (financial services)",
   },
   {
     year: "2023",
@@ -75,7 +75,7 @@ export const JOURNEY: JourneyNode[] = [
     year: "Now",
     icon: "🔧",
     title: "Building",
-    detail: "Side projects, open source, learning security",
+    detail: "Side projects, automation, learning security",
   },
 ];
 

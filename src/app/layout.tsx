@@ -18,13 +18,13 @@ export const metadata: Metadata = {
   title: "Maksym Mishchenko — Software Engineer",
   description:
     "Software Engineer II at Microsoft Security (Identity & Application Governance). Security-focused full-stack developer from Ukraine. Building tools that solve real problems.",
-  metadataBase: new URL("https://maksym.dev"),
+  metadataBase: new URL("https://mmishchenko.dev"),
   openGraph: {
     title: "Maksym Mishchenko — Software Engineer",
     description:
       "Software Engineer at Microsoft. Security-focused full-stack developer from Ukraine.",
-    url: "https://maksym.dev",
-    siteName: "maksym.dev",
+    url: "https://mmishchenko.dev",
+    siteName: "mmishchenko.dev",
     locale: "en_US",
     type: "website",
   },

@@ -9,7 +9,8 @@ export function Hero() {
   const [typingDone, setTypingDone] = useState(false);
 
   return (
-    <section className="min-h-screen flex flex-col items-center justify-center relative px-4">
+    <section className="min-h-screen flex flex-col items-center justify-center relative px-6">
+      <h1 className="sr-only">Maksym Mishchenko — Software Engineer II at Microsoft Security</h1>
       {/* Terminal card */}
       <div className="max-w-2xl w-full mx-auto bg-[#18181b] rounded-xl border border-[#27272a] overflow-hidden">
         {/* Title bar */}

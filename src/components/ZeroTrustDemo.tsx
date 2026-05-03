@@ -77,10 +77,9 @@ export function ZeroTrustDemo() {
       : "Waiting to start…";
 
   return (
-    <div>
-      <h3 className="font-mono text-lg font-semibold text-[#fafafa] mb-4">
-        Zero Trust Pipeline
-      </h3>
+    <section id="zero-trust" className="py-24 px-6">
+      <div className="max-w-4xl mx-auto">
+      <h2 className="text-3xl font-mono font-bold mb-8">Zero Trust Pipeline</h2>
 
       <motion.div
         className="bg-[#18181b] rounded-xl border border-[#27272a] p-6 md:p-8 overflow-hidden"
@@ -235,6 +234,7 @@ export function ZeroTrustDemo() {
           </div>
         </div>
       </motion.div>
-    </div>
+      </div>
+    </section>
   );
 }

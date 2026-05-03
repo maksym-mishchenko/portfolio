@@ -1,6 +1,7 @@
 "use client";
 
 import { Mail } from "lucide-react";
+import Image from "next/image";
 
 function GithubIcon({ size = 20 }: { size?: number }) {
   return (
@@ -31,9 +32,14 @@ export function About() {
         <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-12 items-start">
           <SectionReveal delay={0.1}>
             <div className="flex justify-center md:justify-start">
-              <div className="w-40 h-40 rounded-2xl bg-surface border border-border flex items-center justify-center text-6xl">
-                👨‍💻
-              </div>
+              <Image
+                src="/avatar.png"
+                alt="Maksym Mishchenko"
+                width={160}
+                height={160}
+                className="w-40 h-40 rounded-2xl object-cover object-top border border-border"
+                priority
+              />
             </div>
           </SectionReveal>
 

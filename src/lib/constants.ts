@@ -18,11 +18,12 @@ export interface Project {
 
 export const PROJECTS: Project[] = [
   {
-    title: "OpenClaw",
+    title: "English Helper",
     description:
-      "Personal AI assistant running on Azure VM — Telegram bot orchestrating coding agents, monitoring, and automation across all my projects.",
-    tech: ["Python", "Telegram API", "Azure VM", "LiteLLM"],
+      "Telegram Mini App for vocabulary learning with spaced repetition, HMAC-SHA256 auth, and 19 API routes.",
+    tech: ["Next.js", "FastAPI", "Telegram API"],
     featured: true,
+    github: "https://github.com/maksym-mishchenko/english-helper-app",
   },
   {
     title: "mmishchenko.dev",
@@ -30,36 +31,7 @@ export const PROJECTS: Project[] = [
       "This portfolio — built with Next.js 16, MDX blog with interactive animated components, RSS feed, and automated devlog publishing pipeline.",
     tech: ["Next.js", "MDX", "Tailwind CSS", "Framer Motion"],
     live: "https://mmishchenko.dev",
-  },
-  {
-    title: "Smart Wardrobe",
-    description:
-      "AI-powered wardrobe management with outfit recommendations. FastAPI backend with Next.js frontend, deployed on Azure.",
-    tech: ["FastAPI", "Next.js", "OpenAI", "Azure"],
-  },
-  {
-    title: "English Helper",
-    description:
-      "Telegram Mini App for vocabulary learning with spaced repetition, HMAC-SHA256 auth, and 19 API routes.",
-    tech: ["Next.js", "FastAPI", "Telegram API"],
-  },
-  {
-    title: "Devlog Publisher",
-    description:
-      "AI content studio that generates LinkedIn posts from GitHub activity, with a blog publishing pipeline that auto-commits MDX to my portfolio.",
-    tech: ["Next.js", "GPT-4o", "GitHub API", "Vercel KV"],
-  },
-  {
-    title: "Stock Bot",
-    description:
-      "Telegram bot for portfolio tracking with IBKR integration, real-time P&L, and automated market summaries.",
-    tech: ["Python", "IBKR API", "Telegram API", "SQLite"],
-  },
-  {
-    title: "PowerBI Buddy",
-    description:
-      "AI assistant for Power BI — helps write DAX formulas, optimize data models, and troubleshoot reports.",
-    tech: ["Next.js", "OpenAI", "Vercel AI SDK", "Tailwind"],
+    github: "https://github.com/maksym-mishchenko/portfolio",
   },
 ];
 

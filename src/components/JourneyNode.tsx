@@ -7,6 +7,7 @@ interface JourneyNodeProps {
   icon: string;
   title: string;
   detail: string;
+  link?: string;
   index: number;
   isLast: boolean;
 }
@@ -16,6 +17,7 @@ export function JourneyNode({
   icon,
   title,
   detail,
+  link,
   index,
   isLast,
 }: JourneyNodeProps) {
@@ -57,7 +59,22 @@ export function JourneyNode({
           {year}
         </span>
         <p className="font-semibold text-[#fafafa]">{title}</p>
-        <p className="text-sm text-[#a1a1aa]">{detail}</p>
+        <p className="text-sm text-[#a1a1aa]">
+          {detail}
+          {link && (
+            <>
+              {" "}
+              <a
+                href={link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#3b82f6] hover:underline"
+              >
+                ↗ View
+              </a>
+            </>
+          )}
+        </p>
       </div>
     </motion.div>
   );

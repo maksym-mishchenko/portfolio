@@ -1,10 +1,10 @@
 export const SITE = {
   name: "Maksym Mishchenko",
   title: "Software Engineer II @ Microsoft Security",
-  url: "https://maksym.dev",
+  url: "https://mmishchenko.dev",
   github: "https://github.com/maksym-mishchenko",
   linkedin: "https://linkedin.com/in/maksym-mishchenko-1036381b8",
-  email: "mailto:contact@maksym.dev",
+  email: "mailto:maksym@mmishchenko.dev",
 } as const;
 
 export interface Project {
@@ -32,6 +32,7 @@ export interface JourneyNode {
   icon: string;
   title: string;
   detail: string;
+  link?: string;
 }
 
 export const JOURNEY: JourneyNode[] = [
@@ -64,6 +65,7 @@ export const JOURNEY: JourneyNode[] = [
     icon: "☁️",
     title: "AWS Certified",
     detail: "Cloud Practitioner certification",
+    link: "https://www.credly.com/badges/3617b306-40c2-4bab-94e4-2f20265e41d3",
   },
   {
     year: "2025",

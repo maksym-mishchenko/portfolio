@@ -28,6 +28,7 @@ export function Journey() {
             icon={node.icon}
             title={node.title}
             detail={node.detail}
+            link={node.link}
             index={i}
             isLast={i === JOURNEY.length - 1}
           />

@@ -47,6 +47,14 @@ export default function RootLayout({
       lang="en"
       className={`${inter.variable} ${jetbrainsMono.variable} dark`}
     >
+      <head>
+        <link
+          rel="alternate"
+          type="application/rss+xml"
+          title="Maksym Mishchenko — Blog"
+          href="/blog/feed.xml"
+        />
+      </head>
       {/* <!-- Hey there, curious dev! Welcome to the source. Built with Next.js, Tailwind & Framer Motion. --> */}
       <body className="min-h-screen bg-background text-foreground font-sans antialiased">
         <a href="#main" className="skip-to-content">

@@ -37,6 +37,7 @@ export const metadata: Metadata = {
       "Software Engineer at Microsoft. Building tools that solve real problems.",
   },
   robots: { index: true, follow: true },
+  alternates: { canonical: "https://mmishchenko.dev" },
 };
 
 export default function RootLayout({

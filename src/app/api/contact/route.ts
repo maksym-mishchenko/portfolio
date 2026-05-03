@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
           Authorization: `Bearer ${resendKey}`,
         },
         body: JSON.stringify({
-          from: "Portfolio <onboarding@resend.dev>",
+          from: "Portfolio <maksym@mmishchenko.dev>",
           to: process.env.CONTACT_EMAIL ?? "maksimus2998@gmail.com",
           subject: `Portfolio contact from ${name}`,
           text: `Name: ${name}\nEmail: ${email}\n\n${message}`,

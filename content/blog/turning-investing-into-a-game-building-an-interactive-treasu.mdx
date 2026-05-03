@@ -1,0 +1,183 @@
+---
+title: "Turning Investing Into a Game: Building an Interactive Treasure Map App with Vanilla JavaScript"
+date: "2026-05-03"
+description: "How I built a lightweight, interactive web app to teach investing basics—using nothing but vanilla HTML, CSS, and JavaScript."
+tags: ["Web Development", "Vanilla JS", "Side Projects", "Investing"]
+---
+
+Ever thought learning about investing could feel like a game? I did. And instead of just imagining it, I rolled up my sleeves and built it: an interactive treasure map app that makes diving into stocks, ETFs, bonds, REITs, crypto, options, and alternative investments feel like an adventure. 
+
+The app features seven distinct "zones," each with interactive learning elements, bite-sized challenges, and—because why not?—a confetti animation to celebrate every completed milestone. It’s designed to be fun, educational, and, most importantly, approachable for beginners.
+
+But here’s the twist: I built this entire app in vanilla HTML, CSS, and JavaScript. No libraries, no frameworks, no dependencies. It’s lightweight, fast, and works seamlessly across devices. And while building the app itself was an exciting challenge, hosting it on an Azure VM brought its own set of lessons. Let’s dive into the whole journey.
+
+---
+
+## Where the Idea Began: Turning Complexity into Curiosity
+
+The inspiration for this project came from a casual conversation with friends. They were interested in investing but felt overwhelmed by the options and jargon. Stocks? ETFs? Bonds? The stock market seemed like an impenetrable fortress. I wanted to change that—to make investing feel less like an intimidating black box and more like a fun, gamified experience.
+
+<Aside title="Why this matters">
+Investing is a critical life skill, yet so many people shy away from it because it's confusing or boring. By gamifying the learning process, I hoped to lower the barrier to entry and spark curiosity rather than fear.
+</Aside>
+
+My goal was simple: create an educational tool that could teach the basics of investing in a way that felt approachable. I envisioned a treasure map, where users could explore different "zones" of investing, complete interactive challenges, and walk away with actionable knowledge.
+
+---
+
+## The Tech Stack: Going Old School with Vanilla JS
+
+When I sat down to develop this app, I made a deliberate decision to build it with **vanilla HTML, CSS, and JavaScript**. Why? A few reasons:
+
+1. **Zero Dependencies:** I didn’t want users to wait for a library-heavy app to load. Keeping the app lightweight would ensure fast performance on any device.
+
+2. **Cross-Device Compatibility:** By avoiding frameworks and sticking to the basics, I ensured the app would work seamlessly across browsers and platforms without compatibility issues.
+
+3. **Personal Challenge:** I wanted to sharpen my fundamental web development skills. It’s easy to lean on libraries, but there’s something deeply satisfying about building everything from scratch.
+
+Here’s a snippet of how I handled the zone navigation using pure JavaScript:
+
+```javascript
+const zones = document.querySelectorAll('.zone');
+zones.forEach(zone => {
+  zone.addEventListener('click', () => {
+    const targetContent = document.querySelector(`#${zone.dataset.target}`);
+    targetContent.classList.toggle('hidden');
+    if (!targetContent.classList.contains('hidden')) {
+      showConfetti(); // Celebrate progression!
+    }
+  });
+});
+
+function showConfetti() {
+  const confetti = document.createElement('div');
+  confetti.className = 'confetti';
+  document.body.appendChild(confetti);
+
+  setTimeout(() => {
+    confetti.remove();
+  }, 3000); // Confetti disappears after 3 seconds
+}
+```
+
+This code enables users to click on different zones of the treasure map, revealing new content and triggering a fun confetti animation for a sense of achievement. The idea was to reinforce positive feedback with simple visual rewards.
+
+---
+
+## The Challenges: Hosting and Security on an Azure VM
+
+Building the app was fun, but hosting it? That’s where things got real. I decided to host the app on an **Azure Virtual Machine (VM)**. While this gave me full control, it also meant I had to handle all aspects of deployment and security myself. Here’s what that looked like:
+
+### Setting Up the VM
+
+I started with a basic Ubuntu 20.04 VM on Azure. The setup process was straightforward:
+
+```bash
+# Update and upgrade packages
+sudo apt update && sudo apt upgrade -y
+
+# Install Nginx
+sudo apt install nginx -y
+
+# Start and enable Nginx
+sudo systemctl start nginx
+sudo systemctl enable nginx
+```
+
+Once Nginx was running, I uploaded my app files to the server using SCP:
+
+```bash
+scp -r /path/to/your/app user@your-vm-ip:/var/www/treasure-map
+```
+
+Then, I configured Nginx to serve my app:
+
+```bash
+server {
+    listen 80;
+    server_name yourdomain.com;
+    root /var/www/treasure-map;
+
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}
+```
+
+### Locking It Down
+
+Security was the hardest part. Even though the app was simple and didn’t handle sensitive user data, I wanted to ensure it was as secure as possible. Here are some of the steps I took:
+
+1. **Firewall Configuration:**
+   I configured the VM’s firewall to allow only necessary traffic:
+   ```bash
+   sudo ufw allow 'Nginx HTTP'
+   sudo ufw enable
+   ```
+
+2. **SSL Encryption:**
+   I used **Certbot** to generate a free SSL certificate from Let’s Encrypt:
+   ```bash
+   sudo apt install certbot python3-certbot-nginx
+   sudo certbot --nginx -d yourdomain.com
+   ```
+
+3. **Regular Updates:**
+   I set up a cron job to auto-update packages and security patches:
+   ```bash
+   sudo crontab -e
+   # Add this line:
+   0 3 * * * apt update && apt upgrade -y
+   ```
+
+<FlowDiagram steps='[
+  {"label": "Step 1", "description": "Set up an Azure VM with Ubuntu 20.04"},
+  {"label": "Step 2", "description": "Install and configure Nginx to serve static files"},
+  {"label": "Step 3", "description": "Secure the server with a firewall and SSL encryption"},
+  {"label": "Step 4", "description": "Deploy the app and test it in a live environment"}
+]' />
+
+---
+
+## The Result: A Gamified Investing Experience
+
+The app is live, and the feedback has been incredible. Friends who were previously intimidated by investing have told me this was exactly what they needed to get started. They love the gamified approach, which breaks down complex topics into manageable, engaging pieces.
+
+Here’s a quick breakdown of the seven zones on the treasure map:
+
+1. **Stocks**: Learn the basics of buying and selling shares in companies.
+2. **ETFs**: Discover how exchange-traded funds allow for diversification.
+3. **Bonds**: Understand how fixed-income investments work.
+4. **REITs**: Explore real estate investment trusts as a way to invest in property without buying a house.
+5. **Cryptocurrency**: Dive into the world of Bitcoin, Ethereum, and beyond.
+6. **Options**: Get a beginner-friendly intro to options trading.
+7. **Alternative Investments**: Learn about everything from art to commodities.
+
+Each zone includes a short, interactive activity—like predicting stock prices or matching investment types with their risk levels. And yes, every time you complete a zone, you get rewarded with a burst of confetti.
+
+---
+
+## Lessons Learned: Why Side Projects Matter
+
+This project taught me more than I ever expected. Here are some of my key takeaways:
+
+- **Simplicity Wins:** By sticking with vanilla JS, I avoided the overhead of frameworks and ensured the app was blazing fast.
+- **Hosting Is Hard:** Setting up and securing an Azure VM took more time than I anticipated but was incredibly rewarding.
+- **Start Small:** I didn’t aim to build a full-blown financial education platform. By focusing on a single, fun idea, I was able to ship quickly and get feedback.
+- **User Feedback is Gold:** Hearing how the app helped my friends feel more confident about investing made all the effort worth it.
+
+<Tokenizer 
+  text="stocks ETFs bonds REITs crypto options alternatives" 
+  tokens='["stocks", "ETFs", "bonds", "REITs", "crypto", "options", "alternatives"]' 
+  tokenIds='[101, 102, 103, 104, 105, 106, 107]' 
+/>
+
+So, if you’ve been on the fence about starting your own side project, let this be your sign. It doesn’t have to be perfect. It doesn’t have to be big. Just make something you’re curious about, and you’ll be amazed at how much you’ll grow in the process.
+
+---
+
+And if you’re curious about trying the treasure map app yourself, feel free to [check it out here](#). I’d love to hear your feedback!
+
+Got a side project you’re working on? Let me know in the comments—I’m always looking for inspiration. 🚀

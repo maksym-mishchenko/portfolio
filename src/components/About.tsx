@@ -33,7 +33,7 @@ export function About() {
           <SectionReveal delay={0.1}>
             <div className="flex justify-center md:justify-start">
               <Image
-                src="/avatar.png"
+                src="/avatar.webp"
                 alt="Maksym Mishchenko"
                 width={160}
                 height={160}

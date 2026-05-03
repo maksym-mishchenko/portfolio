@@ -88,7 +88,7 @@ export const TECH_STACK: TechCategory[] = [
   { name: "Languages", items: ["Java", "C#", "Python", "TypeScript"] },
   { name: "Frontend", items: ["Next.js", "React", "Tailwind CSS"] },
   { name: "Backend", items: [".NET", "FastAPI", "Spring Boot"] },
-  { name: "Cloud", items: ["Azure", "AWS", "Docker", "Vercel"] },
-  { name: "Tools", items: ["Git", "GitHub Actions", "Telegram API"] },
+  { name: "Cloud", items: ["Azure", "AWS", "Vercel"] },
+  { name: "Tools", items: ["Git", "GitHub Actions", "Docker", "Telegram API"] },
 ];
 

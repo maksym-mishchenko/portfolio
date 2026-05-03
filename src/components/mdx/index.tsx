@@ -1,5 +1,9 @@
 import type { MDXComponents } from "mdx/types";
 import { Code } from "./Code";
+import { Tokenizer } from "./interactive/Tokenizer";
+import { FlowDiagram } from "./interactive/FlowDiagram";
+import { Aside } from "./interactive/Aside";
+import { EmbeddingSpace } from "./interactive/EmbeddingSpace";
 
 function extractText(children: React.ReactNode): string {
   if (typeof children === "string") return children;
@@ -81,6 +85,10 @@ export const mdxComponents: MDXComponents = {
   ),
   pre: ({ children }) => <>{children}</>,
   hr: () => <hr className="border-border my-8" />,
+  Tokenizer,
+  FlowDiagram,
+  Aside,
+  EmbeddingSpace,
   img: ({ src, alt }) => (
     // eslint-disable-next-line @next/next/no-img-element
     <img

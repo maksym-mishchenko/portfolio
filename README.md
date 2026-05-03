@@ -1,36 +1,76 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🌐 mmishchenko.dev
 
-## Getting Started
+[![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![Vercel](https://img.shields.io/badge/Deployed_on-Vercel-000?logo=vercel)](https://mmishchenko.dev)
 
-First, run the development server:
+My personal portfolio and blog — built with Next.js 16 (App Router), MDX, and interactive animated components.
+
+**Live → [mmishchenko.dev](https://mmishchenko.dev)**
+
+## ✨ Features
+
+- **Interactive MDX blog** with custom animated React components (Tokenizer, FlowDiagram, EmbeddingSpace, Aside)
+- **Automated devlog pipeline** — LinkedIn posts auto-expand into long-form blog articles via GPT-4o
+- **Dark theme** with spotlight hover effects and smooth Framer Motion animations
+- **RSS feed** at `/blog/feed.xml`
+- **SEO optimized** — dynamic sitemap, OpenGraph images, canonical URLs, security headers
+- **Contact form** powered by Resend API
+- **Responsive** — mobile-first design
+
+## 🛠 Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Framework | Next.js 16 (App Router, Turbopack) |
+| Language | TypeScript 5 (strict) |
+| Styling | Tailwind CSS v4 |
+| Animations | Framer Motion |
+| Blog | MDX via next-mdx-remote/rsc |
+| Syntax Highlighting | sugar-high |
+| Email | Resend API |
+| Deployment | Vercel |
+| Domain | Cloudflare DNS |
+
+## 🚀 Getting Started
 
 ```bash
+# Install dependencies
+npm install
+
+# Run development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
+# Build for production
+npm run build
+
+# Lint
+npm run lint
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 📁 Project Structure
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+src/
+├── app/              # Next.js App Router pages
+├── components/       # React components
+│   └── mdx/
+│       └── interactive/  # Animated blog components
+├── lib/              # Constants, utilities
+content/
+└── blog/             # MDX blog posts
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📝 Blog Components
 
-## Learn More
+The blog supports interactive MDX components:
 
-To learn more about Next.js, take a look at the following resources:
+- **`<Tokenizer>`** — Animated text → subword → token ID visualization with play/pause controls
+- **`<FlowDiagram>`** — Step-by-step animated flow diagrams
+- **`<EmbeddingSpace>`** — SVG-based word vector visualization
+- **`<Aside>`** — Collapsible supplementary info panels
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📄 License
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+[MIT](LICENSE)

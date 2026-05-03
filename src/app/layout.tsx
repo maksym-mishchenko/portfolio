@@ -17,7 +17,7 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Maksym Mishchenko — Software Engineer",
   description:
-    "Software Engineer at Microsoft. Security-focused full-stack developer from Ukraine. Building tools that solve real problems.",
+    "Software Engineer II at Microsoft Security (Identity & Application Governance). Security-focused full-stack developer from Ukraine. Building tools that solve real problems.",
   metadataBase: new URL("https://maksym.dev"),
   openGraph: {
     title: "Maksym Mishchenko — Software Engineer",

@@ -1,6 +1,6 @@
 export const SITE = {
   name: "Maksym Mishchenko",
-  title: "Software Engineer @ Microsoft",
+  title: "Software Engineer II @ Microsoft Security",
   url: "https://maksym.dev",
   github: "https://github.com/maksym-mishchenko",
   linkedin: "https://linkedin.com/in/maksym-mishchenko-1036381b8",
@@ -90,8 +90,8 @@ export const JOURNEY: JourneyNode[] = [
   {
     year: "2025",
     icon: "🚀",
-    title: "Microsoft",
-    detail: "Software Engineer, Prague",
+    title: "Microsoft Security",
+    detail: "Software Engineer II — Identity & Application Governance, Prague",
   },
   {
     year: "Now",

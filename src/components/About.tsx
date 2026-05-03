@@ -41,7 +41,8 @@ export function About() {
             <div>
               <p className="text-lg leading-relaxed text-muted mb-4">
                 Originally from <span className="text-foreground">Ukraine 🇺🇦</span>, now based in Prague.
-                Software Engineer at <span className="text-foreground">Microsoft</span> with 5+ years of
+                Software Engineer II at <span className="text-foreground">Microsoft Security</span> — working on
+                Identity &amp; Application Governance — with 5+ years of
                 experience across Java, .NET, Python, and TypeScript.
               </p>
               <p className="text-lg leading-relaxed text-muted mb-8">

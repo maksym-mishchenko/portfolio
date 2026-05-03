@@ -25,6 +25,13 @@ export const PROJECTS: Project[] = [
     featured: true,
   },
   {
+    title: "mmishchenko.dev",
+    description:
+      "This portfolio — built with Next.js 16, MDX blog with interactive animated components, RSS feed, and automated devlog publishing pipeline.",
+    tech: ["Next.js", "MDX", "Tailwind CSS", "Framer Motion"],
+    live: "https://mmishchenko.dev",
+  },
+  {
     title: "Smart Wardrobe",
     description:
       "AI-powered wardrobe management with outfit recommendations. FastAPI backend with Next.js frontend, deployed on Azure.",

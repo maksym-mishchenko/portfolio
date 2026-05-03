@@ -29,7 +29,6 @@ export const PROJECTS: Project[] = [
     description:
       "AI-powered wardrobe management with outfit recommendations. FastAPI backend with Next.js frontend, deployed on Azure.",
     tech: ["FastAPI", "Next.js", "OpenAI", "Azure"],
-    live: "https://wardrobe.mmishchenko.dev",
   },
   {
     title: "English Helper",
@@ -54,7 +53,6 @@ export const PROJECTS: Project[] = [
     description:
       "AI assistant for Power BI — helps write DAX formulas, optimize data models, and troubleshoot reports.",
     tech: ["Next.js", "OpenAI", "Vercel AI SDK", "Tailwind"],
-    live: "https://powerbi-buddy.vercel.app",
   },
 ];
 

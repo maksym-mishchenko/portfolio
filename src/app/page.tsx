@@ -1,7 +1,6 @@
 import { ScrollProgress } from "@/components/ScrollProgress";
 import { Hero } from "@/components/Hero";
 import { Projects } from "@/components/Projects";
-import { ZeroTrustDemo } from "@/components/ZeroTrustDemo";
 import { Journey } from "@/components/Journey";
 import { TechStack } from "@/components/TechStack";
 import { About } from "@/components/About";
@@ -14,7 +13,7 @@ export default function Home() {
       <main id="main">
         <Hero />
         <Projects />
-        <ZeroTrustDemo />
+
         <Journey />
         <TechStack />
         <About />

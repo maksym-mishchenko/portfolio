@@ -92,13 +92,3 @@ export const TECH_STACK: TechCategory[] = [
   { name: "Tools", items: ["Git", "GitHub Actions", "Telegram API"] },
 ];
 
-export const ZERO_TRUST_STEPS = [
-  { id: "request", label: "Request", icon: "📨", description: "Incoming HTTP request" },
-  { id: "tls", label: "TLS", icon: "🔒", description: "TLS 1.3 termination & certificate validation" },
-  { id: "rate-limit", label: "Rate Limit", icon: "⏱️", description: "Token bucket rate limiting per IP" },
-  { id: "cors", label: "CORS", icon: "🌐", description: "Origin allowlist check" },
-  { id: "validate", label: "Validate", icon: "✅", description: "Zod schema validation on all inputs" },
-  { id: "auth", label: "Auth", icon: "🔑", description: "JWT verification & scope check" },
-  { id: "logic", label: "Logic", icon: "⚙️", description: "Business logic execution" },
-  { id: "response", label: "Response", icon: "📤", description: "Sanitized response with security headers" },
-] as const;

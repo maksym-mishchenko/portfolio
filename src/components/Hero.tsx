@@ -35,7 +35,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="flex gap-4 mt-8"
+          className="flex flex-wrap gap-3 mt-8"
         >
           <button
             onClick={() =>
@@ -43,13 +43,13 @@ export function Hero() {
                 .getElementById("projects")
                 ?.scrollIntoView({ behavior: "smooth" })
             }
-            className="bg-[#3b82f6] hover:bg-[#2563eb] text-white px-6 py-3 rounded-lg font-medium transition-colors"
+            className="bg-[#3b82f6] hover:bg-[#2563eb] text-white px-5 py-3 rounded-lg font-medium transition-colors text-sm sm:text-base"
           >
-            View Projects ↓
+            Projects ↓
           </button>
           <a
             href="/blog"
-            className="border border-[#27272a] hover:border-[#3b82f6] text-[#a1a1aa] hover:text-[#fafafa] px-6 py-3 rounded-lg font-medium transition-colors"
+            className="border border-[#27272a] hover:border-[#3b82f6] text-[#a1a1aa] hover:text-[#fafafa] px-5 py-3 rounded-lg font-medium transition-colors text-sm sm:text-base"
           >
             Blog →
           </a>
@@ -57,7 +57,7 @@ export function Hero() {
             href="https://github.com/maksym-mishchenko"
             target="_blank"
             rel="noopener noreferrer"
-            className="border border-[#27272a] hover:border-[#3b82f6] text-[#a1a1aa] hover:text-[#fafafa] px-6 py-3 rounded-lg font-medium transition-colors"
+            className="border border-[#27272a] hover:border-[#3b82f6] text-[#a1a1aa] hover:text-[#fafafa] px-5 py-3 rounded-lg font-medium transition-colors text-sm sm:text-base"
           >
             GitHub →
           </a>

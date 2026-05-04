@@ -2,6 +2,7 @@
 
 import { Mail } from "lucide-react";
 import Image from "next/image";
+import { track } from "@vercel/analytics";
 
 function GithubIcon({ size = 20 }: { size?: number }) {
   return (
@@ -61,6 +62,7 @@ export function About() {
                   href={SITE.github}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => track("social_click", { platform: "github" })}
                   className="inline-flex items-center gap-2 text-muted hover:text-foreground transition-colors"
                   aria-label="GitHub profile"
                 >
@@ -71,6 +73,7 @@ export function About() {
                   href={SITE.linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => track("social_click", { platform: "linkedin" })}
                   className="inline-flex items-center gap-2 text-muted hover:text-foreground transition-colors"
                   aria-label="LinkedIn profile"
                 >
@@ -79,6 +82,7 @@ export function About() {
                 </a>
                 <a
                   href={SITE.email}
+                  onClick={() => track("social_click", { platform: "email" })}
                   className="inline-flex items-center gap-2 text-muted hover:text-foreground transition-colors"
                   aria-label="Email"
                 >

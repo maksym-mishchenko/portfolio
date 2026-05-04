@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Send, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
+import { track } from "@vercel/analytics";
 import { SectionReveal } from "./SectionReveal";
 
 type FormState = "idle" | "submitting" | "success" | "error";
@@ -39,6 +40,7 @@ export function Contact() {
       }
 
       setState("success");
+      track("contact_submit", { status: "success" });
       form.reset();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");

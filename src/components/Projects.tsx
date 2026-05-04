@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { useState, MouseEvent } from "react";
 import { ExternalLink } from "lucide-react";
+import { track } from "@vercel/analytics";
 
 function GithubIcon({ size = 16 }: { size?: number }) {
   return (
@@ -71,6 +72,7 @@ function ProjectCard({ project, index, featured }: { project: Project; index: nu
               href={project.github}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => track("project_click", { project: project.title, type: "github" })}
               className="inline-flex items-center gap-1.5 text-sm text-muted hover:text-foreground transition-colors"
             >
               <GithubIcon size={16} />
@@ -82,6 +84,7 @@ function ProjectCard({ project, index, featured }: { project: Project; index: nu
               href={project.live}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => track("project_click", { project: project.title, type: "live" })}
               className="inline-flex items-center gap-1.5 text-sm text-muted hover:text-foreground transition-colors"
             >
               <ExternalLink size={16} />

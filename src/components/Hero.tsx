@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
+import { track } from "@vercel/analytics";
 import { TerminalTyping } from "./TerminalTyping";
 
 export function Hero() {
@@ -38,17 +39,19 @@ export function Hero() {
           className="flex flex-wrap gap-3 mt-8"
         >
           <button
-            onClick={() =>
+            onClick={() => {
+              track("cta_click", { label: "projects" });
               document
                 .getElementById("projects")
-                ?.scrollIntoView({ behavior: "smooth" })
-            }
+                ?.scrollIntoView({ behavior: "smooth" });
+            }}
             className="bg-[#3b82f6] hover:bg-[#2563eb] text-white px-5 py-3 rounded-lg font-medium transition-colors text-sm sm:text-base"
           >
             Projects ↓
           </button>
           <a
             href="/blog"
+            onClick={() => track("cta_click", { label: "blog" })}
             className="border border-[#27272a] hover:border-[#3b82f6] text-[#a1a1aa] hover:text-[#fafafa] px-5 py-3 rounded-lg font-medium transition-colors text-sm sm:text-base"
           >
             Blog →
@@ -57,6 +60,7 @@ export function Hero() {
             href="https://github.com/maksym-mishchenko"
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => track("cta_click", { label: "github" })}
             className="border border-[#27272a] hover:border-[#3b82f6] text-[#a1a1aa] hover:text-[#fafafa] px-5 py-3 rounded-lg font-medium transition-colors text-sm sm:text-base"
           >
             GitHub →

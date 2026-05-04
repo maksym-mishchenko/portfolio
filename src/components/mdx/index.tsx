@@ -4,6 +4,9 @@ import { Tokenizer } from "./interactive/Tokenizer";
 import { FlowDiagram } from "./interactive/FlowDiagram";
 import { Aside } from "./interactive/Aside";
 import { EmbeddingSpace } from "./interactive/EmbeddingSpace";
+import { Quiz } from "./interactive/Quiz";
+import { CompareTable } from "./interactive/CompareTable";
+import { Timeline } from "./interactive/Timeline";
 
 function extractText(children: React.ReactNode): string {
   if (typeof children === "string") return children;
@@ -89,6 +92,9 @@ export const mdxComponents: MDXComponents = {
   FlowDiagram,
   Aside,
   EmbeddingSpace,
+  Quiz,
+  CompareTable,
+  Timeline,
   img: ({ src, alt }) => (
     // eslint-disable-next-line @next/next/no-img-element
     <img

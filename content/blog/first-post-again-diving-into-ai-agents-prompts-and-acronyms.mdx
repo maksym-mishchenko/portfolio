@@ -1,0 +1,128 @@
+---
+title: "First Post (Again): Diving Into AI Agents, Prompts, and Acronyms"
+date: "2026-05-04"
+description: "Exploring AI agents, tools, and the lessons learned from breaking and fixing things along the way."
+tags: ["AI Agents", "Machine Learning", "Developer Journey"]
+---
+
+## First Post (Again): Why I’m Writing This
+
+Here we go. Again.
+
+I’ve tried this before—writing consistently about my projects and sharing what I learn. Each time, it lasted about four days. Then, life happened, motivation dipped, and the blog sat dormant. But here I am, giving it another shot.
+
+What’s different this time? AI. Specifically, AI agents. They’ve fundamentally changed the way I work on personal projects. The tedious, repetitive tasks? Handled. The endless hours spent debugging boilerplate code? Cut down significantly. These AI tools don’t just speed things up—they’re reshaping how I think about building things.
+
+But here’s the kicker: the more I use these tools, the more I want to understand how they work under the hood. What makes one prompt better than another? Why does one agent outperform another when given the same task? How do these systems reason, plan, and execute?
+
+This blog is my sandbox—a place to experiment, break things, fix them, and turn those lessons into something others can learn from. Here's what I’m diving into:
+
+- **Agents, skills, prompts**: What works, what doesn’t, and why.
+- **MCP, ACP**, and the endless parade of acronyms in the AI world.
+- **Research papers** I read, **code I write**, and the inevitable mistakes I make.
+
+It’s a mix of theory and practice, with a heavy dose of trial and error. So, let’s get started.
+
+---
+
+## The Rise of AI Agents: Letting Machines Do the Boring Stuff
+
+Not long ago, the idea of using an AI agent to handle even straightforward tasks felt like science fiction. Today, it’s a reality. From writing boilerplate code to debugging complex systems, tools like OpenAI’s GPT, LangChain, and Auto-GPT are making it easier than ever to offload the tedious parts of development.
+
+But here’s the catch: effective use of these tools isn’t as simple as tossing prompts at them and hoping for magic. The difference between a good result and a useless one often comes down to understanding how these systems work.
+
+Take, for example, the concept of **tokenization**. Every piece of text you pass into an AI model gets broken down into smaller units called tokens. This breakdown is what allows the model to process and understand your input.
+
+<Tokenizer text="First Post (Again)" tokens='["First", "Post", "(Again)"]' tokenIds='[4512, 3948, 1298]' />
+
+In the example above, the phrase "First Post (Again)" is tokenized into smaller parts that the model can process. The number of tokens matters because most AI models have token limits. Knowing this can save you from frustration when a model unexpectedly cuts off or produces incomplete output.
+
+<Aside title="Why this matters">
+Understanding how tokenization works can help you craft more efficient prompts, avoid hitting token limits, and improve the quality of the responses you get.
+</Aside>
+
+---
+
+## Agents vs. Skills: A Quick Compare
+
+When I first started using AI agents, I had no idea what the term “skills” meant in this context. I soon learned that agents and skills are fundamentally different but complement each other in powerful ways.
+
+<CompareTable 
+  headers='["Feature","Agents","Skills"]' 
+  rows='[["Scope","Broad, autonomous","Narrow, single task"],["State","Maintains context","Stateless"],["Example","Plan a day, book travel, summarize notes","Convert text to JSON, format a date"]]' 
+  highlight="1" 
+/>
+
+In simple terms, an **agent** operates at a higher level. It can take a goal, break it into sub-tasks, and execute those tasks in sequence. A **skill**, on the other hand, is a specialized function that the agent can call upon to perform a specific task.
+
+For example, let’s say you want an AI to organize a weekend trip. The agent might:
+
+1. Search for flights.
+2. Book a hotel.
+3. Create a to-do list for packing.
+
+Each of these steps could be handled by a different skill, and the agent’s job is to orchestrate them into a cohesive workflow.
+
+---
+
+## Acronyms, Jargon, and the Need for Standards
+
+One of the things I’ve been digging into lately is the emerging standards in the AI agent ecosystem. You might have heard of **MCP**, **ACP**, or similar protocols. They’re still evolving, but the basic idea is to create a common language and framework for connecting agents, tools, and skills.
+
+<Timeline 
+  events='[
+    {"label":"MCP Created","description":"Model Context Protocol enables agents to connect to tools.","icon":"🔧"},
+    {"label":"ACP Introduced","description":"Agent Communication Protocol improves agent-agent interactions.","icon":"⚡"}
+  ]' 
+/>
+
+For example, the **Model Context Protocol (MCP)** is a protocol for connecting AI agents to external tools. It standardizes the way agents communicate with APIs, databases, and other systems. This makes it easier to build complex workflows without reinventing the wheel every time.
+
+<Quiz 
+  question="What does MCP stand for?" 
+  options='["Model Context Protocol","Machine Code Parser","Multi-Cloud Platform"]' 
+  answer="Model Context Protocol" 
+  explanation="MCP is the protocol for connecting AI agents to external tools." 
+/>
+
+As more tools adopt these standards, we’ll see even more interoperability and innovation in the AI space. It’s an exciting time to be building.
+
+---
+
+## Lessons Learned: Breaking and Fixing Things
+
+Let’s be real: most of what I’ve learned has come from breaking stuff. Here’s an example: I was recently experimenting with a custom agent that could summarize a series of articles and generate actionable insights. I was excited—until I realized that my agent kept getting stuck in a loop, re-summarizing the same article over and over.
+
+After some digging, I discovered the issue: I’d failed to properly manage the agent’s **state**. It didn’t know which articles it had already processed because I wasn’t storing that information anywhere. Once I implemented a simple state management system (a basic key-value store), the problem was solved.
+
+Here’s a simplified version of the code:
+
+```javascript
+const processedArticles = new Set();
+
+function processArticle(article) {
+  if (processedArticles.has(article.id)) {
+    console.log("Already processed:", article.id);
+    return;
+  }
+
+  // Process the article
+  const summary = summarize(article.content);
+  console.log("Summary:", summary);
+
+  // Mark as processed
+  processedArticles.add(article.id);
+}
+```
+
+This mistake taught me a valuable lesson: even the smartest AI agents are only as good as the systems that support them. They might be great at reasoning and language, but they need help keeping track of what they’ve already done.
+
+---
+
+## Turning Commits Into Lessons
+
+One of my goals with this blog is to turn every mistake, every commit, and every breakthrough into something that others can learn from. When I look back, I want to see a trail of progress—a record of how I went from throwing random prompts at an AI to building systems that actually work.
+
+If you’re here, reading this, welcome. I don’t know if this blog will stick. I don’t know if I’ll still be writing in a month. But I do know that I’m excited about what I’m learning, and I want to share it.
+
+So, here’s to the experiments, the failures, and the lessons we’ll learn along the way. Let’s figure this out together.

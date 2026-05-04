@@ -1,0 +1,118 @@
+---
+title: "Starting Over: Lessons from Building with AI Agents" 
+date: "2026-05-04"
+description: "Exploring the practical and theoretical side of AI agents, skills, and prompts — one mistake at a time."
+tags: ["AI", "agents", "development", "learning"]
+---
+
+Consistency has always been my Achilles' heel. If I'm being honest, this isn't my first attempt at writing consistently about what I'm building and learning. My past attempts? They lasted about four days each. But here I am again, typing away with a fresh perspective and a renewed sense of curiosity. 
+
+So, what’s changed? 
+
+A lot, actually. Over the past few months, I’ve been spending way more time on personal projects thanks to AI agents. These tools have become my behind-the-scenes coworkers, handling repetitive, tedious tasks and letting me focus on the fun stuff—building, breaking, and figuring out how things work. As much as I enjoy the productivity boost, I’ve realized that I don’t want to just be a passive user, throwing prompts at models and hoping for the best. I want to understand the magic behind the scenes. 
+
+This blog is my sandbox, my documentation hub, and my accountability partner. It’s where I’ll share everything I’m learning along the way: 
+
+- What works (and what doesn’t) with agents, skills, and prompts.
+- Acronyms you may not have heard of yet — MCP, ACP, and the next buzzword to come.
+- Papers I read, things I break, and (sometimes) things I manage to fix.
+- How I’m turning my commits and experiments into lessons for others.
+
+Most of all, it’s a place for mistakes to transform into learning opportunities. Let’s dive into this together.
+
+---
+
+## The Rise of AI Agents: What They Are and Why They Matter
+
+AI agents are everywhere right now, and for good reason. These autonomous systems are designed to carry out tasks with minimal human intervention, leveraging machine learning models to make decisions, execute actions, and even respond to feedback. 
+
+But here’s the thing: not all agents are created equal. Some are incredibly capable, while others fail spectacularly—and often hilariously. Understanding what makes a great agent involves more than just feeding it a well-crafted prompt. It means diving into concepts like **skills**, **context management**, and yes, those pesky acronyms I mentioned: MCP (Model Context Protocol) and ACP (Agent Communication Protocol). 
+
+<Aside title="Why this matters">
+If you’ve ever been frustrated by a chatbot misunderstanding your intent or an AI tool generating nonsensical outputs, you’ve already seen why these concepts are crucial. The better we understand the "why" behind these failures, the closer we get to building AI that genuinely works.
+</Aside>
+
+Let’s start by breaking down the pieces.
+
+---
+
+## Agents, Skills, and Prompts: Building Blocks of Autonomy
+
+At a high level, an AI agent relies on three key components:
+
+- **The Agent**: Think of this as the "brain." It takes in inputs, processes information, and decides what to do next.
+- **Skills**: These are the specific tasks the agent can perform. For example, one skill might be summarizing text, while another might be generating SQL queries.
+- **Prompts**: Instructions or context provided to the agent to guide its behavior.
+
+Here’s a simple example of a basic agent I built recently. The goal was to automate some data-cleaning tasks for a personal project. I started with OpenAI’s API, a Python script, and a few custom prompts:
+
+```python
+import openai
+
+# Define a skill for cleaning dataset column names
+def clean_column_names(prompt):
+    response = openai.Completion.create(
+        engine="gpt-4",
+        prompt=f"Clean the following column names for a CSV file: {prompt}",
+        max_tokens=50
+    )
+    return response['choices'][0]['text'].strip()
+
+# Example usage
+columns = "col_1, COL_2, weird-Name!"
+cleaned_columns = clean_column_names(columns)
+print("Cleaned Columns:", cleaned_columns)
+```
+
+At first glance, this seems simple enough. But here’s the catch: designing these prompts to be both general and specific enough to handle edge cases is *hard*. I spent hours tweaking this prompt to account for things like inconsistent capitalization, special characters, and even non-English words. And that’s just for one skill. Imagine scaling this to dozens of tasks.
+
+<Tokenizer text="Clean the following column names for a CSV file: col_1, COL_2, weird-Name!" tokens='["Clean", "the", "following", "column", "names", "for", "a", "CSV", "file", "col", "_", "1", "COL", "_", "2", "weird", "-", "Name", "!"]' tokenIds='[124, 45, 33, 567, 890, 12, 76, 34, 78, 102, 2, 1, 56, 2, 2, 234, 3, 456, 9]' />
+
+Above, you can see how the model tokenizes the input prompt. These tokens are the building blocks of how the model interprets and processes your instructions. Even minor changes in phrasing or punctuation can lead to drastically different outputs, which is both fascinating and maddening.
+
+---
+
+## MCP, ACP, and the Next Big Acronym
+
+If you’re like me, you’ve probably come across a new acronym every week when diving into AI. Lately, I’ve been paying more attention to **MCP (Model Context Protocol)** and **ACP (Agent Communication Protocol)**. 
+
+In simple terms:
+
+- **MCP** is all about how agents manage and utilize context. That includes short-term memory (like the last prompt you gave) and long-term memory (like a user’s preferences or task history).
+- **ACP** focuses on how agents communicate with each other. Think of it as the rules of engagement when multiple agents collaborate to solve a problem.
+
+Here’s a quick breakdown of how they differ:
+
+<CompareTable 
+  headers='["Feature","MCP","ACP"]' 
+  rows='[["Purpose","Manage context","Facilitate communication"],["Scope","Single agent","Multiple agents"],["Challenges","Memory limitations","Coordination issues"]]' 
+  highlight="1" 
+/>
+
+These protocols are essential for making AI systems more robust and less prone to failure. For instance, I’ve been experimenting with an MCP implementation that allows an agent to retain user preferences across multiple interactions. The result? A much more personalized and coherent experience.
+
+---
+
+## Lessons Learned: Breaking Things to Build Better Systems
+
+I’ll be honest: most of my progress so far has come from breaking things. For example, one of my recent projects involved building an agent to summarize academic papers. Sounds straightforward, right? Just feed the paper to GPT and ask for a summary. But I ran into all sorts of issues:
+
+1. **Token limits**: Some papers were simply too long to fit into a single prompt.
+2. **Loss of context**: When chunking papers into smaller sections, the agent would lose the big picture.
+3. **Inconsistent results**: The same prompt applied to different sections produced wildly varying quality.
+
+Here’s a quick timeline of how I tackled these problems:
+
+<Timeline events='[{"label":"Step 1","description":"Test summarizing entire papers at once (failed due to token limits)","icon":"❌"},{"label":"Step 2","description":"Chunk papers into sections (introduced context loss)","icon":"⚠️"},{"label":"Step 3","description":"Implement MCP to persist context across chunks","icon":"✅"}]' />
+
+The key breakthrough came when I integrated MCP to pass context between chunks, allowing the agent to "remember" what it had summarized so far. The result was a smoother, more cohesive summary.
+
+---
+
+## Let’s See Where This Goes
+
+This is just the beginning. I don’t have all the answers (yet), but I’m committed to figuring things out, one experiment at a time. Whether it’s designing better prompts, understanding new protocols, or breaking down the latest research papers, I’ll be documenting it all here.
+
+And who knows? Maybe this time, I’ll actually stick with it.
+
+Got questions, ideas, or your own AI experiments to share? Drop me a note or leave a comment — I’d love to hear from you.

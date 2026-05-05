@@ -142,7 +142,7 @@ function TimelineTemplate({ title, steps, avatar }: { title: string; steps: Time
         {
           type: "div",
           props: {
-            style: { display: "flex", alignItems: "center", gap: 20, flex: 1, justifyContent: "center" },
+            style: { display: "flex", alignItems: "center", gap: 12, flex: 1, justifyContent: "center" },
             children: steps.flatMap((step, i) => {
               const box = {
                 type: "div",
@@ -151,21 +151,21 @@ function TimelineTemplate({ title, steps, avatar }: { title: string; steps: Time
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
-                    padding: "24px 28px",
+                    padding: "20px 22px",
                     background: step.highlight ? COLORS.green + "22" : COLORS.card,
                     border: `2px solid ${step.highlight ? COLORS.green : COLORS.border}`,
-                    borderRadius: 14,
-                    minWidth: 200,
+                    borderRadius: 12,
+                    width: 240,
                   },
                   children: [
-                    { type: "span", props: { style: { color: COLORS.accent, fontSize: 13, marginBottom: 6, display: "flex" }, children: step.year } },
-                    { type: "span", props: { style: { color: COLORS.text, fontSize: 20, fontWeight: 700, marginBottom: 6, display: "flex" }, children: `${step.emoji} ${step.title}` } },
-                    { type: "span", props: { style: { color: COLORS.muted, fontSize: 14, textAlign: "center", display: "flex" }, children: step.subtitle } },
+                    { type: "span", props: { style: { color: COLORS.accent, fontSize: 12, marginBottom: 4, display: "flex" }, children: step.year } },
+                    { type: "span", props: { style: { color: COLORS.text, fontSize: 18, fontWeight: 700, marginBottom: 4, display: "flex" }, children: `${step.emoji} ${step.title}` } },
+                    { type: "span", props: { style: { color: COLORS.muted, fontSize: 13, textAlign: "center", display: "flex" }, children: step.subtitle } },
                   ],
                 },
               };
               if (i < steps.length - 1) {
-                return [box, { type: "span", props: { style: { color: COLORS.dim, fontSize: 28, display: "flex" }, children: "→" } }];
+                return [box, { type: "span", props: { style: { color: COLORS.dim, fontSize: 22, display: "flex" }, children: "→" } }];
               }
               return [box];
             }),
@@ -290,48 +290,48 @@ function FlowTemplate({ title, input, steps, outputs, avatar }: { title: string;
                     {
                       type: "div",
                       props: {
-                        style: { display: "flex", padding: "14px 28px", background: COLORS.card, border: `2px solid ${COLORS.orange}`, borderRadius: 10 },
-                        children: [{ type: "span", props: { style: { color: COLORS.text, fontSize: 17, display: "flex" }, children: `${input.emoji} ${input.text}` } }],
+                        style: { display: "flex", padding: "12px 24px", background: COLORS.card, border: `2px solid ${COLORS.orange}`, borderRadius: 10 },
+                        children: [{ type: "span", props: { style: { color: COLORS.text, fontSize: 15, display: "flex" }, children: `${input.emoji} ${input.text}` } }],
                       },
                     },
                   ],
                 },
               },
               // Arrow down
-              { type: "div", props: { style: { color: COLORS.dim, fontSize: 24, display: "flex" }, children: "↓" } },
+              { type: "div", props: { style: { color: COLORS.dim, fontSize: 20, display: "flex" }, children: "↓" } },
               // Steps row
               {
                 type: "div",
                 props: {
-                  style: { display: "flex", gap: 16, alignItems: "center" },
+                  style: { display: "flex", gap: 10, alignItems: "center" },
                   children: steps.flatMap((step, i) => {
                     const box = {
                       type: "div",
                       props: {
-                        style: { display: "flex", flexDirection: "column", alignItems: "center", padding: "18px 24px", background: COLORS.cardHighlight, border: `1px solid ${COLORS.accent}`, borderRadius: 10, minWidth: 160 },
+                        style: { display: "flex", flexDirection: "column", alignItems: "center", padding: "14px 18px", background: COLORS.cardHighlight, border: `1px solid ${COLORS.accent}`, borderRadius: 10, width: 200 },
                         children: [
-                          { type: "span", props: { style: { fontSize: 17, fontWeight: 700, color: COLORS.text, display: "flex" }, children: `${step.emoji} ${step.title}` } },
-                          { type: "span", props: { style: { fontSize: 13, color: COLORS.muted, marginTop: 6, display: "flex" }, children: step.subtitle } },
+                          { type: "span", props: { style: { fontSize: 15, fontWeight: 700, color: COLORS.text, display: "flex" }, children: `${step.emoji} ${step.title}` } },
+                          { type: "span", props: { style: { fontSize: 12, color: COLORS.muted, marginTop: 4, display: "flex" }, children: step.subtitle } },
                         ],
                       },
                     };
-                    if (i < steps.length - 1) return [box, { type: "span", props: { style: { color: COLORS.accent, fontSize: 22, display: "flex" }, children: "→" } }];
+                    if (i < steps.length - 1) return [box, { type: "span", props: { style: { color: COLORS.accent, fontSize: 18, display: "flex" }, children: "→" } }];
                     return [box];
                   }),
                 },
               },
               // Arrow down
-              { type: "div", props: { style: { color: COLORS.dim, fontSize: 24, display: "flex" }, children: "↓" } },
+              { type: "div", props: { style: { color: COLORS.dim, fontSize: 20, display: "flex" }, children: "↓" } },
               // Outputs row
               {
                 type: "div",
                 props: {
-                  style: { display: "flex", gap: 16 },
+                  style: { display: "flex", gap: 12 },
                   children: outputs.map((out) => ({
                     type: "div",
                     props: {
-                      style: { display: "flex", padding: "12px 24px", background: COLORS.green + "22", border: `1px solid ${COLORS.green}`, borderRadius: 10 },
-                      children: [{ type: "span", props: { style: { color: COLORS.green, fontSize: 16, fontWeight: 600, display: "flex" }, children: out } }],
+                      style: { display: "flex", padding: "10px 20px", background: COLORS.green + "22", border: `1px solid ${COLORS.green}`, borderRadius: 10 },
+                      children: [{ type: "span", props: { style: { color: COLORS.green, fontSize: 14, fontWeight: 600, display: "flex" }, children: out } }],
                     },
                   })),
                 },

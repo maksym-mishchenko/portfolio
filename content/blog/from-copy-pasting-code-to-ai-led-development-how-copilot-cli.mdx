@@ -7,21 +7,23 @@ tags: ["copilot-cli", "ai-agents", "developer-workflow"]
 
 I used to paste code into ChatGPT like I was feeding a very slow, very forgetful colleague.
 
-Copy the error. Paste it in. Explain what the project does. Get a suggestion. Try it. Get a new error. Paste that in too. Repeat until one of us gave up — usually me.
+Copy the error. Paste it in. Explain what the project does. Get a suggestion. Try it. Get a new error. Paste that in too. Repeat until one of us gave up (usually me).
 
-It worked, kind of. But every conversation started from zero. No memory, no context, no understanding of my actual codebase.
+It worked, kind of. Every conversation started from zero though. No memory. No context. No idea what my project even was.
 
 ![The evolution from ChatGPT to multi-agent workflows](/images/blog/evolution.svg)
 
 ## Copilot Chat was better, but still not it
 
-When I switched to Copilot Chat in VS Code, things improved. It could see my files. I stopped copy-pasting entire classes just to ask a question. But I was still the middleman — run tests in terminal, copy the output, paste it into chat, read the suggestion, apply it manually.
+When I switched to Copilot Chat in VS Code, things improved. It could see my files. I stopped copy-pasting entire classes just to ask a question.
 
-Better than ChatGPT? Yes. But I was still the glue.
+But I was still the middleman. Run tests in terminal. Copy the output. Paste it into chat. Read the suggestion. Apply it manually. Five steps for every fix.
+
+Better than ChatGPT? Sure. I was still the glue though.
 
 ## Then I tried Copilot CLI
 
-Copilot CLI was the shift. Instead of chatting about code, I started telling it to **do things**:
+Copilot CLI was the shift. Instead of chatting about code, I started telling it to do things:
 
 ```bash
 # actual command I ran last week
@@ -30,7 +32,7 @@ copilot "fix the failing tests in wardrobeApi"
 
 It read the test output, found the wrong assertions, fixed them, re-ran. Passed. I didn't touch the keyboard.
 
-That's when it stopped feeling like a tool and started feeling like a colleague — one that doesn't get distracted by Slack.
+That's when it stopped feeling like a tool and started feeling like a colleague. One that doesn't get distracted by Slack.
 
 ![Before vs After — how the workflow actually changed](/images/blog/before-after.svg)
 
@@ -38,11 +40,14 @@ That's when it stopped feeling like a tool and started feeling like a colleague 
 
 Here's my real workflow today:
 
-- **"Add pagination to this endpoint"** — it reads the controller, adds query params, updates the service, writes tests
-- **"Create a PR for these changes"** — it writes the commit message, pushes, opens the PR on GitHub
-- **"Debug why the LinkedIn OAuth is failing"** — it checks env vars, reads logs, finds trailing newlines in my secrets (this actually happened yesterday)
+- "Add pagination to this endpoint" — it reads the controller, adds query params, updates the service, writes tests
+- "Create a PR for these changes" — writes the commit message, pushes, opens the PR on GitHub
+- "Debug why the LinkedIn OAuth is failing" — checks env vars, reads logs, finds the issue
+- "Refactor this service to use dependency injection" — plans the change, moves code, verifies nothing breaks
 
-The key shift: I stopped giving it instructions and started giving it **ownership**. Not "write a function that does X" but "own this feature — plan it, build it, test it."
+That last one about LinkedIn? It found a trailing newline in my `.env` secrets. Took it 30 seconds. Would've taken me an hour of staring at OAuth docs.
+
+I stopped giving it instructions and started giving it ownership. Not "write a function that does X" but "own this feature, plan it, build it, test it."
 
 ![How a prompt becomes working code](/images/blog/prompt-flow.svg)
 
@@ -50,20 +55,21 @@ The key shift: I stopped giving it instructions and started giving it **ownershi
 
 Right now I have three AI agents working together:
 
-- **Copilot CLI** — senior dev, handles complex coding and PRs
-- **OpenClaw** (on my Azure VM) — project manager, routes tasks, runs automation
-- **OpenCode** — autonomous coder I can dispatch from Telegram
+- Copilot CLI is the senior dev. Complex coding, PRs, architecture decisions.
+- OpenClaw lives on my Azure VM. Routes tasks, runs cron jobs, talks to me through Telegram.
+- OpenCode is the autonomous coder. I dispatch it from my phone and it just... builds things.
 
-When I describe a feature in Telegram, OpenClaw breaks it into tasks and dispatches them. Copilot CLI reviews the output. I mostly just approve PRs.
+When I describe a feature in Telegram, OpenClaw breaks it into tasks and dispatches them. Copilot CLI reviews the output. I mostly just approve PRs at this point.
 
-Is it perfect? No. Sometimes agents step on each other's work. Sometimes the wrong model gets a task it's not good at. But the friction is 10x lower than doing everything manually.
+Is it perfect? No. Sometimes agents step on each other's work. Last week OpenCode and Copilot CLI both tried to edit the same file on the same branch. Had to manually resolve that. But even with the occasional mess, the friction is way lower than doing everything myself.
 
 ## The actual takeaway
 
-You don't need a multi-agent system to benefit from this. Start here:
+You don't need a multi-agent system to benefit from this. Honestly, start small:
 
-1. **Stop copy-pasting into ChatGPT.** Use a tool with codebase context.
-2. **Give your AI tasks, not questions.** "Fix this" > "What's wrong with this?"
-3. **Let it run commands.** The biggest unlock is when AI can actually execute, not just suggest.
+1. Stop copy-pasting into ChatGPT. Use something with codebase context.
+2. Give your AI tasks, not questions. "Fix this" beats "What's wrong with this?" every time.
+3. Let it run commands. The real difference is between AI that suggests and AI that executes.
+4. Accept imperfect results. You'll still review and fix things. But you'll fix 10% instead of writing 100%.
 
-The gap between "AI that gives advice" and "AI that does the work" is where all the value is.
+The gap between "AI that gives advice" and "AI that does the work" is where I've gotten all the time back.

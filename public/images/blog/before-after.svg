@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 320" fill="none">
+  <style>
+    text { font-family: 'Inter', 'SF Pro', -apple-system, sans-serif; }
+    .label { font-size: 13px; fill: #94a3b8; }
+    .title { font-size: 15px; fill: #e2e8f0; font-weight: 600; }
+    .subtitle { font-size: 12px; fill: #94a3b8; }
+    .step { font-size: 12px; fill: #cbd5e1; }
+    .time { font-size: 11px; fill: #64748b; font-style: italic; }
+    .box { rx: 10; ry: 10; stroke-width: 1.5; }
+    .section-title { font-size: 14px; font-weight: 700; letter-spacing: 1.5px; }
+    .divider { stroke: #1e293b; stroke-width: 1; stroke-dasharray: 6,4; }
+  </style>
+
+  <rect width="900" height="320" fill="#0a0a0a" rx="16"/>
+
+  <!-- BEFORE side -->
+  <text x="225" y="35" text-anchor="middle" class="section-title" fill="#ef4444">❌ BEFORE</text>
+  <text x="225" y="52" text-anchor="middle" class="time">~45 min per feature</text>
+
+  <rect x="30" y="70" width="390" height="50" class="box" fill="#1c1917" stroke="#44403c"/>
+  <text x="50" y="92" class="step">1.</text>
+  <text x="68" y="92" class="step">Google → StackOverflow → copy code</text>
+  <text x="360" y="92" class="time">5 min</text>
+
+  <rect x="30" y="130" width="390" height="50" class="box" fill="#1c1917" stroke="#44403c"/>
+  <text x="50" y="152" class="step">2.</text>
+  <text x="68" y="152" class="step">Paste into ChatGPT → "adapt this for me"</text>
+  <text x="360" y="152" class="time">10 min</text>
+
+  <rect x="30" y="190" width="390" height="50" class="box" fill="#1c1917" stroke="#44403c"/>
+  <text x="50" y="212" class="step">3.</text>
+  <text x="68" y="212" class="step">Copy output → paste into VS Code → debug</text>
+  <text x="360" y="212" class="time">20 min</text>
+
+  <rect x="30" y="250" width="390" height="50" class="box" fill="#1c1917" stroke="#44403c"/>
+  <text x="50" y="272" class="step">4.</text>
+  <text x="68" y="272" class="step">Manually commit, push, deploy, test</text>
+  <text x="360" y="272" class="time">10 min</text>
+
+  <!-- Divider -->
+  <line x1="450" y1="25" x2="450" y2="310" class="divider"/>
+  <text x="450" y="170" text-anchor="middle" font-size="20">⚡</text>
+
+  <!-- AFTER side -->
+  <text x="675" y="35" text-anchor="middle" class="section-title" fill="#22c55e">✅ AFTER</text>
+  <text x="675" y="52" text-anchor="middle" class="time">~8 min per feature</text>
+
+  <rect x="480" y="70" width="390" height="50" class="box" fill="#0f291a" stroke="#166534"/>
+  <text x="500" y="92" class="step">1.</text>
+  <text x="518" y="92" class="step">Describe what I need in terminal</text>
+  <text x="820" y="92" class="time">1 min</text>
+
+  <rect x="480" y="130" width="390" height="50" class="box" fill="#0f291a" stroke="#166534"/>
+  <text x="500" y="152" class="step">2.</text>
+  <text x="518" y="152" class="step">Copilot CLI edits files + runs tests</text>
+  <text x="820" y="152" class="time">3 min</text>
+
+  <rect x="480" y="190" width="390" height="50" class="box" fill="#0f291a" stroke="#166534"/>
+  <text x="500" y="212" class="step">3.</text>
+  <text x="518" y="212" class="step">Review diff → approve → auto-commit</text>
+  <text x="820" y="212" class="time">2 min</text>
+
+  <rect x="480" y="250" width="390" height="50" class="box" fill="#0f291a" stroke="#166534"/>
+  <text x="500" y="272" class="step">4.</text>
+  <text x="518" y="272" class="step">Push + deploy (one command)</text>
+  <text x="820" y="272" class="time">2 min</text>
+</svg>

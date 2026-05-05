@@ -11,6 +11,8 @@ Copy the error. Paste it in. Explain what the project does. Get a suggestion. Tr
 
 It worked, kind of. But every conversation started from zero. No memory, no context, no understanding of my actual codebase.
 
+![The evolution from ChatGPT to multi-agent workflows](/images/blog/evolution.svg)
+
 ## Copilot Chat was better, but still not it
 
 When I switched to Copilot Chat in VS Code, things improved. It could see my files. I stopped copy-pasting entire classes just to ask a question. But I was still the middleman — run tests in terminal, copy the output, paste it into chat, read the suggestion, apply it manually.
@@ -30,6 +32,8 @@ It read the test output, found the broken assertions, edited the files, and ran 
 
 That was the moment it clicked — this isn't autocomplete. It's a junior dev that doesn't need a standup.
 
+![Before vs After — how the workflow actually changed](/images/blog/before-after.svg)
+
 ## What I actually use it for now
 
 Here's my real workflow today:
@@ -39,6 +43,8 @@ Here's my real workflow today:
 - **"Debug why the LinkedIn OAuth is failing"** — it checks env vars, reads logs, finds trailing newlines in my secrets (this actually happened yesterday)
 
 The key shift: I stopped giving it instructions and started giving it **ownership**. Not "write a function that does X" but "own this feature — plan it, build it, test it."
+
+![How a prompt becomes working code](/images/blog/prompt-flow.svg)
 
 ## It gets weirder: multiple agents
 

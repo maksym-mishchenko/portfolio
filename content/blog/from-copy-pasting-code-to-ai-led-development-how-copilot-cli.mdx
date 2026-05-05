@@ -1,130 +1,63 @@
 ---
-title: "From Copy-Pasting Code to AI-Led Development: How Copilot CLI Changed Everything"
-date: "2026-05-04"
-description: "Discover how I transitioned from using ChatGPT to a multi-agent AI system running my engineering workflows."
-tags: ["AI tools", "software development", "GitHub Copilot", "developer productivity"]
+title: "From Copy-Pasting ChatGPT to AI That Runs My Workflow"
+date: "2026-05-05"
+description: "How I went from pasting errors into ChatGPT to having Copilot CLI fix tests, create PRs, and manage my projects."
+tags: ["copilot-cli", "ai-agents", "developer-workflow"]
 ---
 
-If you’ve ever found yourself stuck in a cycle of copying and pasting code snippets into ChatGPT, only to explain your entire codebase over and over again, you’ll understand the frustration I used to feel. It was an endless loop: paste the code, get a fix, paste the next error, rinse, repeat. Sure, it occasionally worked, but the mental exhaustion of constantly being the "translator" between my codebase and the AI was overwhelming.
+I used to paste code into ChatGPT like I was feeding a very slow, very forgetful colleague.
 
-That was my starting point. Today? My AI tools don’t just help me write code—they run my engineering workflows, assist in code reviews, manage tasks across tools, and even collaborate with each other like a team of specialized engineers. The leap from basic AI chatbots to a multi-agent system has been transformational.
+Copy the error. Paste it in. Explain what the project does. Get a suggestion. Try it. Get a new error. Paste that in too. Repeat until one of us gave up — usually me.
 
-Here’s how I got here.
+It worked, kind of. But every conversation started from zero. No memory, no context, no understanding of my actual codebase.
 
-## From Copy-Paste Hell to Pair Programming with Copilot Chat
+## Copilot Chat was better, but still not it
 
-When I first started using ChatGPT, I was impressed by its ability to debug code—but it had zero context of my project. Every interaction was like starting a conversation with someone who had no idea what you were working on. If you’ve ever tried explaining a complex codebase to someone unfamiliar with it, you’ll know how exhausting that can be.
+When I switched to Copilot Chat in VS Code, things improved. It could see my files. I stopped copy-pasting entire classes just to ask a question. But I was still the middleman — run tests in terminal, copy the output, paste it into chat, read the suggestion, apply it manually.
 
-Then came **Copilot Chat**. It was a significant improvement. Integrated directly into my IDE, it could "see" my codebase and provide more relevant suggestions. I didn’t have to copy-paste code as much, but I still felt like the middleman. For example, I’d run a test in my terminal, get an error, and then manually copy the output into the chat. It was better, but still not seamless.
+Better than ChatGPT? Yes. But I was still the glue.
 
-<Aside title="Why Context Matters">
-AI models like ChatGPT work best when they have the full context of your codebase. Without it, they can only make recommendations based on the small snippets you provide, which often leads to incomplete or conflicting suggestions.
-</Aside>
+## Then I tried Copilot CLI
 
-## The Moment Everything Clicked: Using Copilot CLI
-
-The real game-changer was **Copilot CLI**. It’s hard to overstate how much this shifted my workflow. The CLI doesn’t just answer questions or suggest code—it *acts* like a junior developer sitting at your machine. It reads your codebase, runs commands, edits files, and even creates pull requests.
-
-Let me share a moment that still feels a little unreal: I had a suite of tests failing, and instead of hunting through logs and debugging manually, I simply told Copilot CLI, "fix the failing tests." 
-
-Here’s what happened next:
-
-<FlowDiagram 
-  steps='[
-    {"label":"Step 1", "description":"Copilot CLI reads the test output."}, 
-    {"label":"Step 2", "description":"It identifies the underlying bug in a completely different file."}, 
-    {"label":"Step 3", "description":"It fixes the bug and updates the code."}, 
-    {"label":"Step 4", "description":"It re-runs the tests to confirm the fix worked."}
-  ]' 
-/>
-
-The kicker? I didn’t have to touch anything. Copilot CLI handled the entire process autonomously. That was the first time I thought, *this isn’t just a tool—it’s a team member.*
-
-Here’s an example of a simple command I might use:
+Copilot CLI was the shift. Instead of chatting about code, I started telling it to **do things**:
 
 ```bash
-copilot-cli fix-tests --rerun
+# actual command I ran last week
+copilot "fix the failing tests in wardrobeApi"
 ```
 
-And just like that, it analyzes the failing tests, traces the root cause, and fixes the issue. It even commits the changes if you configure it that way.
+It read the test output, found the broken assertions, edited the files, and ran the tests again. I watched it work. When it was done, everything passed.
 
-## Beyond the Basics: Augmenting Copilot CLI with Skills
+That was the moment it clicked — this isn't autocomplete. It's a junior dev that doesn't need a standup.
 
-While Copilot CLI blew me away, I quickly realized it was only one piece of the puzzle. The real magic started when I began building **Skills**. These are like plugins or domain-specific knowledge modules that give your AI deeper expertise in particular areas.
+## What I actually use it for now
 
-For example, I created a TDD (Test-Driven Development) Skill. This Skill enforces the red-green-refactor cycle by automatically generating failing tests, implementing the fix, and refactoring the code. It’s like having a mentor sit next to you, constantly reminding you to follow best practices.
+Here's my real workflow today:
 
-Here’s how you can define a basic TDD workflow Skill:
+- **"Add pagination to this endpoint"** — it reads the controller, adds query params, updates the service, writes tests
+- **"Create a PR for these changes"** — it writes the commit message, pushes, opens the PR on GitHub
+- **"Debug why the LinkedIn OAuth is failing"** — it checks env vars, reads logs, finds trailing newlines in my secrets (this actually happened yesterday)
 
-```json
-{
-  "name": "TDD Workflow",
-  "triggers": ["write-tests", "refactor-code"],
-  "actions": [
-    "generate-failing-test",
-    "implement-solution",
-    "run-tests",
-    "refactor"
-  ]
-}
-```
+The key shift: I stopped giving it instructions and started giving it **ownership**. Not "write a function that does X" but "own this feature — plan it, build it, test it."
 
-Another Skill I built was a **C# Expert** that specializes in catching .NET-specific patterns. For instance, it flagged a subtle issue in my LINQ query that would have led to an N+1 query problem. This saved me hours of debugging down the line.
+## It gets weirder: multiple agents
 
-<Aside title="Why Skills Are Powerful">
-Skills allow you to encode domain-specific knowledge into your AI workflows, making them smarter and more context-aware. Think of Skills as the "experience" your AI gains to handle specialized tasks better.
-</Aside>
+Right now I have three AI agents working together:
 
-## Multi-Agent Systems: Building an AI Engineering Team
+- **Copilot CLI** — senior dev, handles complex coding and PRs
+- **OpenClaw** (on my Azure VM) — project manager, routes tasks, runs automation
+- **OpenCode** — autonomous coder I can dispatch from Telegram
 
-As I got more comfortable with Copilot CLI and Skills, I started wondering: What if my AI tools could collaborate like a real engineering team? That’s when I ventured into building a **multi-agent system**.
+When I describe a feature in Telegram, OpenClaw breaks it into tasks and dispatches them. Copilot CLI reviews the output. I mostly just approve PRs.
 
-Here’s how it works today:
+Is it perfect? No. Sometimes agents step on each other's work. Sometimes the wrong model gets a task it's not good at. But the friction is 10x lower than doing everything manually.
 
-1. **Copilot CLI** acts as the senior developer. It handles coding tasks, runs tests, and creates pull requests.
-2. **OpenClaw on Azure** plays the role of an engineering manager, prioritizing tasks, assigning work, and ensuring quality.
-3. **OpenCode** is my autonomous coder, built to handle small, isolated tasks. I can even dispatch it directly from Telegram.
+## The actual takeaway
 
-These agents don’t just work in isolation—they communicate with each other. For example, if I describe a feature on Telegram, OpenClaw breaks it into tasks, assigns the coding to OpenCode, and relies on Copilot CLI for reviews and testing. 
+You don't need a multi-agent system to benefit from this. Start here:
 
-Here’s a high-level view of how these agents collaborate:
+1. **Stop copy-pasting into ChatGPT.** Use a tool with codebase context.
+2. **Give your AI tasks, not questions.** "Fix this" > "What's wrong with this?"
+3. **Let it run commands.** The biggest unlock is when AI can actually execute, not just suggest.
 
-<FlowDiagram 
-  steps='[
-    {"label":"Step 1", "description":"Describe a feature in Telegram."}, 
-    {"label":"Step 2", "description":"OpenClaw breaks it into tasks and assigns them."}, 
-    {"label":"Step 3", "description":"OpenCode implements the tasks, while Copilot CLI reviews and tests."}, 
-    {"label":"Step 4", "description":"The system deploys the feature autonomously."}
-  ]' 
-/>
-
-The results? A massive reduction in friction across my workflows. I no longer spend hours bouncing between tools or acting as the glue between processes. The agents handle it all.
-
-## The Future: Standardizing Agent Communication with ACP
-
-As I built out my multi-agent system, I hit one major roadblock: getting the agents to communicate effectively. Every connection between tools felt like a bespoke integration, full of duct tape and fragile assumptions.
-
-That’s where **Agent Communication Protocol (ACP)** comes in. It’s a standard protocol that allows agents to discover each other’s capabilities and communicate seamlessly. In many ways, ACP feels like what HTTP was for the web—a foundation for interoperability.
-
-<EmbeddingSpace 
-  words='[
-    {"label":"Copilot CLI", "x":120, "y":180}, 
-    {"label":"OpenClaw", "x":160, "y":240}, 
-    {"label":"OpenCode", "x":200, "y":300}
-  ]' 
-  connections='[["Copilot CLI","OpenClaw"],["OpenClaw","OpenCode"]]' 
-/>
-
-Without a standard like ACP, every new integration would require custom plumbing. With it, I can plug in new agents and tools with minimal effort, allowing the system to grow organically.
-
-## The Mindset Shift: From Instructions to Ownership
-
-Here’s the most important lesson I’ve learned through this journey: **stop giving your AI tools instructions—give them ownership.**
-
-When I was using ChatGPT, I’d say, "Write me a function to do X." With Copilot CLI, I started saying, "Own this feature end to end—plan it, implement it, test it, deploy it." That mindset shift was pivotal. My role is no longer to micromanage the AI but to define the high-level goals and let it figure out the details.
-
-Today, my AI-powered engineering team isn’t just writing code—it’s running my projects, end to end. It’s a new way of thinking about software development, and I can’t wait to see where it goes next.
-
-<Aside title="What’s Next?">
-Imagine a world where AI agents not only run your engineering workflows but also handle product roadmaps, customer support, and even hiring. We’re not there yet, but the building blocks—like ACP—are already here.
-</Aside>
+The gap between "AI that gives advice" and "AI that does the work" is where all the value is.

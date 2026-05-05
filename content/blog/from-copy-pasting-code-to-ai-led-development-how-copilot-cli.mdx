@@ -42,10 +42,8 @@ Here's my real workflow today:
 
 - "Add pagination to this endpoint" — it reads the controller, adds query params, updates the service, writes tests
 - "Create a PR for these changes" — writes the commit message, pushes, opens the PR on GitHub
-- "Debug why the LinkedIn OAuth is failing" — checks env vars, reads logs, finds the issue
 - "Refactor this service to use dependency injection" — plans the change, moves code, verifies nothing breaks
-
-That last one about LinkedIn? It found a trailing newline in my `.env` secrets. Took it 30 seconds. Would've taken me an hour of staring at OAuth docs.
+- "Scaffold a new API endpoint with tests" — creates the controller, service, DTO, and integration test in one shot
 
 I stopped giving it instructions and started giving it ownership. Not "write a function that does X" but "own this feature, plan it, build it, test it."
 
@@ -63,13 +61,21 @@ When I describe a feature in Telegram, OpenClaw breaks it into tasks and dispatc
 
 Is it perfect? No. Sometimes agents step on each other's work. Last week OpenCode and Copilot CLI both tried to edit the same file on the same branch. Had to manually resolve that. But even with the occasional mess, the friction is way lower than doing everything myself.
 
-## The actual takeaway
+## The moment it really clicked
 
-You don't need a multi-agent system to benefit from this. Honestly, start small:
+Last week a colleague told me he'd been struggling to find a cheap frontend dev for his side project. Inventory management app — he had the backend done but couldn't find anyone to build the UI without burning weeks on back-and-forth.
 
-1. Stop copy-pasting into ChatGPT. Use something with codebase context.
-2. Give your AI tasks, not questions. "Fix this" beats "What's wrong with this?" every time.
-3. Let it run commands. The real difference is between AI that suggests and AI that executes.
-4. Accept imperfect results. You'll still review and fix things. But you'll fix 10% instead of writing 100%.
+I said — hold on. We recorded a 10-minute conversation describing what his UI should look like. Ran it through WhisperFlow and my agent setup. Got back a working React app: inventory management, session-prefilled database, payment stubs, clean layout. Ten minutes of talking. Zero Figma. Zero freelancer negotiations.
 
-The gap between "AI that gives advice" and "AI that does the work" is where I've gotten all the time back.
+That's when it hit me — I'm not using AI to code faster. I'm covering the gaps I'm still yet to learn about. The frontend dev, the project manager scoping work, the designer mocking screens. Not because those roles aren't valuable. Because for a side project, the friction of coordination was the actual bottleneck — not the code itself.
+
+## What this means practically
+
+You don't need a multi-agent system to start. But you do need to shift how you think about AI:
+
+- Stop asking AI "what's wrong with this?" Start saying "fix this."
+- Stop describing your codebase to it. Use tools that already see your files.
+- Stop reviewing AI suggestions and applying them manually. Let it run commands, commit code, open PRs.
+- Accept 90% quality on the first pass. You fix 10% instead of writing 100%.
+
+The uncomfortable truth: the hard part of this transition isn't learning new tools. It's accepting that the way you've been working — carefully, manually, in full control — was the bottleneck all along.

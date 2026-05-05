@@ -34,6 +34,7 @@ const COLORS = {
   borderLight: "#334155",
 };
 
+
 // Load fonts
 const fontRegular = readFileSync(FONT_PATH);
 const fontBold = readFileSync(FONT_BOLD_PATH);

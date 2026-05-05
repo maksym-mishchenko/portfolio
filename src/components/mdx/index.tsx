@@ -1,5 +1,6 @@
 import type { MDXComponents } from "mdx/types";
 import { Code } from "./Code";
+import { ImageZoom } from "./ImageZoom";
 import { Tokenizer } from "./interactive/Tokenizer";
 import { FlowDiagram } from "./interactive/FlowDiagram";
 import { Aside } from "./interactive/Aside";
@@ -95,13 +96,5 @@ export const mdxComponents: MDXComponents = {
   Quiz,
   CompareTable,
   Timeline,
-  img: ({ src, alt }) => (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      src={src}
-      alt={alt ?? ""}
-      className="rounded-xl border border-border my-6 max-w-full"
-      loading="lazy"
-    />
-  ),
+  img: ({ src, alt }) => <ImageZoom src={src} alt={alt} />,
 };

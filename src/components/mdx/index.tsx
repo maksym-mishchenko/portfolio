@@ -69,16 +69,16 @@ export const mdxComponents: MDXComponents = {
     </a>
   ),
   ul: ({ children }) => (
-    <ul className="list-disc list-inside mb-4 space-y-1 text-muted">
+    <ul className="list-disc pl-6 mb-4 space-y-2 text-muted">
       {children}
     </ul>
   ),
   ol: ({ children }) => (
-    <ol className="list-decimal list-inside mb-4 space-y-1 text-muted">
+    <ol className="list-decimal pl-6 mb-4 space-y-2 text-muted">
       {children}
     </ol>
   ),
-  li: ({ children }) => <li className="leading-relaxed">{children}</li>,
+  li: ({ children }) => <li className="leading-relaxed pl-1">{children}</li>,
   blockquote: ({ children }) => (
     <blockquote className="border-l-4 border-accent pl-4 my-4 italic text-muted">
       {children}

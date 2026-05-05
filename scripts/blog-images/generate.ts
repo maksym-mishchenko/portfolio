@@ -36,7 +36,7 @@ const fontBold = readFileSync(FONT_BOLD_PATH);
 // Load avatar as base64 PNG (convert from webp)
 async function getAvatarBase64(): Promise<string> {
   const pngBuffer = await sharp(AVATAR_PATH)
-    .resize(48, 48)
+    .resize(128, 128)
     .png()
     .toBuffer();
   return `data:image/png;base64,${pngBuffer.toString("base64")}`;

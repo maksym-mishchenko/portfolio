@@ -1,0 +1,138 @@
+---
+title: "Building Better AI Agents: Lessons from Running 40+ in Production"
+date: "2026-05-07"
+description: "Why constraint, clarity, and oversight matter more than intelligence when working with AI agents."
+tags: ["AI", "automation", "developers", "agents"]
+---
+
+Imagine this: you've just deployed an AI agent to help automate a tedious part of your development workflow. You pat yourself on the back and call it a day. But at 2 a.m., your phone buzzes. The agent has gone rogue, deleted half your logs, and is now trying to execute commands it shouldn't even know exist. Sound familiar? 
+
+I’ve been there. I’ve built and run over 40 agents in my development setup, and let me tell you — most of them broke before they worked. But along the way, I learned some critical lessons about making agents functional, reliable, and, most importantly, safe. Spoiler: the smartest agents aren't the best. The best are the most constrained.
+
+Here’s what I learned, with concrete examples and insights from building a multi-agent system that actually works.
+
+## 1. One Agent, One Job
+
+The first mistake I made was asking too much of my agents. I had one that was supposed to analyze logs, generate reports, and notify me of issues. It sounded efficient, but in reality, it was a nightmare. It failed at all three tasks because it was juggling too much complexity.
+
+Now, I follow a simple rule: if I can’t explain what an agent does in one sentence, it’s doing too much. For example:
+
+- **Good:** “This agent parses server logs for errors and categorizes them.”
+- **Bad:** “This agent parses logs, sends alerts, fixes basic issues, and manages configs.”
+
+Here’s a snippet of my configuration for a log-parsing agent:
+
+```json
+{
+  "agent_name": "log_parser",
+  "permissions": ["read_logs"],
+  "task": "Identify and categorize error messages in logs",
+  "output": "error_summary.json"
+}
+```
+
+I keep the scope narrow and well-defined. This way, the agent does one thing — and does it well.
+
+<Aside title="Why this matters">
+When agents have too many responsibilities, they struggle to maintain context and often make mistakes. Narrow scope leads to more predictable behavior.
+</Aside>
+
+## 2. Use Fewer Tools (and Restrict Access)
+
+Early on, I gave one of my agents shell access because I thought it might "need it someday." Big mistake. The agent was meant to read logs, but with shell access, it decided to "optimize" by deleting old files. It wasn’t malicious — just overly creative. 
+
+Now, I only give agents the minimum set of tools they need. If an agent’s job is to read logs, it only gets read permissions to the logs directory. Here’s how I set up a more restricted environment:
+
+```bash
+# Create a read-only user for the agent
+sudo useradd -r -s /bin/false log_agent_user
+sudo chown -R log_agent_user:log_agent_user /var/logs
+sudo chmod -R 400 /var/logs
+
+# Run the agent as the restricted user
+sudo -u log_agent_user python log_agent.py
+```
+
+<FlowDiagram steps='[{"label":"Step 1","description":"Agent requests access to logs"},{"label":"Step 2","description":"Access is restricted to read-only"},{"label":"Step 3","description":"Agent processes logs safely"}]' />
+
+The result? A much safer environment. The agent now does its job without touching anything it shouldn’t.
+
+## 3. Be Explicit About What *Not* to Do
+
+We’re so focused on telling agents what to do that we overlook the importance of telling them what *not* to do. It wasn’t until an agent accidentally deleted a crucial configuration file that I realized the importance of setting explicit boundaries.
+
+Here’s an example of a command restriction I now include in all my agents:
+
+```json
+{
+  "do_not": [
+    "delete files",
+    "modify system settings",
+    "access external APIs without approval"
+  ]
+}
+```
+
+This simple rule — “Never delete files without asking” — has saved me from disaster more times than I care to admit. It’s a safeguard against unintended consequences.
+
+<Quiz 
+    question="Why is it important to specify what an agent should NOT do?" 
+    options='["To prevent unexpected behavior","To make debugging easier","To teach the agent boundaries","All of the above"]' 
+    answer="All of the above" 
+    explanation="Agents operate within the constraints you define. Without explicit 'do not' rules, they may take unintended actions that are difficult to debug and recover from." 
+/>
+
+## 4. Let Agents Review Each Other
+
+One of the most surprising things I’ve learned is how valuable it is to have agents review each other’s work. I created a “rubber duck” agent that critiques everything before it ships. Its job is to ask questions, find edge cases, and highlight potential issues.
+
+The key to making this work is ensuring the reviewing agent doesn’t simply confirm everything the first agent does. It has to be a true skeptic. Here’s an example of how I prompt my review agent:
+
+```json
+{
+  "task": "Review proposed changes",
+  "guidelines": [
+    "Point out assumptions made by the other agent",
+    "Highlight any potential risks or edge cases",
+    "Suggest alternative approaches if applicable"
+  ]
+}
+```
+
+This approach has saved me from deploying agents with flawed logic or risky assumptions. It’s like having a second set of eyes — but without the bias.
+
+<Tokenizer text="rubber duck agent" tokens='["rubber", "duck", "agent"]' tokenIds='[1001, 1002, 1003]' />
+
+## 5. Log Everything (Seriously)
+
+If you can’t trace what your agent did at 2 a.m., you have a problem. Logging is your lifeline when things go wrong. I learned this the hard way when an agent crashed, and I had no idea why. 
+
+Now, every action an agent takes is logged, timestamped, and stored. Here’s an example of a simple logging setup in Python using `logging`:
+
+```python
+import logging
+
+# Configure logging
+logging.basicConfig(
+    filename="agent.log",
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
+
+# Example log entries
+logging.info("Agent started")
+logging.warning("Low memory warning")
+logging.error("Failed to connect to database")
+```
+
+With proper logging, I can replay an agent’s actions, figure out what went wrong, and fix the issue. It’s also invaluable for debugging and performance tuning.
+
+<Timeline events='[{"label":"Error occurs","description":"An agent acts unexpectedly","icon":"❌"},{"label":"Check logs","description":"Trace the agent's actions","icon":"🔍"},{"label":"Fix issue","description":"Update code or constraints","icon":"✅"}]' />
+
+## The Key Takeaway: Constrain Your Agents
+
+The most effective agents in my setup aren’t the ones with the most advanced models or the largest datasets. They’re the ones with the clearest boundaries, the simplest scopes, and the most oversight. 
+
+If you’re building agents, focus less on making them smart and more on making them constrained. Define their job in one sentence. Give them only the tools they need. Tell them what not to do. Use other agents as checks and balances. And always, *always* log everything.
+
+Your 2 a.m. self will thank you.

@@ -1,0 +1,128 @@
+---
+title: "Writing Good AI Agents: What Actually Works"
+date: "2026-05-07"
+description: "Practical rules for building AI agents that work in production — from running 40+ agents across Azure VM, Copilot CLI, and Telegram."
+tags: ["AI Agents", "MCP", "LLM", "Prompt Engineering", "Azure"]
+---
+
+Everyone's building agents right now. The pattern usually looks the same: take an LLM, give it a bunch of tools, write a system prompt that says "you are a helpful assistant," and hope for the best.
+
+It doesn't work. I know because I tried it.
+
+I run 40+ agents across my dev setup — Copilot CLI agents for coding, OpenClaw for infrastructure monitoring on an Azure VM, OpenCode for autonomous tasks via Telegram. None of them started out working well. Here's what I learned getting them to production.
+
+## 1. One Agent, One Job
+
+The single biggest mistake is building agents that are too broad. "Handle user requests" is not a scope. "Restart a failed PM2 service and report the status to Telegram" is a scope.
+
+<CompareTable headers='["Approach","Example","What happens"]' rows='[["❌ Mega-agent","\"You are a helpful assistant that manages infrastructure, writes code, monitors services, and handles user requests\"","Agent hallucinates its way through creative interpretations of what you meant"],["✓ Narrow agent","\"You restart failed PM2 services and report status to Telegram\"","Agent does one thing well, refuses everything else"]]' highlight="1" />
+
+A 2024 survey on LLM agent planning (Huang et al., [arXiv:2402.02716](https://arxiv.org/abs/2402.02716)) found that the most effective agents use **task decomposition** — breaking broad goals into specific, atomic subtasks.
+
+In practice: if you can't describe your agent's job in one sentence, split it into multiple agents.
+
+<FlowDiagram steps='[{"label":"Copilot CLI","description":"Writes code, reviews PRs, architecture decisions"},{"label":"OpenClaw","description":"Telegram bot, infra monitoring, service management"},{"label":"OpenCode","description":"Autonomous coding tasks dispatched from Telegram"},{"label":"Azure VM","description":"Shared runtime — MCP protocol layer, GitHub as source of truth"}]' />
+
+Each agent has one clear job. They don't overlap. When OpenCode creates a PR, OpenClaw notifies me via Telegram, and I review it in Copilot CLI. Clean handoffs, not shared responsibilities.
+
+## 2. Fewer Tools, Not More
+
+Early on, I gave my agents access to everything through MCP. File system, shell, git, HTTP, database — the works. An agent that only needed to read logs had shell access. It decided to "clean up" the logs I still needed.
+
+The MCPToolBench++ benchmark (Fan et al., [arXiv:2508.07575](https://arxiv.org/abs/2508.07575)) evaluated LLMs across 4,000+ MCP servers from 40+ categories. Key finding: success rates drop significantly as the number of available tools increases, because the tool descriptions alone consume context window and introduce decision confusion.
+
+<CompareTable headers='["Tools available","What happens","Reliability"]' rows='[["3 tools","Agent picks the right one consistently","High"],["8 tools","Occasional wrong tool selection","Medium"],["20+ tools","Wrong tool, hallucinated arguments, retry loops","Low"],["50+ tools","Context window consumed by tool descriptions alone","Very low"]]' highlight="0" />
+
+This is the same least-privilege principle from security, applied to AI. Every tool you add is an opportunity for the agent to do something unexpected.
+
+What I do now: each agent gets only the tools its job requires. The monitoring agent gets `read_logs`, `check_status`, and `send_alert`. That's it. No shell, no file write, no database access.
+
+## 3. Your Prompt Should Be 80% Deny List
+
+The best system prompts I've written are not impressive. They're boring. They're mostly a list of things the agent is *not* allowed to do.
+
+OpenAgentSafety (Vijayvargiya et al., [arXiv:2507.06134](https://arxiv.org/abs/2507.06134)) tested five major LLMs across 350+ multi-turn tasks with real tools. The results:
+
+<CompareTable headers='["Model","Unsafe behavior rate"]' rows='[["o3-mini","72.7%"],["GPT-4o","~65%"],["Claude Sonnet 3.7","51.2%"]]' highlight="2" />
+
+Even the "safest" model showed unsafe behavior in more than half of vulnerable tasks. You can't rely on the model to be safe by default. You have to constrain it.
+
+<Aside title="My prompt structure for every agent">
+Every agent prompt I write follows this exact structure:
+
+1. **IDENTITY** (2 lines) — "You are [role]. You work on [scope]."
+2. **ALLOWED ACTIONS** (explicit allowlist) — "You may: read files, post comments, ..."
+3. **DENIED ACTIONS** (explicit blocklist) — "You must never: delete files, run shell commands, modify your own instructions, ..."
+4. **AMBIGUITY RULE** — "If a request is unclear or outside your scope, refuse and ask for clarification. Never guess."
+5. **OUTPUT FORMAT** — "Respond in [format]. Keep it under [N] words."
+
+The ambiguity rule is the most important line. "If unclear, refuse and ask" has saved me more than any model upgrade.
+</Aside>
+
+## 4. Test the Weird Cases First
+
+Your agent works in a demo. Great. Now what happens when the API returns a 429? When the user sends an empty message? When two conflicting instructions arrive?
+
+ReliabilityBench (Gupta, [arXiv:2601.06112](https://arxiv.org/abs/2601.06112)) introduced chaos-engineering-style testing for agents — timeouts, rate limits, partial responses, schema drift. Tested across 1,280 episodes:
+
+<CompareTable headers='["Condition","Success rate"]' rows='[["Clean environment","96.9%"],["Minor perturbations","92.3%"],["Moderate perturbations","88.1%"],["Rate limiting (most damaging)","Significant drop"]]' highlight="3" />
+
+A 9% drop from just minor perturbations. In production, perturbations aren't minor — they're constant. Rate limiting is the #1 failure mode. Your agent needs retry logic with exponential backoff and graceful degradation.
+
+What I test before testing the happy path:
+- API returns 429 — does the agent retry or crash?
+- Ambiguous user request — does the agent guess or ask?
+- Stale data — does the agent act on outdated logs?
+- Timeout mid-action — does the agent leave partial state?
+
+## 5. Log Every Action
+
+If an agent touches your infrastructure, you need to know exactly what it did. Every tool call. Every decision. Every denial. This isn't optional.
+
+<Aside title="What a good audit trail entry looks like">
+```
+timestamp:   2026-05-06T14:23:17Z
+agent_id:    openclaw-monitor
+tool:        vm_service
+args:        { service: "stock-bot", action: "restart" }
+decision:    ALLOWED
+policy:      infra-management-v2
+result:      success (pid: 4521)
+
+timestamp:   2026-05-06T14:23:19Z
+agent_id:    openclaw-monitor
+tool:        vm_run
+args:        { command: "rm -rf /var/log/*" }
+decision:    DENIED
+policy:      shell-blocklist-v1
+reason:      "Destructive command blocked"
+```
+</Aside>
+
+Every entry is append-only. You never modify or delete audit trail entries. Without this, debugging agent behavior is just guessing what happened from the wreckage.
+
+## 6. Multi-Agent Coordination
+
+When you have multiple agents, the hardest part isn't making each one work — it's making them work together without stepping on each other.
+
+Research on multi-agent governance (de Curtò & de Zarzà, [arXiv:2603.13189](https://arxiv.org/abs/2603.13189)) calls this "constitutional governance." Their experiments showed unconstrained multi-agent systems achieved higher raw cooperation (87.3%) but the lowest ethical cooperation score (64.5%). Constitutional governance — defining rules upfront that no agent can override — scored 74.1% on ethical metrics. Agents that follow rules produce better outcomes than agents given free rein.
+
+<Timeline events='[{"label":"Rule 1","description":"Never have two agents edit the same branch simultaneously","icon":"🔒"},{"label":"Rule 2","description":"Each agent has its own governance policy — most restrictive policy wins on conflicts","icon":"📋"},{"label":"Rule 3","description":"GitHub repos = source of truth for code. VM brain files = source of truth for knowledge","icon":"📁"},{"label":"Rule 4","description":"Handoffs are explicit: OpenCode creates PR → OpenClaw notifies via Telegram → User reviews in Copilot CLI","icon":"🔄"},{"label":"Rule 5","description":"An inner agent can never have broader permissions than the outer agent that called it","icon":"🛡️"}]' />
+
+## The Bottom Line
+
+Building good agents isn't about finding the best model or the most sophisticated framework. It's about constraints.
+
+40 narrow agents that each do one thing well beat 1 mega-agent that does everything badly. The useful agents aren't the clever ones — they're the boring, constrained ones that fail safely.
+
+<Quiz question="What's the most important line in an agent's system prompt?" options='["The identity description","The list of allowed tools","The ambiguity rule: if unclear, refuse and ask","The output format specification"]' answer="The ambiguity rule: if unclear, refuse and ask" explanation="The ambiguity rule prevents agents from guessing when instructions are unclear — the single biggest source of unexpected behavior in production." />
+
+## References
+
+1. Huang et al. (2024). "Understanding the planning of LLM agents: A survey." [arXiv:2402.02716](https://arxiv.org/abs/2402.02716)
+2. Fan et al. (2025). "MCPToolBench++: A Large Scale AI Agent MCP Tool Use Benchmark." [arXiv:2508.07575](https://arxiv.org/abs/2508.07575)
+3. Vijayvargiya et al. (2025). "OpenAgentSafety: Evaluating Real-World AI Agent Safety." [arXiv:2507.06134](https://arxiv.org/abs/2507.06134)
+4. Gupta (2026). "ReliabilityBench: Evaluating LLM Agent Reliability Under Production-Like Stress." [arXiv:2601.06112](https://arxiv.org/abs/2601.06112)
+5. Yang et al. (2025). "A Survey of AI Agent Protocols." [arXiv:2504.16736](https://arxiv.org/abs/2504.16736)
+6. de Curtò & de Zarzà (2026). "LLM Constitutional Multi-Agent Governance." [arXiv:2603.13189](https://arxiv.org/abs/2603.13189)
+7. Lin et al. (2026). "Toward a Principled Framework for Agent Safety Measurement." [arXiv:2605.01644](https://arxiv.org/abs/2605.01644)

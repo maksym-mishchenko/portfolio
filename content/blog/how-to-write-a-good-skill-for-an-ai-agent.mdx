@@ -50,7 +50,7 @@ An LLM does none of that reliably.
     ["Handles multi-step flows", "Composes calls in order", "Skips steps, forgets IDs, hallucinates params"],
     ["Reads error messages", "As debugging info", "As literal instructions to follow"],
     ["Retries on failure", "With backoff and reasoning", "Immediately, same params, same result"],
-    ["Knows what it doesn'\''t know", "Usually", "Almost never"]
+    ["Knows what it doesn'''t know", "Usually", "Almost never"]
   ]`}
   highlight="2"
 />
@@ -106,7 +106,7 @@ update_user_preference_by_email(email, key, value)
 
 <FlowDiagram
   steps={`[
-    {"label": "Agent receives task", "description": "\"Update dark mode for user@example.com\""},
+    {"label": "Agent receives task", "description": "Update dark mode for user@example.com"},
     {"label": "Bad: multi-step", "description": "get_user_id → hold ID in memory → get_prefs → update → verify. Agent drops context between steps."},
     {"label": "Good: single tool", "description": "update_user_preference_by_email(email, key, val). Done."},
     {"label": "Confirmation returned", "description": "Tool returns what changed. Agent reports back."}

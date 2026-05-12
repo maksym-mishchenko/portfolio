@@ -1,0 +1,272 @@
+---
+title: "How to Write a Good Skill for an AI Agent"
+date: "2026-05-12"
+description: "Skills are the difference between an agent that actually works and one that confidently does the wrong thing. Here's what I learned building 50+ of them."
+tags: ["AI Agents", "MCP", "developer tools", "LLM", "automation"]
+---
+
+Last year I gave one of my agents a "deploy" skill. Vague instructions, broad scope, optimistic vibes. It deployed alright. The wrong branch. To production. At 11pm.
+
+That's when I stopped thinking about skills as prompts I write once and forget, and started treating them like contracts. Precise ones. With error handling.
+
+I've built over 50 skills for Hermes, my personal AI agent running 24/7 on an Azure VM. Most of the early ones were embarrassingly bad — not because the agent was dumb, but because I was writing for the wrong reader. I was writing for myself. The agent needed something different.
+
+Here's what actually works.
+
+---
+
+## First, let's get the naming sorted
+
+The ecosystem has a naming problem. Tools. Skills. Plugins. Actions. MCP servers. Everyone means roughly the same thing and calls it something different.
+
+<CompareTable
+  headers='["Term", "Framework", "What it actually is"]'
+  rows='[
+    ["Tool", "LangChain, CrewAI, smolagents", "A function the LLM can call by name"],
+    ["Skill", "Hermes, Semantic Kernel", "Markdown instructions + optional scripts the agent loads on demand"],
+    ["Plugin", "Semantic Kernel, ChatGPT", "A tool bundled with a manifest"],
+    ["MCP Server", "Anthropic MCP, Claude", "A process that exposes tools over a standard protocol"],
+    ["Action", "Composio, Arcade", "A pre-built tool with auth already handled"]
+  ]'
+  highlight="2"
+/>
+
+The implementation differs. The design problems don't. Whether you're writing a LangChain tool, an MCP server, or a SKILL.md file — the same mistakes will sink you.
+
+---
+
+## The thing nobody tells you about LLMs as callers
+
+We've spent years learning how to design good APIs. Small functions. Composable. One responsibility each. Callers chain them together.
+
+That works when the caller is a developer. A developer reads your docs. Knows the data model. Handles errors like an adult.
+
+An LLM does none of that reliably.
+
+<CompareTable
+  headers='["Assumption", "Human developer", "LLM caller"]'
+  rows='[
+    ["Knows the data model", "Yes — reads docs first", "No — guesses from the parameter name"],
+    ["Handles multi-step flows", "Composes calls in order", "Skips steps, forgets IDs, hallucinates params"],
+    ["Reads error messages", "As debugging info", "As literal instructions to follow"],
+    ["Retries on failure", "With backoff and reasoning", "Immediately, same params, same result"],
+    ["Knows what it doesn'\''t know", "Usually", "Almost never"]
+  ]'
+  highlight="2"
+/>
+
+That last one is what gets you. The agent isn't a more demanding client. It's an honest one — it follows your spec exactly and can't compensate for the parts you left vague. Every gap in your description is a decision point the agent will handle wrong.
+
+---
+
+## What the ecosystem looks like right now
+
+Before getting into how to write skills, it's worth knowing where things stand. The tool-use world has moved fast.
+
+<Timeline
+  events='[
+    {"label": "2023 — Function calling lands", "description": "OpenAI ships function calling. Agents can finally take real actions. Everyone wraps their APIs in a weekend.", "icon": "⚡"},
+    {"label": "Nov 2024 — MCP launches", "description": "Anthropic publishes the Model Context Protocol. ~210 servers at launch. Most people ignore it.", "icon": "📡"},
+    {"label": "Mar 2025 — OpenAI adopts MCP", "description": "OpenAI adds MCP support. Monthly downloads jump from 5M to 22M overnight. Now everyone pays attention.", "icon": "🚀"},
+    {"label": "Q2 2025 — Protocol war over", "description": "ChatGPT ships MCP. Cursor, Windsurf, Zed all add support in the same quarter.", "icon": "🏆"},
+    {"label": "Q1 2026 — 9,400+ servers", "description": "92% of new agent frameworks ship MCP support by default. 78% of enterprise AI teams have it in production.", "icon": "🌐"}
+  ]'
+/>
+
+MCP won. Not because it's technically better — it's actually ~10% slower than native function calling. It won because writing one MCP server takes 4 hours instead of 18. Boring wins.
+
+Repos worth bookmarking:
+
+- **[modelcontextprotocol/servers](https://github.com/modelcontextprotocol/servers)** (⭐ 60k) — Anthropic's reference implementations. Start here if you're building MCP tools.
+- **[ComposioHQ/composio](https://github.com/ComposioHQ/composio)** (⭐ 25k) — 1,000+ pre-built integrations with OAuth already handled. If your tool needs auth, Composio probably does it already.
+- **[e2b-dev/e2b](https://github.com/e2b-dev/e2b)** (⭐ 17k) — sandboxed code execution for agents. If your tool runs code, use this. Don't let agents run arbitrary code in your real environment.
+- **[huggingface/smolagents](https://github.com/huggingface/smolagents)** (⭐ 15k) — the most interesting take: tools are just Python functions, no JSON schema required. Worth reading even if you never use it.
+
+---
+
+## Five things that actually make a skill work
+
+### 1. Flatten the call chain
+
+The most common mistake I made early on: building composable micro-tools because that's what good software looks like.
+
+```python
+# Feels clean. Breaks constantly.
+get_user_id(email)          # → "user_abc123"
+get_user_prefs(user_id)     # → {theme: "dark"}
+update_pref(user_id, key, value)
+```
+
+The agent calls `get_user_id`, gets an ID back — then forgets it by the time it calls `update_pref`. Or it hallucinates an ID that looks plausible. Or it skips the middle call entirely because the goal already felt achieved.
+
+```python
+# One call. No forgetting.
+update_user_preference_by_email(email, key, value)
+```
+
+<FlowDiagram
+  steps='[
+    {"label": "Agent receives task", "description": "\"Update dark mode for user@example.com\""},
+    {"label": "Bad: multi-step", "description": "get_user_id → hold ID in memory → get_prefs → update → verify. Agent drops context between steps."},
+    {"label": "Good: single tool", "description": "update_user_preference_by_email(email, key, val). Done."},
+    {"label": "Confirmation returned", "description": "Tool returns what changed. Agent reports back."}
+  ]'
+  speed="0.8"
+/>
+
+Every step you add is a chance for the agent to go off-script. Fewer steps, fewer chances.
+
+### 2. Make errors tell the agent what to do next
+
+```json
+// Useless
+{"error": "invalid_request", "status": 400}
+
+// Actually helpful
+{
+  "error": "date_range_invalid",
+  "detail": "start_date must be before end_date",
+  "received": {"start": "2026-06-01", "end": "2026-05-01"},
+  "recovery": "swap the two dates and retry"
+}
+```
+
+Agents read error messages as instructions. Literally. If your error says "invalid request," the agent will either retry with identical params or invent a creative fix. Give it the actual path forward instead.
+
+### 3. Name parameters like you're writing for someone who can't Google anything
+
+The agent has no schema to look up. It infers what to pass from the parameter name alone. `user_id` looks like a UUID — the agent doesn't have one. `user_email_address` looks like something it already knows.
+
+<CompareTable
+  headers='["Bad name", "Good name", "Why"]'
+  rows='[
+    ["user_id", "user_email_address", "Agent has the email. It never has the UUID."],
+    ["store_id", "store_location_name", "\"downtown branch\" works. \"550e8400-...\" never will."],
+    ["msg", "message_body_plain_text", "Removes any ambiguity about format"],
+    ["ts", "event_timestamp_iso8601", "Agent knows ISO 8601. Not your epoch."],
+    ["type", "notification_channel", "\"email\" or \"sms\" is obvious. \"type: 2\" is not."]
+  ]'
+  highlight="1"
+/>
+
+### 4. Write descriptions that answer four questions
+
+The description is what the agent reads when deciding whether to call your tool. It needs to cover:
+
+- What does this do?
+- *When* should I call it — not just what, but when?
+- What comes back?
+- What are the failure cases?
+
+```yaml
+# Answers nothing useful
+description: "Sends a notification to a user"
+
+# Answers all four
+description: >
+  Send a notification to a specific user by email address.
+  Use this when a task requires alerting a user about a change or completed action.
+  Returns {success: true, delivered_at: ISO8601} on success.
+  Fails with 'user_not_found' if the email doesn't exist — if that happens,
+  call list_users() first to confirm the address before retrying.
+```
+
+The "when should I call it" part is the one people skip. It's the most important part.
+
+### 5. Make mutations idempotent — agents retry constantly
+
+WildToolBench (a 2026 benchmark across 57 models) found 15–30% of all tool calls are retries. If your tool creates a record on every call, you'll end up with duplicates. Every time.
+
+```python
+def send_email(to: str, subject: str, body: str, idempotency_key: str = None):
+    key = idempotency_key or hashlib.sha256(f"{to}{subject}".encode()).hexdigest()
+    if cache.get(key):
+        return {"status": "already_sent", "skipped": True}
+    # ... actually send it
+    cache.set(key, True, ttl=86400)
+```
+
+Hash the inputs. Cache the result. Skip on duplicate. Three lines that save a lot of cleanup.
+
+---
+
+## How I actually write skills for Hermes
+
+My setup uses Markdown files. Each `SKILL.md` has a frontmatter block, plain-English numbered steps, and a `## Pitfalls` section. The agent loads it on demand — only when the description matches the task at hand.
+
+```yaml
+---
+name: deploy-service
+description: "Deploy a systemd service. Use when the user asks to start,
+  stop, restart, or update a long-running process on the VM."
+version: 1.2.0
+---
+
+# Deploy a service
+
+1. Check if service exists: `systemctl --user status {name}.service`
+2. If updating: pull latest code, run tests, then restart
+3. After restart: wait 5s, check logs for errors
+4. Report back: service name, current status, last 3 log lines
+
+## Pitfalls
+- Never use `systemctl` without `--user` flag on this VM — it will fail silently
+- If restart fails, check port conflicts first: `ss -tlnp | grep {port}`
+```
+
+The Pitfalls section is the most valuable part. Every entry in it came from something that actually went wrong. It's where the real knowledge lives.
+
+<FlowDiagram
+  steps='[
+    {"label": "Task arrives", "description": "\"Deploy the new version of smart-wardrobe\""},
+    {"label": "Agent scans skill list", "description": "Reads descriptions. deploy-service matches."},
+    {"label": "Loads SKILL.md", "description": "Full instructions, pitfalls, and exact commands now in context."},
+    {"label": "Executes", "description": "Follows numbered steps. The --user flag pitfall does not bite it."},
+    {"label": "Verifies", "description": "Checks logs. Reports back."}
+  ]'
+  loop={false}
+/>
+
+The key thing: **the agent loads the skill at decision time, not at startup**. Skills are lazy. This means the description has to be precise enough to trigger on the right tasks — not so broad that it fires constantly, not so narrow that it never fires.
+
+<Aside title="On MCP server security">
+MCP servers run as real processes with whatever permissions you give them. Before deploying one, treat it like any other service: least-privilege access, no ambient credentials sitting in environment variables, audit what it can actually reach. "MCP shadow IT" is already a thing — teams spinning up internal servers the way SaaS shadow IT spread in 2015. Your security team doesn't know about them yet.
+</Aside>
+
+---
+
+## The uncomfortable benchmark result
+
+WildToolBench tested 57 models across realistic multi-turn tool-use scenarios. The finding: no model breaks 15% session accuracy. Not GPT-4o. Not Claude 4.
+
+The bottleneck isn't the framework. It isn't even model capability in isolation.
+
+It's tool design.
+
+Models that were fine-tuned specifically for tool use performed *worse* than general-purpose models on novel tool combinations. Specialization creates brittleness. The best results came from general models paired with well-designed tools.
+
+<Quiz
+  question="What's the #1 driver of agent tool-call failures in production?"
+  options='["Model hallucination", "Wrong tool selected", "Poor tool design — unclear descriptions, fragile multi-step chains", "Network timeouts"]'
+  answer="Poor tool design — unclear descriptions, fragile multi-step chains"
+  explanation="WildToolBench (2026) found tool design quality explains more variance in agent performance than model choice. A well-designed tool with a weaker model beats a poorly-designed tool with a stronger one."
+/>
+
+---
+
+## Where to actually start
+
+1. **Pre-built integrations** → [Composio](https://github.com/ComposioHQ/composio). 1,000+ services, OAuth handled. Don't re-implement auth.
+2. **Cross-platform protocol** → [MCP](https://github.com/modelcontextprotocol/servers). Write once, works in Claude, ChatGPT, Cursor, everything.
+3. **Code execution** → [E2B](https://github.com/e2b-dev/e2b). Sandboxed Python/JS for agents that run code. Not optional.
+4. **Design inspiration** → [smolagents](https://github.com/huggingface/smolagents). Tools as plain Python functions. No schema tax. Worth an hour of your time.
+
+---
+
+The pattern that works: fewer tools, flatter calls, richer descriptions, recoverable errors.
+
+Every abstraction you add is a step the agent can fail on. Every vague parameter is a UUID the agent doesn't have. Every terse error message is an instruction to retry the exact same wrong thing.
+
+Write for the honest reader that follows specs literally and can't ask follow-up questions.
+
+Once you do that, the tools actually start working.

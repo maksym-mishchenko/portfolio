@@ -11,8 +11,9 @@ interface TokenizerProps {
 }
 
 export function Tokenizer({ text, tokens: tokensStr, tokenIds: idsStr, speed = 1 }: TokenizerProps) {
-  const tokens: string[] = JSON.parse(tokensStr);
-  const tokenIds: number[] = JSON.parse(idsStr);
+  // Guard: props may be undefined during SSR prerendering
+  const tokens: string[] = tokensStr ? JSON.parse(tokensStr) : [];
+  const tokenIds: number[] = idsStr ? JSON.parse(idsStr) : [];
   const [step, setStep] = useState(0); // 0=text, 1=tokens, 2=ids
   const [isPlaying, setIsPlaying] = useState(false);
   const [activeSpeed, setActiveSpeed] = useState(speed);
@@ -36,6 +37,8 @@ export function Tokenizer({ text, tokens: tokensStr, tokenIds: idsStr, speed = 1
     if (step >= 2) setStep(0);
     setIsPlaying(true);
   };
+
+  if (!tokens.length) return null;
 
   return (
     <div className="my-8 rounded-xl border border-border bg-surface/50 p-6 overflow-hidden">

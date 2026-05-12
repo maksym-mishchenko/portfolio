@@ -13,7 +13,10 @@ interface TimelineProps {
 }
 
 export function Timeline({ events }: TimelineProps) {
-  const parsedEvents: TimelineEvent[] = JSON.parse(events);
+  // Guard: events may be undefined during SSR prerendering
+  const parsedEvents: TimelineEvent[] = events ? JSON.parse(events) : [];
+
+  if (!parsedEvents.length) return null;
 
   return (
     <div className="my-6 relative pl-6 border-l-2 border-border">

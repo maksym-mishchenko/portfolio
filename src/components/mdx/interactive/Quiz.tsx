@@ -13,13 +13,16 @@ interface QuizProps {
 export function Quiz({ question, options, answer, explanation }: QuizProps) {
   const [selected, setSelected] = useState<string | null>(null);
   const [revealed, setRevealed] = useState(false);
-  const parsedOptions: string[] = JSON.parse(options);
+  // Guard: options may be undefined during SSR prerendering
+  const parsedOptions: string[] = options ? JSON.parse(options) : [];
 
   const handleSelect = (option: string) => {
     if (revealed) return;
     setSelected(option);
     setRevealed(true);
   };
+
+  if (!parsedOptions.length) return null;
 
   return (
     <div className="my-6 rounded-xl border border-border bg-surface/30 p-5">

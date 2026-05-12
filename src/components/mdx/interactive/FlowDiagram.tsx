@@ -15,7 +15,8 @@ interface FlowDiagramProps {
 }
 
 export function FlowDiagram({ steps: stepsStr, speed = 1, loop = false }: FlowDiagramProps) {
-  const steps: FlowStep[] = JSON.parse(stepsStr);
+  // Guard: stepsStr may be undefined during SSR prerendering
+  const steps: FlowStep[] = stepsStr ? JSON.parse(stepsStr) : [];
   const [activeStep, setActiveStep] = useState(-1);
   const [isPlaying, setIsPlaying] = useState(false);
 
@@ -39,6 +40,8 @@ export function FlowDiagram({ steps: stepsStr, speed = 1, loop = false }: FlowDi
     if (activeStep >= steps.length - 1) setActiveStep(-1);
     setIsPlaying(true);
   };
+
+  if (!steps.length) return null;
 
   return (
     <div className="my-8 rounded-xl border border-border bg-surface/50 p-6">

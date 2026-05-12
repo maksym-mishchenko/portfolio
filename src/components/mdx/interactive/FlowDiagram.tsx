@@ -44,8 +44,8 @@ export function FlowDiagram({ steps: stepsStr, speed = 1, loop = false }: FlowDi
   if (!steps.length) return null;
 
   return (
-    <div className="my-8 rounded-xl border border-border bg-surface/50 p-6">
-      {/* Flow steps */}
+    <div className="my-8 rounded-xl border border-border bg-surface/50 p-4 sm:p-6">
+      {/* Flow steps — wrap on mobile, center on desktop */}
       <div className="flex items-center justify-center gap-1 flex-wrap">
         {steps.map((step, i) => (
           <div key={i} className="flex items-center">
@@ -56,10 +56,10 @@ export function FlowDiagram({ steps: stepsStr, speed = 1, loop = false }: FlowDi
                 backgroundColor: activeStep === i ? "var(--color-accent)" : "transparent",
               }}
               transition={{ duration: 0.3 }}
-              className="px-4 py-3 rounded-lg border-2 text-center min-w-[100px]"
+              className="px-3 py-2 sm:px-4 sm:py-3 rounded-lg border-2 text-center min-w-[80px] sm:min-w-[100px] max-w-[120px] sm:max-w-none"
             >
               <span
-                className={`text-sm font-medium ${
+                className={`text-xs sm:text-sm font-medium ${
                   activeStep === i ? "text-white" : "text-foreground"
                 }`}
               >
@@ -71,7 +71,7 @@ export function FlowDiagram({ steps: stepsStr, speed = 1, loop = false }: FlowDi
                 animate={{
                   color: activeStep > i ? "var(--color-accent)" : "var(--color-muted)",
                 }}
-                className="mx-1 text-lg"
+                className="mx-1 text-base sm:text-lg"
               >
                 →
               </motion.span>

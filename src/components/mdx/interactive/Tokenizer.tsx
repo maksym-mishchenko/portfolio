@@ -41,7 +41,7 @@ export function Tokenizer({ text, tokens: tokensStr, tokenIds: idsStr, speed = 1
   if (!tokens.length) return null;
 
   return (
-    <div className="my-8 rounded-xl border border-border bg-surface/50 p-6 overflow-hidden">
+    <div className="my-8 rounded-xl border border-border bg-surface/50 p-4 sm:p-6 overflow-hidden">
       <div className="flex items-center justify-center min-h-[120px]">
         <AnimatePresence mode="wait">
           {step === 0 && (
@@ -53,7 +53,7 @@ export function Tokenizer({ text, tokens: tokensStr, tokenIds: idsStr, speed = 1
               className="text-center"
             >
               <p className="text-sm text-muted mb-2">Original Text</p>
-              <p className="text-2xl font-semibold">{text}</p>
+              <p className="text-xl sm:text-2xl font-semibold">{text}</p>
             </motion.div>
           )}
 
@@ -73,7 +73,7 @@ export function Tokenizer({ text, tokens: tokensStr, tokenIds: idsStr, speed = 1
                     transition={{ delay: i * 0.15 }}
                     className="flex flex-col items-center gap-2"
                   >
-                    <div className="px-4 py-2 rounded-lg border border-accent/40 bg-accent/5 font-mono text-lg">
+                    <div className="px-3 sm:px-4 py-2 rounded-lg border border-accent/40 bg-accent/5 font-mono text-base sm:text-lg">
                       {token}
                     </div>
                     {step >= 2 && (
@@ -97,12 +97,12 @@ export function Tokenizer({ text, tokens: tokensStr, tokenIds: idsStr, speed = 1
         </AnimatePresence>
       </div>
 
-      {/* Controls */}
-      <div className="flex items-center justify-between mt-6 pt-4 border-t border-border">
+      {/* Controls — wrap on small screens so speed buttons don't overflow */}
+      <div className="flex flex-wrap items-center justify-between gap-2 mt-6 pt-4 border-t border-border">
         <span className="text-xs text-muted">
           {step === 0 ? "Original Text" : step === 1 ? "Tokenized" : "Token IDs"}
         </span>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <button
             onClick={isPlaying ? () => setIsPlaying(false) : play}
             className="w-8 h-8 flex items-center justify-center rounded-md bg-surface border border-border hover:border-accent/50 transition-colors"

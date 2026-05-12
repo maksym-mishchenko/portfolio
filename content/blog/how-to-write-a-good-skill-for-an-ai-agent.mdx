@@ -19,11 +19,17 @@ Here's what actually works.
 
 The ecosystem has a naming problem. Tools. Skills. Plugins. Actions. MCP servers. Everyone means roughly the same thing and calls it something different.
 
-- **Term:** Tool | **Framework:** LangChain, CrewAI, smolagents | **What it actually is:** A function the LLM can call by name
-- **Term:** Skill | **Framework:** Hermes, Semantic Kernel | **What it actually is:** Markdown instructions + optional scripts the agent loads on demand
-- **Term:** Plugin | **Framework:** Semantic Kernel, ChatGPT | **What it actually is:** A tool bundled with a manifest
-- **Term:** MCP Server | **Framework:** Anthropic MCP, Claude | **What it actually is:** A process that exposes tools over a standard protocol
-- **Term:** Action | **Framework:** Composio, Arcade | **What it actually is:** A pre-built tool with auth already handled
+<CompareTable
+  headers={`["Term", "Framework", "What it actually is"]`}
+  rows={`[
+    ["Tool", "LangChain, CrewAI, smolagents", "A function the LLM can call by name"],
+    ["Skill", "Hermes, Semantic Kernel", "Markdown instructions + optional scripts the agent loads on demand"],
+    ["Plugin", "Semantic Kernel, ChatGPT", "A tool bundled with a manifest"],
+    ["MCP Server", "Anthropic MCP, Claude", "A process that exposes tools over a standard protocol"],
+    ["Action", "Composio, Arcade", "A pre-built tool with auth already handled"]
+  ]`}
+  highlight="2"
+/>
 
 The implementation differs. The design problems don't. Whether you're writing a LangChain tool, an MCP server, or a SKILL.md file — the same mistakes will sink you.
 
@@ -37,11 +43,17 @@ That works when the caller is a developer. A developer reads your docs. Knows th
 
 An LLM does none of that reliably.
 
-- **Assumption:** Knows the data model | **Human developer:** Yes — reads docs first | **LLM caller:** No — guesses from the parameter name
-- **Assumption:** Handles multi-step flows | **Human developer:** Composes calls in order | **LLM caller:** Skips steps, forgets IDs, hallucinates params
-- **Assumption:** Reads error messages | **Human developer:** As debugging info | **LLM caller:** As literal instructions to follow
-- **Assumption:** Retries on failure | **Human developer:** With backoff and reasoning | **LLM caller:** Immediately, same params, same result
-- **Assumption:** Knows what it doesn'''t know | **Human developer:** Usually | **LLM caller:** Almost never
+<CompareTable
+  headers={`["Assumption", "Human developer", "LLM caller"]`}
+  rows={`[
+    ["Knows the data model", "Yes — reads docs first", "No — guesses from the parameter name"],
+    ["Handles multi-step flows", "Composes calls in order", "Skips steps, forgets IDs, hallucinates params"],
+    ["Reads error messages", "As debugging info", "As literal instructions to follow"],
+    ["Retries on failure", "With backoff and reasoning", "Immediately, same params, same result"],
+    ["Knows what it doesn'\''t know", "Usually", "Almost never"]
+  ]`}
+  highlight="2"
+/>
 
 That last one is what gets you. The agent isn't a more demanding client. It's an honest one — it follows your spec exactly and can't compensate for the parts you left vague. Every gap in your description is a decision point the agent will handle wrong.
 
@@ -51,11 +63,15 @@ That last one is what gets you. The agent isn't a more demanding client. It's an
 
 Before getting into how to write skills, it's worth knowing where things stand. The tool-use world has moved fast.
 
-- ⚡ **2023 — Function calling lands** — OpenAI ships function calling. Agents can finally take real actions. Everyone wraps their APIs in a weekend.
-- 📡 **Nov 2024 — MCP launches** — Anthropic publishes the Model Context Protocol. ~210 servers at launch. Most people ignore it.
-- 🚀 **Mar 2025 — OpenAI adopts MCP** — OpenAI adds MCP support. Monthly downloads jump from 5M to 22M overnight. Now everyone pays attention.
-- 🏆 **Q2 2025 — Protocol war over** — ChatGPT ships MCP. Cursor, Windsurf, Zed all add support in the same quarter.
-- 🌐 **Q1 2026 — 9,400+ servers** — 92% of new agent frameworks ship MCP support by default. 78% of enterprise AI teams have it in production.
+<Timeline
+  events={`[
+    {"label": "2023 — Function calling lands", "description": "OpenAI ships function calling. Agents can finally take real actions. Everyone wraps their APIs in a weekend.", "icon": "⚡"},
+    {"label": "Nov 2024 — MCP launches", "description": "Anthropic publishes the Model Context Protocol. ~210 servers at launch. Most people ignore it.", "icon": "📡"},
+    {"label": "Mar 2025 — OpenAI adopts MCP", "description": "OpenAI adds MCP support. Monthly downloads jump from 5M to 22M overnight. Now everyone pays attention.", "icon": "🚀"},
+    {"label": "Q2 2025 — Protocol war over", "description": "ChatGPT ships MCP. Cursor, Windsurf, Zed all add support in the same quarter.", "icon": "🏆"},
+    {"label": "Q1 2026 — 9,400+ servers", "description": "92% of new agent frameworks ship MCP support by default. 78% of enterprise AI teams have it in production.", "icon": "🌐"}
+  ]`}
+/>
 
 MCP won. Not because it's technically better — it's actually ~10% slower than native function calling. It won because writing one MCP server takes 4 hours instead of 18. Boring wins.
 
@@ -88,10 +104,15 @@ The agent calls `get_user_id`, gets an ID back — then forgets it by the time i
 update_user_preference_by_email(email, key, value)
 ```
 
-1. **Agent receives task**: Update dark mode for user@example.com
-2. **Bad: multi-step**: get_user_id → hold ID in memory → get_prefs → update → verify. Agent drops context between steps.
-3. **Good: single tool**: update_user_preference_by_email(email, key, val). Done.
-4. **Confirmation returned**: Tool returns what changed. Agent reports back.
+<FlowDiagram
+  steps={`[
+    {"label": "Agent receives task", "description": "\"Update dark mode for user@example.com\""},
+    {"label": "Bad: multi-step", "description": "get_user_id → hold ID in memory → get_prefs → update → verify. Agent drops context between steps."},
+    {"label": "Good: single tool", "description": "update_user_preference_by_email(email, key, val). Done."},
+    {"label": "Confirmation returned", "description": "Tool returns what changed. Agent reports back."}
+  ]`}
+  speed="0.8"
+/>
 
 Every step you add is a chance for the agent to go off-script. Fewer steps, fewer chances.
 
@@ -116,11 +137,17 @@ Agents read error messages as instructions. Literally. If your error says "inval
 
 The agent has no schema to look up. It infers what to pass from the parameter name alone. `user_id` looks like a UUID — the agent doesn't have one. `user_email_address` looks like something it already knows.
 
-- **Bad name:** user_id | **Good name:** user_email_address | **Why:** Agent has the email. It never has the UUID.
-- **Bad name:** store_id | **Good name:** store_location_name | **Why:** "downtown branch" works. "550e8400-..." never will.
-- **Bad name:** msg | **Good name:** message_body_plain_text | **Why:** Removes any ambiguity about format
-- **Bad name:** ts | **Good name:** event_timestamp_iso8601 | **Why:** Agent knows ISO 8601. Not your epoch.
-- **Bad name:** type | **Good name:** notification_channel | **Why:** "email" or "sms" is obvious. "type: 2" is not.
+<CompareTable
+  headers={`["Bad name", "Good name", "Why"]`}
+  rows={`[
+    ["user_id", "user_email_address", "Agent has the email. It never has the UUID."],
+    ["store_id", "store_location_name", "\"downtown branch\" works. \"550e8400-...\" never will."],
+    ["msg", "message_body_plain_text", "Removes any ambiguity about format"],
+    ["ts", "event_timestamp_iso8601", "Agent knows ISO 8601. Not your epoch."],
+    ["type", "notification_channel", "\"email\" or \"sms\" is obvious. \"type: 2\" is not."]
+  ]`}
+  highlight="1"
+/>
 
 ### 4. Write descriptions that answer four questions
 
@@ -189,17 +216,22 @@ version: 1.2.0
 
 The Pitfalls section is the most valuable part. Every entry in it came from something that actually went wrong. It's where the real knowledge lives.
 
-1. **Task arrives**: "Deploy the new version of smart-wardrobe"
-2. **Agent scans skill list**: Reads descriptions. deploy-service matches.
-3. **Loads SKILL.md**: Full instructions, pitfalls, and exact commands now in context.
-4. **Executes**: Follows numbered steps. The --user flag pitfall does not bite it.
-5. **Verifies**: Checks logs. Reports back.
+<FlowDiagram
+  steps={`[
+    {"label": "Task arrives", "description": "\"Deploy the new version of smart-wardrobe\""},
+    {"label": "Agent scans skill list", "description": "Reads descriptions. deploy-service matches."},
+    {"label": "Loads SKILL.md", "description": "Full instructions, pitfalls, and exact commands now in context."},
+    {"label": "Executes", "description": "Follows numbered steps. The --user flag pitfall does not bite it."},
+    {"label": "Verifies", "description": "Checks logs. Reports back."}
+  ]`}
+  loop={false}
+/>
 
 The key thing: **the agent loads the skill at decision time, not at startup**. Skills are lazy. This means the description has to be precise enough to trigger on the right tasks — not so broad that it fires constantly, not so narrow that it never fires.
 
-> **On MCP server security**
->
-> MCP servers run as real processes with whatever permissions you give them. Before deploying one, treat it like any other service: least-privilege access, no ambient credentials sitting in environment variables, audit what it can actually reach. "MCP shadow IT" is already a thing — teams spinning up internal servers the way SaaS shadow IT spread in 2015. Your security team doesn't know about them yet.
+<Aside title="On MCP server security">
+MCP servers run as real processes with whatever permissions you give them. Before deploying one, treat it like any other service: least-privilege access, no ambient credentials sitting in environment variables, audit what it can actually reach. "MCP shadow IT" is already a thing — teams spinning up internal servers the way SaaS shadow IT spread in 2015. Your security team doesn't know about them yet.
+</Aside>
 
 ---
 
@@ -213,8 +245,12 @@ It's tool design.
 
 Models that were fine-tuned specifically for tool use performed *worse* than general-purpose models on novel tool combinations. Specialization creates brittleness. The best results came from general models paired with well-designed tools.
 
-> **What's the #1 driver of agent tool-call failures in production?**
-> Answer: Poor tool design — unclear descriptions, fragile multi-step chains. WildToolBench (2026) found tool design quality explains more variance in agent performance than model choice. A well-designed tool with a weaker model beats a poorly-designed tool with a stronger one.
+<Quiz
+  question="What's the #1 driver of agent tool-call failures in production?"
+  options={`["Model hallucination", "Wrong tool selected", "Poor tool design — unclear descriptions, fragile multi-step chains", "Network timeouts"]`}
+  answer="Poor tool design — unclear descriptions, fragile multi-step chains"
+  explanation="WildToolBench (2026) found tool design quality explains more variance in agent performance than model choice. A well-designed tool with a weaker model beats a poorly-designed tool with a stronger one."
+/>
 
 ---
 

@@ -15,13 +15,13 @@ I run 40+ agents across my dev setup — Copilot CLI agents for coding, OpenClaw
 
 The single biggest mistake is building agents that are too broad. "Handle user requests" is not a scope. "Restart a failed PM2 service and report the status to Telegram" is a scope.
 
-<CompareTable headers='["Approach","Example","What happens"]' rows='[["❌ Mega-agent","\"You are a helpful assistant that manages infrastructure, writes code, monitors services, and handles user requests\"","Agent hallucinates its way through creative interpretations of what you meant"],["✓ Narrow agent","\"You restart failed PM2 services and report status to Telegram\"","Agent does one thing well, refuses everything else"]]' highlight="1" />
+<CompareTable headers={`["Approach","Example","What happens"]`} rows={`[["❌ Mega-agent","\"You are a helpful assistant that manages infrastructure, writes code, monitors services, and handles user requests\"","Agent hallucinates its way through creative interpretations of what you meant"],["✓ Narrow agent","\"You restart failed PM2 services and report status to Telegram\"","Agent does one thing well, refuses everything else"]]`} highlight="1" />
 
 A 2024 survey on LLM agent planning (Huang et al., [arXiv:2402.02716](https://arxiv.org/abs/2402.02716)) found that the most effective agents use **task decomposition** — breaking broad goals into specific, atomic subtasks.
 
 In practice: if you can't describe your agent's job in one sentence, split it into multiple agents.
 
-<FlowDiagram steps='[{"label":"Copilot CLI","description":"Writes code, reviews PRs, architecture decisions"},{"label":"OpenClaw","description":"Telegram bot, infra monitoring, service management"},{"label":"OpenCode","description":"Autonomous coding tasks dispatched from Telegram"},{"label":"Azure VM","description":"Shared runtime — MCP protocol layer, GitHub as source of truth"}]' />
+<FlowDiagram steps={`[{"label":"Copilot CLI","description":"Writes code, reviews PRs, architecture decisions"},{"label":"OpenClaw","description":"Telegram bot, infra monitoring, service management"},{"label":"OpenCode","description":"Autonomous coding tasks dispatched from Telegram"},{"label":"Azure VM","description":"Shared runtime — MCP protocol layer, GitHub as source of truth"}]`} />
 
 Each agent has one clear job. They don't overlap. When OpenCode creates a PR, OpenClaw notifies me via Telegram, and I review it in Copilot CLI. Clean handoffs, not shared responsibilities.
 
@@ -31,7 +31,7 @@ Early on, I gave my agents access to everything through MCP. File system, shell,
 
 The MCPToolBench++ benchmark (Fan et al., [arXiv:2508.07575](https://arxiv.org/abs/2508.07575)) evaluated LLMs across 4,000+ MCP servers from 40+ categories. Key finding: success rates drop significantly as the number of available tools increases, because the tool descriptions alone consume context window and introduce decision confusion.
 
-<CompareTable headers='["Tools available","What happens","Reliability"]' rows='[["3 tools","Agent picks the right one consistently","High"],["8 tools","Occasional wrong tool selection","Medium"],["20+ tools","Wrong tool, hallucinated arguments, retry loops","Low"],["50+ tools","Context window consumed by tool descriptions alone","Very low"]]' highlight="0" />
+<CompareTable headers={`["Tools available","What happens","Reliability"]`} rows={`[["3 tools","Agent picks the right one consistently","High"],["8 tools","Occasional wrong tool selection","Medium"],["20+ tools","Wrong tool, hallucinated arguments, retry loops","Low"],["50+ tools","Context window consumed by tool descriptions alone","Very low"]]`} highlight="0" />
 
 This is the same least-privilege principle from security, applied to AI. Every tool you add is an opportunity for the agent to do something unexpected.
 
@@ -43,7 +43,7 @@ The best system prompts I've written are not impressive. They're boring. They're
 
 OpenAgentSafety (Vijayvargiya et al., [arXiv:2507.06134](https://arxiv.org/abs/2507.06134)) tested five major LLMs across 350+ multi-turn tasks with real tools. The results:
 
-<CompareTable headers='["Model","Unsafe behavior rate"]' rows='[["o3-mini","72.7%"],["GPT-4o","~65%"],["Claude Sonnet 3.7","51.2%"]]' highlight="2" />
+<CompareTable headers={`["Model","Unsafe behavior rate"]`} rows={`[["o3-mini","72.7%"],["GPT-4o","~65%"],["Claude Sonnet 3.7","51.2%"]]`} highlight="2" />
 
 Even the "safest" model showed unsafe behavior in more than half of vulnerable tasks. You can't rely on the model to be safe by default. You have to constrain it.
 
@@ -65,7 +65,7 @@ Your agent works in a demo. Great. Now what happens when the API returns a 429? 
 
 ReliabilityBench (Gupta, [arXiv:2601.06112](https://arxiv.org/abs/2601.06112)) introduced chaos-engineering-style testing for agents — timeouts, rate limits, partial responses, schema drift. Tested across 1,280 episodes:
 
-<CompareTable headers='["Condition","Success rate"]' rows='[["Clean environment","96.9%"],["Minor perturbations","92.3%"],["Moderate perturbations","88.1%"],["Rate limiting (most damaging)","Significant drop"]]' highlight="3" />
+<CompareTable headers={`["Condition","Success rate"]`} rows={`[["Clean environment","96.9%"],["Minor perturbations","92.3%"],["Moderate perturbations","88.1%"],["Rate limiting (most damaging)","Significant drop"]]`} highlight="3" />
 
 A 9% drop from just minor perturbations. In production, perturbations aren't minor — they're constant. Rate limiting is the #1 failure mode. Your agent needs retry logic with exponential backoff and graceful degradation.
 
@@ -107,7 +107,7 @@ When you have multiple agents, the hardest part isn't making each one work — i
 
 Research on multi-agent governance (de Curtò & de Zarzà, [arXiv:2603.13189](https://arxiv.org/abs/2603.13189)) calls this "constitutional governance." Their experiments showed unconstrained multi-agent systems achieved higher raw cooperation (87.3%) but the lowest ethical cooperation score (64.5%). Constitutional governance — defining rules upfront that no agent can override — scored 74.1% on ethical metrics. Agents that follow rules produce better outcomes than agents given free rein.
 
-<Timeline events='[{"label":"Rule 1","description":"Never have two agents edit the same branch simultaneously","icon":"🔒"},{"label":"Rule 2","description":"Each agent has its own governance policy — most restrictive policy wins on conflicts","icon":"📋"},{"label":"Rule 3","description":"GitHub repos = source of truth for code. VM brain files = source of truth for knowledge","icon":"📁"},{"label":"Rule 4","description":"Handoffs are explicit: OpenCode creates PR → OpenClaw notifies via Telegram → User reviews in Copilot CLI","icon":"🔄"},{"label":"Rule 5","description":"An inner agent can never have broader permissions than the outer agent that called it","icon":"🛡️"}]' />
+<Timeline events={`[{"label":"Rule 1","description":"Never have two agents edit the same branch simultaneously","icon":"🔒"},{"label":"Rule 2","description":"Each agent has its own governance policy — most restrictive policy wins on conflicts","icon":"📋"},{"label":"Rule 3","description":"GitHub repos = source of truth for code. VM brain files = source of truth for knowledge","icon":"📁"},{"label":"Rule 4","description":"Handoffs are explicit: OpenCode creates PR → OpenClaw notifies via Telegram → User reviews in Copilot CLI","icon":"🔄"},{"label":"Rule 5","description":"An inner agent can never have broader permissions than the outer agent that called it","icon":"🛡️"}]`} />
 
 ## The Bottom Line
 
@@ -115,7 +115,7 @@ Building good agents isn't about finding the best model or the most sophisticate
 
 40 narrow agents that each do one thing well beat 1 mega-agent that does everything badly. The useful agents aren't the clever ones — they're the boring, constrained ones that fail safely.
 
-<Quiz question="What's the most important line in an agent's system prompt?" options='["The identity description","The list of allowed tools","The ambiguity rule: if unclear, refuse and ask","The output format specification"]' answer="The ambiguity rule: if unclear, refuse and ask" explanation="The ambiguity rule prevents agents from guessing when instructions are unclear — the single biggest source of unexpected behavior in production." />
+<Quiz question="What's the most important line in an agent's system prompt?" options={`["The identity description","The list of allowed tools","The ambiguity rule: if unclear, refuse and ask","The output format specification"]`} answer="The ambiguity rule: if unclear, refuse and ask" explanation="The ambiguity rule prevents agents from guessing when instructions are unclear — the single biggest source of unexpected behavior in production." />
 
 ## References
 

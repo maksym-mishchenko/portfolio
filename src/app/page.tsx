@@ -5,6 +5,7 @@ import { Journey } from "@/components/Journey";
 import { TechStack } from "@/components/TechStack";
 import { About } from "@/components/About";
 import { Contact } from "@/components/Contact";
+import { InvestingMapToast } from "@/components/InvestingMapToast";
 
 export default function Home() {
   return (
@@ -22,6 +23,7 @@ export default function Home() {
       <footer className="py-8 text-center text-sm text-muted border-t border-border">
         <p>© {new Date().getFullYear()} Maksym Mishchenko.</p>
       </footer>
+      <InvestingMapToast />
     </>
   );
 }

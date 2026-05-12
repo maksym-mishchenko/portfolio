@@ -90,6 +90,13 @@ export const JOURNEY: JourneyNode[] = [
     detail: "Software Engineer II — Identity & Application Governance, Prague",
   },
   {
+    year: "2026",
+    icon: "🗺️",
+    title: "Investing Treasure Map",
+    detail: "Stranger Things-themed interactive investing guide — quizzes, badges, calculators",
+    link: "https://investing.mmishchenko.dev",
+  },
+  {
     year: "Now",
     icon: "🔧",
     title: "Building",

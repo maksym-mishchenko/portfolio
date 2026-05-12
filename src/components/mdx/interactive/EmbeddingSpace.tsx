@@ -29,7 +29,8 @@ export function EmbeddingSpace({
   width = 400,
   height = 300,
 }: EmbeddingSpaceProps) {
-  const words: Word[] = JSON.parse(wordsStr);
+  // Guard: wordsStr may be undefined during SSR prerendering
+  const words: Word[] = wordsStr ? JSON.parse(wordsStr) : [];
   const parsedConnections: [string, string][] = connections
     ? JSON.parse(connections)
     : [];
@@ -46,6 +47,8 @@ export function EmbeddingSpace({
     observer.observe(el);
     return () => observer.disconnect();
   }, [width]);
+
+  if (!words.length) return null;
 
   const wordMap = Object.fromEntries(words.map((w) => [w.label, w]));
 

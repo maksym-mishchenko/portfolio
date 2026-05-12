@@ -9,9 +9,12 @@ interface CompareTableProps {
 }
 
 export function CompareTable({ headers, rows, highlight }: CompareTableProps) {
-  const parsedHeaders: string[] = JSON.parse(headers);
-  const parsedRows: string[][] = JSON.parse(rows);
+  // Guard: props may be undefined during SSR prerendering
+  const parsedHeaders: string[] = headers ? JSON.parse(headers) : [];
+  const parsedRows: string[][] = rows ? JSON.parse(rows) : [];
   const highlightCol = highlight ? parseInt(highlight) : -1;
+
+  if (!parsedHeaders.length) return null;
 
   return (
     <div className="my-6 overflow-x-auto rounded-xl border border-border">

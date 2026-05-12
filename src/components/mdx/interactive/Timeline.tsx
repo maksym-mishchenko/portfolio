@@ -29,10 +29,7 @@ export function Timeline({ events }: TimelineProps) {
           className="mb-6 last:mb-0 relative"
         >
           <div className="absolute -left-[25px] w-3 h-3 rounded-full bg-accent border-2 border-background" />
-          <p className="font-medium text-sm">
-            {event.icon && <span className="mr-1.5">{event.icon}</span>}
-            {event.label}
-          </p>
+          <p className="font-medium text-sm">{event.label}</p>
           <p className="text-sm text-muted mt-0.5">{event.description}</p>
         </motion.div>
       ))}

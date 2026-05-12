@@ -26,7 +26,7 @@ export function Quiz({ question, options, answer, explanation }: QuizProps) {
 
   return (
     <div className="my-6 rounded-xl border border-border bg-surface/30 p-5">
-      <p className="text-sm font-medium text-accent mb-1">🧠 Quick Check</p>
+      <p className="text-xs font-semibold tracking-widest uppercase text-accent mb-1">Quick Check</p>
       <p className="font-medium mb-4">{question}</p>
       <div className="space-y-2">
         {parsedOptions.map((option) => {

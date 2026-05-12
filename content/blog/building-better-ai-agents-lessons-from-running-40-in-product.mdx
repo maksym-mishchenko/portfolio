@@ -53,7 +53,7 @@ sudo chmod -R 400 /var/logs
 sudo -u log_agent_user python log_agent.py
 ```
 
-<FlowDiagram steps='[{"label":"Step 1","description":"Agent requests access to logs"},{"label":"Step 2","description":"Access is restricted to read-only"},{"label":"Step 3","description":"Agent processes logs safely"}]' />
+<FlowDiagram steps={[{"label":"Step 1","description":"Agent requests access to logs"},{"label":"Step 2","description":"Access is restricted to read-only"},{"label":"Step 3","description":"Agent processes logs safely"}]}/>
 
 The result? A much safer environment. The agent now does its job without touching anything it shouldn’t.
 
@@ -101,7 +101,7 @@ The key to making this work is ensuring the reviewing agent doesn’t simply con
 
 This approach has saved me from deploying agents with flawed logic or risky assumptions. It’s like having a second set of eyes — but without the bias.
 
-<Tokenizer text="rubber duck agent" tokens='["rubber", "duck", "agent"]' tokenIds='[1001, 1002, 1003]' />
+<Tokenizer text="rubber duck agent" tokens={["rubber", "duck", "agent"]}tokenIds={[1001, 1002, 1003]}/>
 
 ## 5. Log Everything (Seriously)
 
@@ -127,7 +127,7 @@ logging.error("Failed to connect to database")
 
 With proper logging, I can replay an agent’s actions, figure out what went wrong, and fix the issue. It’s also invaluable for debugging and performance tuning.
 
-<Timeline events='[{"label":"Error occurs","description":"An agent acts unexpectedly","icon":"❌"},{"label":"Check logs","description":"Trace the agent's actions","icon":"🔍"},{"label":"Fix issue","description":"Update code or constraints","icon":"✅"}]' />
+<Timeline events={[{"label":"Error occurs","description":"An agent acts unexpectedly","icon":"❌"},{"label":"Check logs","description":"Trace the agent's actions","icon":"🔍"},{"label":"Fix issue","description":"Update code or constraints","icon":"✅"}]}/>
 
 ## The Key Takeaway: Constrain Your Agents
 

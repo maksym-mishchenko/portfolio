@@ -17,11 +17,7 @@ I learned this the hard way. My baseline tool selection accuracy on a 200-query 
 
 <BarChart
   title="Tool selection accuracy"
-  bars={JSON.stringify([
-    { label: "Baseline", value: 60, suffix: "%", color: "#EF4444" },
-    { label: "After description rewrites", value: 91, suffix: "%", color: "#F59E0B" },
-    { label: "After namespace filtering", value: 97, suffix: "%", color: "#10B981" }
-  ])}
+  bars='[{"label":"Baseline","value":60,"suffix":"%","color":"red"},{"label":"After description rewrites","value":91,"suffix":"%","color":"orange"},{"label":"After namespace filtering","value":97,"suffix":"%","color":"green"}]'
   caption="200-query labeled test set across 3 production MCP servers"
 />
 
@@ -44,19 +40,8 @@ The pattern that consistently helped:
 The second fix was structural. I grouped tools into namespaces by intent, and filtered which namespace was visible per request context.
 
 <FlowDiagram
-  nodes={JSON.stringify([
-    { id: "req", label: "Incoming request", type: "input" },
-    { id: "router", label: "Intent classifier", type: "process" },
-    { id: "read_ns", label: "read/* tools only", type: "output" },
-    { id: "write_ns", label: "write/* tools only", type: "output" },
-    { id: "admin_ns", label: "admin/* tools only", type: "output" }
-  ])}
-  edges={JSON.stringify([
-    { from: "req", to: "router" },
-    { from: "router", to: "read_ns", label: "read intent" },
-    { from: "router", to: "write_ns", label: "write intent" },
-    { from: "router", to: "admin_ns", label: "admin intent" }
-  ])}
+  nodes='[{"id":"req","label":"Incoming request","type":"input"},{"id":"router","label":"Intent classifier","type":"process"},{"id":"read_ns","label":"read/* tools only","type":"output"},{"id":"write_ns","label":"write/* tools only","type":"output"},{"id":"admin_ns","label":"admin/* tools only","type":"output"}]'
+  edges='[{"from":"req","to":"router"},{"from":"router","to":"read_ns","label":"read intent"},{"from":"router","to":"write_ns","label":"write intent"},{"from":"router","to":"admin_ns","label":"admin intent"}]'
   caption="Namespace filtering reduces visible tool surface per request"
 />
 
@@ -68,12 +53,7 @@ Over six months, I logged every production failure. 12 total. Four root causes:
 
 <BarChart
   title="Production failures by root cause"
-  bars={JSON.stringify([
-    { label: "Bad description / naming", value: 5, suffix: " failures", color: "#EF4444" },
-    { label: "Missing error handling", value: 3, suffix: " failures", color: "#F59E0B" },
-    { label: "Schema too permissive", value: 3, suffix: " failures", color: "#F59E0B" },
-    { label: "Transport / auth", value: 1, suffix: " failure", color: "#10B981" }
-  ])}
+  bars='[{"label":"Bad description / naming","value":5,"suffix":" failures","color":"red"},{"label":"Missing error handling","value":3,"suffix":" failures","color":"orange"},{"label":"Schema too permissive","value":3,"suffix":" failures","color":"orange"},{"label":"Transport / auth","value":1,"suffix":" failure","color":"green"}]'
   caption="12 production failures across 6 months / 3 MCP servers"
 />
 

@@ -5,7 +5,7 @@ description: "Six months, three production MCP servers, twelve real failures. Th
 tags: ["MCP", "AI Agents", "LLM", "developer tools", "production"]
 ---
 
-I've been running MCP servers in production for six months. Three servers, real workloads, agents that actually matter. And the thing that broke everything, repeatedly, was not the protocol. It was not the networking. It was not the auth.
+I've been running MCP servers in production for six months. Three servers, real workloads, agents that matter. The thing that kept breaking everything wasn't the protocol or the networking or the auth.
 
 It was the tool descriptions.
 
@@ -27,13 +27,11 @@ The fix wasn't technical. It was copywriting.
 
 A tool description isn't documentation for a human reader. It's an instruction to a model that has no context, no memory of your codebase, and no ability to ask for clarification mid-call. Every word does work.
 
-The pattern that consistently helped:
+The single change that moved the needle most: leading with what the tool does *not* do. "Fetches user profile. Does not update. Does not create." Models over-extend scope when the boundaries are implicit. Make them explicit.
 
-**Lead with what the tool does NOT do.** "Fetches user profile. Does not update. Does not create." Models over-extend tool scope when the boundaries are implicit. Make them explicit.
+The second thing was trigger phrases. If a user says "look up the order", your description should contain "look up". Verbatim. Models match on surface form more than you'd expect, which means you're essentially writing keyword routing logic as prose.
 
-**Include the exact trigger phrase.** If a user says "look up the order", your description should contain "look up". Verbatim. Models match on surface form more than you'd expect.
-
-**Name collisions are silent killers.** I had `get_customer` and `fetch_customer` registered simultaneously. They did subtly different things. The model picked randomly. Rename aggressively — one canonical verb per concept.
+The subtler one is name collisions. I had `get_customer` and `fetch_customer` registered at the same time. They did subtly different things. The model picked randomly. Once I renamed aggressively — one canonical verb per concept — the wrong-call rate on customer queries dropped to near zero.
 
 ## Namespacing tools by intent
 
@@ -49,26 +47,26 @@ This alone dropped confusion errors by roughly half. When the model can only see
 
 ## The 12 failures, categorized
 
-Over six months, I logged every production failure. 12 total. Four root causes:
+Over six months, I logged every production failure. 12 total. Four root causes — these are failures in my personal production systems, not a broader study:
 
 <BarChart
   title="Production failures by root cause"
   bars='[{"label":"Bad description / naming","value":5,"suffix":" failures","color":"red"},{"label":"Missing error handling","value":3,"suffix":" failures","color":"orange"},{"label":"Schema too permissive","value":3,"suffix":" failures","color":"orange"},{"label":"Transport / auth","value":1,"suffix":" failure","color":"green"}]'
-  caption="12 production failures across 6 months / 3 MCP servers"
+  caption="12 production failures across 6 months / 3 MCP servers (personal data)"
 />
 
 Descriptions caused more failures than missing error handling and bad schemas combined. That felt surprising when I first counted. It doesn't anymore.
 
+The error handling failures were all the same shape: tool returned an unexpected type, nothing caught it, the model got a null back and kept going anyway. Three schema failures came from tools that accepted `any` where they should have constrained the input — the model would pass garbage and the tool would silently process it. The one transport failure was an OAuth token that expired after server startup and wasn't refreshed. It worked in staging. It broke mid-demo.
+
 ## What I'd do differently from day one
 
-**Write descriptions before writing code.** If you can't describe the tool's exact trigger condition in one sentence, you don't know what it should do yet.
+Write descriptions before writing any code. If you can't describe the tool's exact trigger condition in one sentence, you don't know what it should do yet. This sounds obvious. I didn't do it for the first server and spent two months fixing the consequences.
 
-**Build a test set on day one.** 50 labeled queries takes two hours. The feedback loop without one is six months of production surprises.
+Build a test set on day one. 50 labeled queries takes two hours. The alternative is learning from failures in production, which is what I did, and it took six months.
 
-**Namespace from the start.** Retrofitting namespaces onto a flat tool registry is painful. The structure costs nothing upfront.
+Namespace from the start. Retrofitting namespaces onto a flat tool registry is painful. The structure costs nothing upfront and saves you the "model can see 40 tools and picks randomly" problem before it happens.
 
-**Treat renaming as cheap.** Model behavior changed meaningfully when I renamed `process_request` to `submit_order`. Same code. Different name. The description is the interface — treat it like one.
+And rename aggressively. Model behavior changed meaningfully when I renamed `process_request` to `submit_order`. Same code. Different name. The description is the interface — treat it like one.
 
-The protocol is fine. The transport is fine. The thing that will actually determine whether your MCP server works is whether you spent enough time on the words.
-
-Full methodology and the CA-MCP benchmark dataset: [mmishchenko.dev/blog](https://mmishchenko.dev/blog)
+What determines whether your MCP server works is whether you spent enough time on the words.

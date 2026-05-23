@@ -1,0 +1,94 @@
+---
+title: "What nobody tells you about running MCP servers in production"
+date: "2026-05-23"
+description: "Six months, three production MCP servers, twelve real failures. The thing that broke everything wasn't the protocol — it was the descriptions."
+tags: ["MCP", "AI Agents", "LLM", "developer tools", "production"]
+---
+
+I've been running MCP servers in production for six months. Three servers, real workloads, agents that actually matter. And the thing that broke everything, repeatedly, was not the protocol. It was not the networking. It was not the auth.
+
+It was the tool descriptions.
+
+## The problem nobody writes about
+
+Every MCP tutorial shows you how to register a tool. Define the schema, write a handler, ship it. What they skip is the part where your agent calls the wrong tool 40% of the time because "create_record" and "insert_entry" sound identical to a language model.
+
+I learned this the hard way. My baseline tool selection accuracy on a 200-query labeled test set was 60%. That means 4 in 10 agent decisions were wrong before the actual logic even ran.
+
+<BarChart
+  title="Tool selection accuracy"
+  bars={JSON.stringify([
+    { label: "Baseline", value: 60, suffix: "%", color: "#EF4444" },
+    { label: "After description rewrites", value: 91, suffix: "%", color: "#F59E0B" },
+    { label: "After namespace filtering", value: 97, suffix: "%", color: "#10B981" }
+  ])}
+  caption="200-query labeled test set across 3 production MCP servers"
+/>
+
+The fix wasn't technical. It was copywriting.
+
+## Descriptions are the whole job
+
+A tool description isn't documentation for a human reader. It's an instruction to a model that has no context, no memory of your codebase, and no ability to ask for clarification mid-call. Every word does work.
+
+The pattern that consistently helped:
+
+**Lead with what the tool does NOT do.** "Fetches user profile. Does not update. Does not create." Models over-extend tool scope when the boundaries are implicit. Make them explicit.
+
+**Include the exact trigger phrase.** If a user says "look up the order", your description should contain "look up". Verbatim. Models match on surface form more than you'd expect.
+
+**Name collisions are silent killers.** I had `get_customer` and `fetch_customer` registered simultaneously. They did subtly different things. The model picked randomly. Rename aggressively — one canonical verb per concept.
+
+## Namespacing tools by intent
+
+The second fix was structural. I grouped tools into namespaces by intent, and filtered which namespace was visible per request context.
+
+<FlowDiagram
+  nodes={JSON.stringify([
+    { id: "req", label: "Incoming request", type: "input" },
+    { id: "router", label: "Intent classifier", type: "process" },
+    { id: "read_ns", label: "read/* tools only", type: "output" },
+    { id: "write_ns", label: "write/* tools only", type: "output" },
+    { id: "admin_ns", label: "admin/* tools only", type: "output" }
+  ])}
+  edges={JSON.stringify([
+    { from: "req", to: "router" },
+    { from: "router", to: "read_ns", label: "read intent" },
+    { from: "router", to: "write_ns", label: "write intent" },
+    { from: "router", to: "admin_ns", label: "admin intent" }
+  ])}
+  caption="Namespace filtering reduces visible tool surface per request"
+/>
+
+This alone dropped confusion errors by roughly half. When the model can only see 8 tools instead of 40, it picks correctly almost every time. The hard part is building the intent classifier — but even a simple keyword match on the request gets you most of the way there.
+
+## The 12 failures, categorized
+
+Over six months, I logged every production failure. 12 total. Four root causes:
+
+<BarChart
+  title="Production failures by root cause"
+  bars={JSON.stringify([
+    { label: "Bad description / naming", value: 5, suffix: " failures", color: "#EF4444" },
+    { label: "Missing error handling", value: 3, suffix: " failures", color: "#F59E0B" },
+    { label: "Schema too permissive", value: 3, suffix: " failures", color: "#F59E0B" },
+    { label: "Transport / auth", value: 1, suffix: " failure", color: "#10B981" }
+  ])}
+  caption="12 production failures across 6 months / 3 MCP servers"
+/>
+
+Descriptions caused more failures than missing error handling and bad schemas combined. That felt surprising when I first counted. It doesn't anymore.
+
+## What I'd do differently from day one
+
+**Write descriptions before writing code.** If you can't describe the tool's exact trigger condition in one sentence, you don't know what it should do yet.
+
+**Build a test set on day one.** 50 labeled queries takes two hours. The feedback loop without one is six months of production surprises.
+
+**Namespace from the start.** Retrofitting namespaces onto a flat tool registry is painful. The structure costs nothing upfront.
+
+**Treat renaming as cheap.** Model behavior changed meaningfully when I renamed `process_request` to `submit_order`. Same code. Different name. The description is the interface — treat it like one.
+
+The protocol is fine. The transport is fine. The thing that will actually determine whether your MCP server works is whether you spent enough time on the words.
+
+Full methodology and the CA-MCP benchmark dataset: [mmishchenko.dev/blog](https://mmishchenko.dev/blog)

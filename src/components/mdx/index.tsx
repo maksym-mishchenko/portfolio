@@ -6,6 +6,7 @@ import { FlowDiagram } from "./interactive/FlowDiagram";
 import { Aside } from "./interactive/Aside";
 import { EmbeddingSpace } from "./interactive/EmbeddingSpace";
 import { Quiz } from "./interactive/Quiz";
+import { BarChart } from "./interactive/BarChart";
 import { CompareTable } from "./interactive/CompareTable";
 import { Timeline } from "./interactive/Timeline";
 
@@ -96,5 +97,6 @@ export const mdxComponents: MDXComponents = {
   Quiz,
   CompareTable,
   Timeline,
+  BarChart,
   img: ({ src, alt }) => <ImageZoom src={src} alt={alt} />,
 };

@@ -15,7 +15,6 @@ interface FlowDiagramProps {
 }
 
 export function FlowDiagram({ steps: stepsStr, speed = 1, loop = false }: FlowDiagramProps) {
-  // Guard: stepsStr may be undefined during SSR prerendering
   const steps: FlowStep[] = stepsStr ? JSON.parse(stepsStr) : [];
   const [activeStep, setActiveStep] = useState(-1);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -45,52 +44,58 @@ export function FlowDiagram({ steps: stepsStr, speed = 1, loop = false }: FlowDi
 
   return (
     <div className="my-8 rounded-xl border border-border bg-surface/50 p-4 sm:p-6">
-      {/* Flow steps — wrap on mobile, center on desktop */}
-      <div className="flex items-center justify-center gap-1 flex-wrap">
+      {/* Vertical layout — each step is a full-width row */}
+      <div className="flex flex-col items-stretch gap-0">
         {steps.map((step, i) => (
-          <div key={i} className="flex items-center">
+          <div key={i} className="flex flex-col items-center">
             <motion.div
               animate={{
-                scale: activeStep === i ? 1.05 : 1,
-                borderColor: activeStep === i ? "var(--color-accent)" : activeStep > i ? "var(--color-accent)" : "var(--color-border)",
-                backgroundColor: activeStep === i ? "var(--color-accent)" : "transparent",
+                borderColor:
+                  activeStep === i
+                    ? "var(--color-accent)"
+                    : activeStep > i
+                    ? "var(--color-accent)"
+                    : "var(--color-border)",
+                backgroundColor:
+                  activeStep === i ? "var(--color-accent)" : "transparent",
               }}
               transition={{ duration: 0.3 }}
-              className="px-3 py-2 sm:px-4 sm:py-3 rounded-lg border-2 text-center min-w-[80px] sm:min-w-[100px] max-w-[120px] sm:max-w-none"
+              className="w-full px-4 py-3 rounded-lg border-2 text-center"
             >
               <span
-                className={`text-xs sm:text-sm font-medium ${
+                className={`text-sm font-medium ${
                   activeStep === i ? "text-white" : "text-foreground"
                 }`}
               >
                 {step.label}
               </span>
+              {step.description && activeStep === i && (
+                <motion.p
+                  key={activeStep}
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  className="text-xs text-white/80 mt-1"
+                >
+                  {step.description}
+                </motion.p>
+              )}
             </motion.div>
             {i < steps.length - 1 && (
               <motion.span
                 animate={{
-                  color: activeStep > i ? "var(--color-accent)" : "var(--color-muted)",
+                  color:
+                    activeStep > i
+                      ? "var(--color-accent)"
+                      : "var(--color-muted)",
                 }}
-                className="mx-1 text-base sm:text-lg"
+                className="text-lg my-1"
               >
-                →
+                ↓
               </motion.span>
             )}
           </div>
         ))}
       </div>
-
-      {/* Active step description */}
-      {activeStep >= 0 && steps[activeStep]?.description && (
-        <motion.p
-          key={activeStep}
-          initial={{ opacity: 0, y: 5 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-sm text-muted text-center mt-4"
-        >
-          {steps[activeStep].description}
-        </motion.p>
-      )}
 
       {/* Controls */}
       <div className="flex items-center justify-between mt-6 pt-4 border-t border-border">

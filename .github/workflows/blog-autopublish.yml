@@ -1,0 +1,68 @@
+name: Blog Auto-Publish
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "content/blog/**.mdx"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Get new/modified blog posts
+        id: changed
+        run: |
+          FILES=$(git diff --name-only HEAD~1 HEAD -- 'content/blog/*.mdx' | tr '\n' ' ')
+          echo "files=$FILES" >> "$GITHUB_OUTPUT"
+          echo "Changed MDX files: $FILES"
+
+      - name: Publish to devlog-publisher
+        if: steps.changed.outputs.files != ''
+        env:
+          DEVLOG_AGENT_PASSWORD: ${{ secrets.DEVLOG_AGENT_PASSWORD }}
+          DEVLOG_URL: https://devlog-publisher.vercel.app
+        run: |
+          for FILE in ${{ steps.changed.outputs.files }}; do
+            echo "Publishing $FILE..."
+            SLUG=$(basename "$FILE" .mdx)
+            MDX_CONTENT=$(cat "$FILE")
+
+            # Authenticate — get session cookie
+            AUTH_RESPONSE=$(curl -sc /tmp/dlp_cookies.txt -X POST \
+              "$DEVLOG_URL/api/auth/agent" \
+              -H "Content-Type: application/json" \
+              -d "{\"password\":\"$DEVLOG_AGENT_PASSWORD\"}" \
+              -w "\n%{http_code}" -s)
+            AUTH_CODE=$(echo "$AUTH_RESPONSE" | tail -1)
+            if [ "$AUTH_CODE" != "200" ]; then
+              echo "Auth failed: $AUTH_CODE"
+              exit 1
+            fi
+
+            # Publish blog post only (LinkedIn is manual)
+            PAYLOAD=$(jq -n \
+              --arg slug "$SLUG" \
+              --arg mdx "$MDX_CONTENT" \
+              '{slug: $slug, mdxContent: $mdx, linkedinText: "placeholder", skipLinkedin: true, waitForDeploy: true}')
+
+            RESPONSE=$(curl -sb /tmp/dlp_cookies.txt -X POST \
+              "$DEVLOG_URL/api/publish/full" \
+              -H "Content-Type: application/json" \
+              -d "$PAYLOAD" \
+              -w "\n%{http_code}" -s)
+
+            HTTP_CODE=$(echo "$RESPONSE" | tail -1)
+            BODY=$(echo "$RESPONSE" | head -n -1)
+
+            echo "Response ($HTTP_CODE): $BODY"
+            if [ "$HTTP_CODE" != "200" ]; then
+              echo "Publish failed for $SLUG"
+              exit 1
+            fi
+            echo "Published $SLUG"
+          done

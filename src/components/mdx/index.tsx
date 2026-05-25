@@ -88,7 +88,13 @@ export const mdxComponents: MDXComponents = {
   code: ({ children, className }) => (
     <Code className={className}>{children as string}</Code>
   ),
-  pre: ({ children }) => <>{children}</>,
+  pre: ({ children }) => (
+    <div className="relative group my-6">
+      <pre className="bg-surface border border-border rounded-xl p-4 overflow-x-auto text-sm leading-relaxed whitespace-pre">
+        {children}
+      </pre>
+    </div>
+  ),
   hr: () => <hr className="border-border my-8" />,
   Tokenizer,
   FlowDiagram,

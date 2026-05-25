@@ -18,13 +18,12 @@ export function Code({ children, className }: CodeProps) {
     );
   }
 
+  // Fenced block with a language — render highlighted code (pre wraps us in index.tsx)
   const html = highlight(children);
-
   return (
-    <div className="relative group my-6">
-      <pre className="bg-surface border border-border rounded-xl p-4 overflow-x-auto text-sm leading-relaxed whitespace-pre">
-        <code className="whitespace-pre" dangerouslySetInnerHTML={{ __html: html }} />
-      </pre>
-    </div>
+    <code
+      className="whitespace-pre font-mono"
+      dangerouslySetInnerHTML={{ __html: html }}
+    />
   );
 }

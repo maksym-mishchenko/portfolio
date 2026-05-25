@@ -5,9 +5,11 @@ description: "Everyone talks about evals but nobody shows you the boring part: t
 tags: ["AI Agents", "testing", "evals", "developer tools", "LLM"]
 ---
 
-The MCP post I wrote last month mentioned a 200-query labeled test set. A few people asked about it. This is the whole thing.
+In February I shipped a system prompt change that broke tool routing for roughly 40% of requests. I found out not from tests — I didn't have any — but because I kept manually redoing things the agent was supposed to handle. Took me three days to connect the dots.
 
-It's a CSV, a scoring script, and about two hours of your time the first week. There's no vector database or automated pipeline or fancy eval framework. I spent six months not doing it and learning from production failures instead. That's a much worse deal.
+The MCP post I wrote last month mentioned a 200-case labeled test set. A few people asked about it. This is the whole thing.
+
+It's a CSV, a scoring script, and two hours the first week. No vector database, no eval framework, no pipeline. Six months of catching failures in production instead taught me that the failure is always more expensive than the test would have been.
 
 ---
 
@@ -189,16 +191,16 @@ The most important part of that diagram is the last step. I treat a regression a
 
 <Timeline
   events='[
-    {"label": "Month 1 — No evals at all", "description": "Tested by hand. Shipped fixes. Broke other things. Did not notice for days."},
-    {"label": "Month 3 — First labeled set (30 cases)", "description": "Scored 63%. Found three categories of failures that were obvious once I could see them."},
-    {"label": "Month 4 — Grew to 100 cases", "description": "Added edge cases from real failures. Score: 79%. Much more useful."},
-    {"label": "Month 6 — Automated in CI", "description": "Runs on every push to the agent prompt files. Blocks merge if score drops."},
-    {"label": "Month 9 — 200 cases, 91%", "description": "Added an LLM judge for text quality. Only added it after the structural tests were solid."},
-    {"label": "Now", "description": "New case added any time something breaks in production. The set grows with usage."}
+    {"label": "Month 1 — No evals, no idea", "description": "Tested by hand, shipped fixes, broke other things. Noticed problems because I kept doing things manually that the agent was supposed to handle. Did not connect the dots for days."},
+    {"label": "Month 3 — First labeled set (28 cases)", "description": "Scored 63%. Found three categories of failure that were completely obvious once I could see them. Still do not know why I waited."},
+    {"label": "Month 4 — Grew to 94 cases", "description": "Added edge cases from real failures. Score 79%. The jump came from three prompt clarifications, not more cases. Each one fixed eight failures."},
+    {"label": "Month 6 — Automated in CI", "description": "Runs on every push to the prompt files. Blocks merge if score drops. First time it blocked a change I was proud of, I sat there for ten minutes before admitting it was right."},
+    {"label": "Month 9 — 207 cases, 91%", "description": "Added an LLM judge for text quality. Only added it after the structural tests were solid. Probably should have waited even longer."},
+    {"label": "Now", "description": "New case any time something breaks in production. The set is the failure log, basically."}
   ]'
 />
 
-The jump from 63% to 79% didn't come from adding more test cases. It came from looking at failures and realizing that three simple prompt clarifications each fixed eight test cases. The failures are the product roadmap.
+The jump from 63% to 79% did not come from adding more cases. Three prompt clarifications, each fixing eight failures. That was the whole thing. I kept waiting for some insight about scale or diversity of the test set. It was just "add a when-to-call-this clause to the tool description" three times over.
 
 ---
 

@@ -8,25 +8,11 @@ draft: true
 
 The MCP post I wrote last month mentioned a 200-query labeled test set. A few people asked about it. This is the whole thing.
 
-It's not clever. I want to say that upfront. There's no vector database or automated pipeline or fancy eval framework. It's a CSV, a scoring script, and about two hours of your time the first week. The reason I'm writing this is that I spent six months not doing it and learning from production failures instead, which is a much worse deal.
+It's a CSV, a scoring script, and about two hours of your time the first week. There's no vector database or automated pipeline or fancy eval framework. I spent six months not doing it and learning from production failures instead. That's a much worse deal.
 
 ---
 
-## Why most evals tutorials miss the point
-
-The internet has no shortage of posts about eval frameworks. They usually start with a big diagram: Prometheus as a judge, an LLM-as-judge setup with Gemini scoring another model's output, a whole orchestration layer around it. By paragraph three you're comparing Braintrust vs LangSmith vs a custom thing that someone's team built and is now maintaining forever.
-
-I tried that path. I don't think it's wrong, but it answers the wrong question first. It answers "how do I *scale* testing?" before you've figured out "does this thing work at all?"
-
-The number that matters first is brutally simple:
-
-> on the 50 tasks I've actually asked this agent to do, how many did it get right?
-
-You don't need a framework to answer that. You need a list and ten minutes.
-
----
-
-## Step 0: know what "correct" means before you write a single test
+## Step 1: define what "correct" means before you write a single test
 
 This is where most people stall. "Correct" feels hard to define for language model output. It's not. You're not grading essays — you're checking whether an agent did the right thing.
 
@@ -48,7 +34,7 @@ Write these definitions first, in a document, before you touch any test infrastr
 
 ---
 
-## Step 1: build the labeled set
+## Step 2: build the labeled set
 
 For Hermes — my AI agent that runs 24/7 on an Azure VM — I built the test set by going back through my actual usage logs. Every query I'd sent over the past few weeks that had a clear correct answer became a test case.
 
@@ -84,13 +70,13 @@ Some things I learned building this:
 
 ---
 
-## Step 2: the scoring script
+## Step 3: the scoring script
 
-Here's the actual script I use. It's under 100 lines:
+Here's the actual script I use. It's under 100 lines. Replace `run_agent` with whatever your agent's entrypoint is — a LangChain chain, a CrewAI crew, a raw API call, anything that takes a string and returns a response:
 
 ```python
-import csv, json, re, asyncio
-from agent import run_agent  # your agent entrypoint
+import csv, json, asyncio
+from agent import run_agent  # replace with your entrypoint
 
 CASES_FILE = "eval/cases.csv"
 RESULTS_FILE = "eval/results.json"
@@ -158,7 +144,28 @@ That number is your baseline. Everything you do to the agent from now on will ei
 
 ---
 
-## Step 3: the feedback loop that actually matters
+## What actually moves the score
+
+Before getting into the feedback loop — here's what has actually moved the needle, in order of impact across my experience:
+
+1. **Clarifying the system prompt** — adding "when the user asks about X, always do Y first" covers the most ground fastest
+2. **Fixing tool descriptions** — especially the "when should I call this" part, which almost nobody writes
+3. **Adding examples to tool schemas** — one good example is worth three paragraphs of description
+4. **Adjusting temperature** — often overlooked; lower for routing/extraction, higher for text generation
+5. **Model upgrade** — usually the last lever, not the first
+
+The first two items alone account for most of the movement I've seen. Model upgrades are a distant fifth.
+
+<Quiz
+  question="You fix a bug where your agent calls the wrong tool 30% of the time. Where do you look first?"
+  options='["The model — upgrade to a larger one", "The tool description — it probably lacks a clear when-to-call-this clause", "Temperature — it needs to be lower for routing tasks", "The system prompt — add more general instructions"]'
+  answer="The tool description — it probably lacks a clear when-to-call-this clause"
+  explanation="Wrong tool selection is almost always a description problem, not a model problem. The model picks based on what each tool says it does. If two tools look similar from the description, the model guesses. Add a specific trigger condition and the problem usually disappears."
+/>
+
+---
+
+## Step 4: the feedback loop that actually matters
 
 Here's the thing nobody tells you: the score doesn't matter as much as watching the failures.
 
@@ -169,7 +176,7 @@ Every time I run evals, I look at the first five failures by hand. Not the summa
     {"label": "Run eval script", "description": "Takes ~3 minutes for 200 cases with async execution"},
     {"label": "Read the failures", "description": "Look at actual output, not just pass/fail. What went wrong and why?"},
     {"label": "Classify the root cause", "description": "Prompt ambiguity? Wrong tool called? Missing context? Bad test case?"},
-    {"label": "Fix one category at a time", "description": "If 8 failures are all the same root cause, fix that before touching the others"},
+    {"label": "Fix one category at a time", "description": "If 8 failures share the same root cause, fix that before touching the others"},
     {"label": "Re-run and compare", "description": "Did the score move? Did you break anything that was passing?"},
     {"label": "Commit the fix", "description": "Only merge if score >= baseline. Treat regressions as blocking."}
   ]'
@@ -192,7 +199,7 @@ The most important part of that diagram is the last step. I treat a regression a
   ]'
 />
 
-The jump from 63% to 79% didn't come from adding more test cases. It came from looking at failures and realizing that three simple prompt clarifications fixed eight test cases each. The failures are the product roadmap.
+The jump from 63% to 79% didn't come from adding more test cases. It came from looking at failures and realizing that three simple prompt clarifications each fixed eight test cases. The failures are the product roadmap.
 
 ---
 
@@ -240,8 +247,10 @@ The eval score gives you a controlled number. But in production, the metric I ac
 
 If a user has to ask the same thing twice, in the same session, because the first answer didn't work — that's a failure. I track this in my session logs. It's the most honest signal I have about whether the agent is actually working.
 
+The breakdown below is from roughly 850 sessions over six months. Not a rigorous sample, but directionally solid:
+
 <BarChart
-  title="Where agent failures actually happen (production data)"
+  title="Where agent failures actually happen (production, ~850 sessions)"
   data='[
     {"label": "Wrong tool called", "value": 31},
     {"label": "Correct tool, wrong params", "value": 24},
@@ -251,10 +260,10 @@ If a user has to ask the same thing twice, in the same session, because the firs
   ]'
 />
 
-Wrong tool or wrong params accounts for over half. This is a tool design problem more than a model problem. Which is actually good news — it's more fixable.
+Wrong tool or wrong params accounts for over half. Tool design problem, not a model problem. Which is good news — it's more fixable.
 
 <Aside title="On eval set contamination">
-Don't use your eval set cases as few-shot examples in your system prompt. I did this by accident in month two and my score jumped from 71% to 89% overnight. Felt great. Then I tried it on real user queries and it was just as bad as before. The number was lying.
+Do not use your eval set cases as few-shot examples in your system prompt. I did this by accident in month two and my score jumped from 71% to 89% overnight. Felt great. Then I tested on real user queries and it was just as bad as before. The number was lying.
 
 Keep your eval set completely separate from anything the model sees during inference.
 </Aside>
@@ -297,25 +306,6 @@ jobs:
 ```
 
 `--fail-below 85` blocks the merge if score drops under 85%. This number will feel uncomfortable the first time a prompt change you were proud of gets blocked by it. That's the point.
-
----
-
-## What actually moves the score
-
-In order of impact, from most to least, across my experience:
-
-1. **Clarifying the system prompt** — adding "when the user asks about X, always do Y first" covers the most ground fastest
-2. **Fixing tool descriptions** — especially the "when should I call this" part, which almost nobody writes
-3. **Adding examples to tool schemas** — one good example is worth three paragraphs of description
-4. **Adjusting temperature** — often overlooked; lower temperature for routing/extraction, higher for text
-5. **Model upgrade** — usually the last lever, not the first
-
-<Quiz
-  question="What's the fastest way to improve agent accuracy by 10+ points?"
-  options='["Upgrade to a bigger model", "Add LLM-as-judge scoring", "Clarify the system prompt based on failure analysis", "Increase the size of the labeled eval set"]'
-  answer="Clarify the system prompt based on failure analysis"
-  explanation="In practice, prompt clarity explains more variance than model size for task-specific accuracy. The failures tell you exactly what to add. Bigger models help at the margin, but they don't fix vague instructions — they just fail more confidently."
-/>
 
 ---
 

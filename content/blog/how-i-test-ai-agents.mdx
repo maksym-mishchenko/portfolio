@@ -6,97 +6,327 @@ tags: ["AI Agents", "testing", "evals", "developer tools", "LLM"]
 draft: true
 ---
 
-The MCP post I wrote last week mentioned a 200-query labeled test set. A few people asked about it. This is the whole thing.
+The MCP post I wrote last month mentioned a 200-query labeled test set. A few people asked about it. This is the whole thing.
 
-It's not clever. I want to say that upfront. There's no vector database or automated pipeline or fancy eval framework. It's a CSV, a script, and about two hours of your time. The reason I'm writing this is that I spent six months not doing it and learning from production failures instead, which is a worse deal.
+It's not clever. I want to say that upfront. There's no vector database or automated pipeline or fancy eval framework. It's a CSV, a scoring script, and about two hours of your time the first week. The reason I'm writing this is that I spent six months not doing it and learning from production failures instead, which is a much worse deal.
 
-## why I didn't write tests first
+---
 
-Testing an AI agent feels slippery in a way that testing normal code doesn't. A function either returns the right value or it doesn't. An agent can get the right answer via the wrong path, or the wrong answer that looks plausible, or the right answer 80% of the time which is good enough until it isn't.
+## Why most evals tutorials miss the point
 
-So I kept putting it off. I'd deploy, watch for errors, fix the ones I caught. This worked until it didn't. The failure that finally made me build a real test set was the agent calling `update_customer` when it should have called `get_customer`, silently overwriting data with whatever it hallucinated as a "correction."
+The internet has no shortage of posts about eval frameworks. They usually start with a big diagram: Prometheus as a judge, an LLM-as-judge setup with Gemini scoring another model's output, a whole orchestration layer around it. By paragraph three you're comparing Braintrust vs LangSmith vs a custom thing that someone's team built and is now maintaining forever.
 
-That one cost me an afternoon to clean up. The test set cost me two hours. The math is obvious in hindsight.
+I tried that path. I don't think it's wrong, but it answers the wrong question first. It answers "how do I *scale* testing?" before you've figured out "does this thing work at all?"
 
-## the labeled test set
+The number that matters first is brutally simple:
 
-A labeled test set for an agent is just: a list of inputs and the correct outputs.
+> on the 50 tasks I've actually asked this agent to do, how many did it get right?
 
-For an MCP server, the input is a user message. The output is which tool the agent should call, and roughly what arguments it should pass. You don't need to specify every argument — the schema handles that. You just need to know: given this message, the agent should call *this* tool, not any of the other 15.
+You don't need a framework to answer that. You need a list and ten minutes.
 
-Mine lives in a CSV with four columns:
+---
 
+## Step 0: know what "correct" means before you write a single test
+
+This is where most people stall. "Correct" feels hard to define for language model output. It's not. You're not grading essays — you're checking whether an agent did the right thing.
+
+For every type of task your agent handles, write down the acceptable outcomes in plain language. Before writing any test code.
+
+<CompareTable
+  headers='["Task type", "Bad definition of correct", "Actually useful definition"]'
+  rows='[
+    ["Summarize a document", "Sounds good to me", "Contains all 3 key decisions from the doc, under 150 words, no hallucinated facts"],
+    ["Answer a question from context", "Uses the right tone", "Answer appears verbatim or paraphrased in the source. No facts introduced from outside."],
+    ["Route a user request to the right tool", "Picks something reasonable", "Calls exactly tool X with params matching the schema. No alternatives."],
+    ["Refuse an out-of-scope request", "Politely declines", "Does not attempt the task AND does not ask clarifying questions"],
+    ["Extract structured data", "Gets the main fields", "All 5 required fields present, correct types, no extra keys"]
+  ]'
+  highlight="2"
+/>
+
+Write these definitions first, in a document, before you touch any test infrastructure. This document is your spec. If you skip it, you'll spend two weeks building an eval harness that measures the wrong thing with great precision.
+
+---
+
+## Step 1: build the labeled set
+
+For Hermes — my AI agent that runs 24/7 on an Azure VM — I built the test set by going back through my actual usage logs. Every query I'd sent over the past few weeks that had a clear correct answer became a test case.
+
+The format is intentionally boring:
+
+```csv
+id,input,expected_output_type,criteria,ground_truth
+001,"restart the stock-bot service",tool_call,"calls terminal() with systemctl restart","{\"tool\": \"terminal\", \"command\": \"systemctl --user restart stock-bot\"}"
+002,"what's the current bitcoin price",api_result,"returns a number in USD, mentions BTC",""
+003,"summarize last week's crypto PnL",text,"mentions total PnL figure, no hallucinated trades",""
+004,"add a daily cron at 9am to check disk usage",action,"creates a cron job, confirms schedule",""
+005,"how do I configure a new telegram bot",text,"mentions BotFather, token, no hallucinated API endpoints",""
 ```
-query, expected_tool, expected_args_contain, notes
-"what's the status of order 4821", get_order, "order_id: 4821", ""
-"update the shipping address for order 4821", update_order, "order_id: 4821", "should NOT call get_order"
-"cancel order 4821 and refund", cancel_order, "order_id: 4821", "confirm refund arg required"
-```
 
-The `notes` column is for things that bit me before. If a test is there because something broke in production, the note says so.
+Some things I learned building this:
 
-Building 200 rows takes about two hours if you know your tools. I batch it: go through each tool, write 5–10 queries that should trigger it, write 3–5 that look similar but shouldn't. The "shouldn't" cases are where most of the signal is.
+**Include your edge cases.** The normal happy path will work fine. Your eval set should be weighted toward the inputs that broke things in production, inputs that *almost* broke things, and inputs that look ambiguous. If you only test the things you're confident about, you'll have confident numbers and production surprises.
 
-## the scoring script
+**Not everything needs a ground truth string.** Some tests are structural: did the agent call the right tool? Did it refuse when it should refuse? Those are binary and you can write a simple check function.
 
-The script is also not clever. It:
+**100 cases is enough to start.** I've seen people not start because they're waiting to get to 1,000. 100 gives you a number with real signal. If you're below 70% on 100 representative cases, you have a problem. Go fix it before worrying about statistical power.
 
-1. Loads the CSV
-2. For each row, runs the agent with the query
-3. Checks if the actual tool called matches `expected_tool`
-4. Checks if the arguments contain what `expected_args_contain` specifies
-5. Logs pass/fail with the actual tool called and actual args
+<BarChart
+  title="Test case distribution by type"
+  data='[
+    {"label": "Tool calls (exact match)", "value": 35},
+    {"label": "Text generation (criteria-based)", "value": 28},
+    {"label": "Refusals / out-of-scope", "value": 18},
+    {"label": "Structured extraction", "value": 12},
+    {"label": "Multi-step tasks", "value": 7}
+  ]'
+/>
 
-Total accuracy is what I report. But I also group failures by tool, because "17 failures" is less useful than "12 of the 17 failures are `update_customer` getting called when it shouldn't be."
+---
 
-The script takes about 4 minutes to run 200 queries against a real model. I run it before and after any change to tool descriptions or schemas.
+## Step 2: the scoring script
+
+Here's the actual script I use. It's under 100 lines:
 
 ```python
-results = []
-for row in test_cases:
-    response = agent.run(row["query"])
-    tool_called = response.tool_name
-    args = response.tool_args
+import csv, json, re, asyncio
+from agent import run_agent  # your agent entrypoint
 
-    correct_tool = tool_called == row["expected_tool"]
-    correct_args = row["expected_args_contain"] in str(args)
+CASES_FILE = "eval/cases.csv"
+RESULTS_FILE = "eval/results.json"
 
-    results.append({
-        "query": row["query"],
-        "expected": row["expected_tool"],
-        "actual": tool_called,
-        "pass": correct_tool and correct_args,
-    })
+async def run_case(case: dict) -> dict:
+    response = await run_agent(case["input"])
+    passed = check(response, case)
+    return {
+        "id": case["id"],
+        "input": case["input"],
+        "passed": passed,
+        "response": str(response)[:500],
+        "criteria": case["criteria"]
+    }
 
-accuracy = sum(r["pass"] for r in results) / len(results)
+def check(response, case: dict) -> bool:
+    otype = case["output_type"]
+
+    if otype == "tool_call":
+        gt = json.loads(case["ground_truth"])
+        return (
+            response.tool == gt["tool"] and
+            gt.get("command", "") in response.args.get("command", "")
+        )
+
+    if otype == "refusal":
+        return not response.attempted_task
+
+    if otype == "text":
+        # Criteria-based: all required phrases present
+        criteria = case["criteria"].lower()
+        text = str(response).lower()
+        required = [c.strip() for c in criteria.split(",")]
+        return all(r in text for r in required)
+
+    return False
+
+async def main():
+    with open(CASES_FILE) as f:
+        cases = list(csv.DictReader(f))
+
+    results = await asyncio.gather(*[run_case(c) for c in cases])
+
+    passed = sum(r["passed"] for r in results)
+    total = len(results)
+    print(f"\n{'='*40}")
+    print(f"SCORE: {passed}/{total} ({100*passed//total}%)")
+    print(f"{'='*40}\n")
+
+    failures = [r for r in results if not r["passed"]]
+    for f in failures[:5]:
+        print(f"FAIL [{f['id']}]: {f['input']}")
+        print(f"  Expected: {f['criteria']}")
+        print(f"  Got:      {f['response'][:200]}\n")
+
+    with open(RESULTS_FILE, "w") as f:
+        json.dump({"score": passed/total, "results": results}, f, indent=2)
+
+asyncio.run(main())
 ```
 
-That's the whole thing. No framework. No LLM-as-judge. Just: did it call the right tool with the right arguments.
+Run it. Get a number. Write it down.
 
-## what the numbers looked like
+That number is your baseline. Everything you do to the agent from now on will either move it up or move it down. If it goes down, you revert. If it goes up, you ship.
 
-My baseline on the first MCP server was 60%. That's 80 wrong answers out of 200. When I first saw it I assumed I had a bug in the script. I didn't.
+---
 
-After rewriting tool descriptions — specifically adding explicit negative scopes ("does not update, does not create") and making verb choices unambiguous — I hit 91%. After filtering which tools are visible per request intent, 97%.
+## Step 3: the feedback loop that actually matters
 
-The 3% that remain are genuinely hard cases: ambiguous queries where even a human would need to ask a clarifying question. I've made peace with that.
+Here's the thing nobody tells you: the score doesn't matter as much as watching the failures.
 
-## what to do when the number doesn't move
+Every time I run evals, I look at the first five failures by hand. Not the summary stats — the actual output. What did the agent say? Why was it wrong? Is this a prompt issue, a tool design issue, or a test case that's actually wrong?
 
-This happened twice. I rewrote descriptions and the score barely changed. Both times, the actual problem wasn't the description — it was the tool names.
+<FlowDiagram
+  steps='[
+    {"label": "Run eval script", "description": "Takes ~3 minutes for 200 cases with async execution"},
+    {"label": "Read the failures", "description": "Look at actual output, not just pass/fail. What went wrong and why?"},
+    {"label": "Classify the root cause", "description": "Prompt ambiguity? Wrong tool called? Missing context? Bad test case?"},
+    {"label": "Fix one category at a time", "description": "If 8 failures are all the same root cause, fix that before touching the others"},
+    {"label": "Re-run and compare", "description": "Did the score move? Did you break anything that was passing?"},
+    {"label": "Commit the fix", "description": "Only merge if score >= baseline. Treat regressions as blocking."}
+  ]'
+/>
 
-I had `get_customer` and `fetch_customer` registered at the same time doing subtly different things. The model wasn't confused by the descriptions. It was confused by having two tools that sounded identical. Renaming one of them (and deprecating the other) moved the score by 8 points.
+The most important part of that diagram is the last step. I treat a regression as blocking. If I change the system prompt and the score drops from 87% to 83%, I revert and look at what broke. This sounds obvious but I see a lot of teams that ship changes based on vibes and check evals "soon."
 
-The other time, the problem was the test set itself. I'd written 15 test cases for one rarely-used tool and 3 for one that gets called constantly. The accuracy number was flattering because it was weighted toward the easy stuff. I rebalanced, the score dropped, and I had a more honest picture.
+---
 
-Accuracy is a lagging indicator. If you're not looking at the failure distribution, you're missing most of the information.
+## What I learned about AI agent testing over time
 
-## the thing I wish I'd done on day one
+<Timeline
+  events='[
+    {"label": "Month 1 — No evals at all", "description": "Tested by hand. Shipped fixes. Broke other things. Did not notice for days."},
+    {"label": "Month 3 — First labeled set (30 cases)", "description": "Scored 63%. Found three categories of failures that were obvious once I could see them."},
+    {"label": "Month 4 — Grew to 100 cases", "description": "Added edge cases from real failures. Score: 79%. Much more useful."},
+    {"label": "Month 6 — Automated in CI", "description": "Runs on every push to the agent prompt files. Blocks merge if score drops."},
+    {"label": "Month 9 — 200 cases, 91%", "description": "Added an LLM judge for text quality. Only added it after the structural tests were solid."},
+    {"label": "Now", "description": "New case added any time something breaks in production. The set grows with usage."}
+  ]'
+/>
 
-Write 50 labeled queries before writing any tool code. Not after. Before.
+The jump from 63% to 79% didn't come from adding more test cases. It came from looking at failures and realizing that three simple prompt clarifications fixed eight test cases each. The failures are the product roadmap.
 
-If you can't generate 50 realistic queries for a tool that doesn't exist yet, you don't know what the tool should do. This sounds like a product exercise, not an engineering one. It is both.
+---
 
-The test set forces you to think about the tool from the caller's perspective. That's the perspective that matters. The model calling your tool has no idea what it does — it only has the name and the description. Writing test queries before writing code makes that obvious in a way that reading your own documentation never does.
+## Where LLM-as-judge actually helps (and where it doesn't)
 
-Two hours upfront. Versus a production incident and an afternoon of data cleanup. I know which one I'd pick now.
+I added an LLM judge six months in, not at the start. Here's my honest take on when it's worth it:
+
+<CompareTable
+  headers='["Use LLM judge", "Skip LLM judge", "Why"]'
+  rows='[
+    ["Long-form text quality", "Tool call correctness", "Tool calls are deterministic. LLM scoring adds noise here."],
+    ["Tone / voice matching", "Factual accuracy", "LLMs are unreliable at verifying facts. Use retrieval-based checks."],
+    ["Coherence of multi-turn conversations", "Binary pass/fail criteria", "A regex is cheaper, faster, and more reliable for yes/no checks"],
+    ["Evaluating summaries against a rubric", "Refusal detection", "Just check if the agent attempted the task. No judge needed."]
+  ]'
+  highlight="0"
+/>
+
+The pattern: use LLM-as-judge for things that are genuinely hard to express as code. Don't use it as a shortcut to avoid writing criteria.
+
+My judge prompt when I do use it:
+
+```
+You are evaluating an AI agent's response.
+
+Task the agent was given: {input}
+Agent response: {response}
+Evaluation criteria: {criteria}
+
+Answer with ONLY a JSON object:
+{"passed": true/false, "reason": "one sentence"}
+
+Do not add commentary. Do not explain your reasoning beyond the reason field.
+```
+
+The explicit JSON-only instruction matters. Without it, you'll get markdown-wrapped JSON 20% of the time and your parser will break.
+
+---
+
+## The only metric that matters in prod
+
+The eval score gives you a controlled number. But in production, the metric I actually watch is simpler:
+
+**unsolicited retries per session**
+
+If a user has to ask the same thing twice, in the same session, because the first answer didn't work — that's a failure. I track this in my session logs. It's the most honest signal I have about whether the agent is actually working.
+
+<BarChart
+  title="Where agent failures actually happen (production data)"
+  data='[
+    {"label": "Wrong tool called", "value": 31},
+    {"label": "Correct tool, wrong params", "value": 24},
+    {"label": "Correct answer, user did not understand format", "value": 19},
+    {"label": "Missing context / wrong assumption", "value": 17},
+    {"label": "Refusal when it should not have refused", "value": 9}
+  ]'
+/>
+
+Wrong tool or wrong params accounts for over half. This is a tool design problem more than a model problem. Which is actually good news — it's more fixable.
+
+<Aside title="On eval set contamination">
+Don't use your eval set cases as few-shot examples in your system prompt. I did this by accident in month two and my score jumped from 71% to 89% overnight. Felt great. Then I tried it on real user queries and it was just as bad as before. The number was lying.
+
+Keep your eval set completely separate from anything the model sees during inference.
+</Aside>
+
+---
+
+## The practical setup
+
+Here's the full structure I use, in case you want to copy it directly:
+
+```
+agent/
+├── eval/
+│   ├── cases.csv          # labeled test cases
+│   ├── run_evals.py       # scoring script
+│   ├── results/           # json results per run
+│   └── baseline.json      # last known good score
+├── prompts/
+│   ├── system.txt         # system prompt
+│   └── tools.yaml         # tool definitions
+└── .github/
+    └── workflows/
+        └── evals.yml      # CI: run evals on prompt changes
+```
+
+The CI workflow is four lines:
+
+```yaml
+on:
+  push:
+    paths: ['agent/prompts/**']
+
+jobs:
+  evals:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install -r requirements.txt
+      - run: python agent/eval/run_evals.py --fail-below 85
+```
+
+`--fail-below 85` blocks the merge if score drops under 85%. This number will feel uncomfortable the first time a prompt change you were proud of gets blocked by it. That's the point.
+
+---
+
+## What actually moves the score
+
+In order of impact, from most to least, across my experience:
+
+1. **Clarifying the system prompt** — adding "when the user asks about X, always do Y first" covers the most ground fastest
+2. **Fixing tool descriptions** — especially the "when should I call this" part, which almost nobody writes
+3. **Adding examples to tool schemas** — one good example is worth three paragraphs of description
+4. **Adjusting temperature** — often overlooked; lower temperature for routing/extraction, higher for text
+5. **Model upgrade** — usually the last lever, not the first
+
+<Quiz
+  question="What's the fastest way to improve agent accuracy by 10+ points?"
+  options='["Upgrade to a bigger model", "Add LLM-as-judge scoring", "Clarify the system prompt based on failure analysis", "Increase the size of the labeled eval set"]'
+  answer="Clarify the system prompt based on failure analysis"
+  explanation="In practice, prompt clarity explains more variance than model size for task-specific accuracy. The failures tell you exactly what to add. Bigger models help at the margin, but they don't fix vague instructions — they just fail more confidently."
+/>
+
+---
+
+## Start here if you haven't done any of this
+
+1. Write down 20 tasks your agent actually handles. Just the input, in plain text.
+2. Run each one. Write "pass" or "fail" next to each one.
+3. Look at the failures. Write one sentence about what went wrong for each.
+4. Fix the most common root cause.
+5. Re-run the 20.
+
+That's it. That's the eval loop. Do that once a week and your agent will be meaningfully better in a month. Add the CSV, the script, and the CI gate when you've done it a few times by hand and it feels worth automating.
+
+The fancy stuff comes later. The list comes first.

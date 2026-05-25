@@ -18,7 +18,7 @@ export function CompareTable({ headers, rows, highlight }: CompareTableProps) {
 
   return (
     <div className="my-6 overflow-x-auto rounded-xl border border-border">
-      <table className="w-full text-sm">
+      <table className="w-full min-w-max text-sm">
         <thead>
           <tr className="bg-surface/50 border-b border-border">
             {parsedHeaders.map((h, i) => (

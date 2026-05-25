@@ -22,8 +22,8 @@ export function Code({ children, className }: CodeProps) {
 
   return (
     <div className="relative group my-6">
-      <pre className="bg-surface border border-border rounded-xl p-4 overflow-x-auto text-sm leading-relaxed">
-        <code dangerouslySetInnerHTML={{ __html: html }} />
+      <pre className="bg-surface border border-border rounded-xl p-4 overflow-x-auto text-sm leading-relaxed whitespace-pre">
+        <code className="whitespace-pre" dangerouslySetInnerHTML={{ __html: html }} />
       </pre>
     </div>
   );

@@ -17,7 +17,10 @@ jobs:
       - name: Get new/modified blog posts
         id: changed
         run: |
-          FILES=$(git diff --name-only HEAD~1 HEAD -- 'content/blog/*.mdx' | tr '\n' ' ')
+          # Only include files that still exist (skip deletions)
+          FILES=$(git diff --name-only HEAD~1 HEAD -- 'content/blog/*.mdx' \
+            | while read f; do [ -f "$f" ] && echo "$f"; done \
+            | tr '\n' ' ')
           echo "files=$FILES" >> "$GITHUB_OUTPUT"
           echo "Changed MDX files: $FILES"
 

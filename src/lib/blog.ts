@@ -10,6 +10,7 @@ export interface BlogPost {
   tags: string[];
   readingTime: string;
   content: string;
+  draft?: boolean;
 }
 
 export interface BlogPostMeta {
@@ -19,6 +20,7 @@ export interface BlogPostMeta {
   description: string;
   tags: string[];
   readingTime: string;
+  draft?: boolean;
 }
 
 const BLOG_DIR = path.join(process.cwd(), "content", "blog");
@@ -30,7 +32,7 @@ function calculateReadingTime(content: string): string {
   return `${minutes} min read`;
 }
 
-export function getAllPosts(): BlogPostMeta[] {
+function getAllPostsIncludingDrafts(): BlogPostMeta[] {
   if (!fs.existsSync(BLOG_DIR)) return [];
 
   const files = fs.readdirSync(BLOG_DIR).filter((f) => f.endsWith(".mdx"));
@@ -48,12 +50,21 @@ export function getAllPosts(): BlogPostMeta[] {
         description: data.description ?? "",
         tags: data.tags ?? [],
         readingTime: calculateReadingTime(content),
+        draft: data.draft === true,
       };
     })
     .filter((post) => post.date)
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   return posts;
+}
+
+export function getAllPosts(): BlogPostMeta[] {
+  return getAllPostsIncludingDrafts().filter((post) => !post.draft);
+}
+
+export function getAllDraftPosts(): BlogPostMeta[] {
+  return getAllPostsIncludingDrafts().filter((post) => post.draft);
 }
 
 export function getPostBySlug(slug: string): BlogPost | null {
@@ -71,6 +82,7 @@ export function getPostBySlug(slug: string): BlogPost | null {
     tags: data.tags ?? [],
     readingTime: calculateReadingTime(content),
     content,
+    draft: data.draft === true,
   };
 }
 

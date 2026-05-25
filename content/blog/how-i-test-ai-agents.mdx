@@ -1,0 +1,102 @@
+---
+title: "how I actually test AI agents"
+date: "2026-05-25"
+description: "Everyone talks about evals but nobody shows you the boring part: the labeled test set, the scoring script, and what you do when the number doesn't move."
+tags: ["AI Agents", "testing", "evals", "developer tools", "LLM"]
+draft: true
+---
+
+The MCP post I wrote last week mentioned a 200-query labeled test set. A few people asked about it. This is the whole thing.
+
+It's not clever. I want to say that upfront. There's no vector database or automated pipeline or fancy eval framework. It's a CSV, a script, and about two hours of your time. The reason I'm writing this is that I spent six months not doing it and learning from production failures instead, which is a worse deal.
+
+## why I didn't write tests first
+
+Testing an AI agent feels slippery in a way that testing normal code doesn't. A function either returns the right value or it doesn't. An agent can get the right answer via the wrong path, or the wrong answer that looks plausible, or the right answer 80% of the time which is good enough until it isn't.
+
+So I kept putting it off. I'd deploy, watch for errors, fix the ones I caught. This worked until it didn't. The failure that finally made me build a real test set was the agent calling `update_customer` when it should have called `get_customer`, silently overwriting data with whatever it hallucinated as a "correction."
+
+That one cost me an afternoon to clean up. The test set cost me two hours. The math is obvious in hindsight.
+
+## the labeled test set
+
+A labeled test set for an agent is just: a list of inputs and the correct outputs.
+
+For an MCP server, the input is a user message. The output is which tool the agent should call, and roughly what arguments it should pass. You don't need to specify every argument — the schema handles that. You just need to know: given this message, the agent should call *this* tool, not any of the other 15.
+
+Mine lives in a CSV with four columns:
+
+```
+query, expected_tool, expected_args_contain, notes
+"what's the status of order 4821", get_order, "order_id: 4821", ""
+"update the shipping address for order 4821", update_order, "order_id: 4821", "should NOT call get_order"
+"cancel order 4821 and refund", cancel_order, "order_id: 4821", "confirm refund arg required"
+```
+
+The `notes` column is for things that bit me before. If a test is there because something broke in production, the note says so.
+
+Building 200 rows takes about two hours if you know your tools. I batch it: go through each tool, write 5–10 queries that should trigger it, write 3–5 that look similar but shouldn't. The "shouldn't" cases are where most of the signal is.
+
+## the scoring script
+
+The script is also not clever. It:
+
+1. Loads the CSV
+2. For each row, runs the agent with the query
+3. Checks if the actual tool called matches `expected_tool`
+4. Checks if the arguments contain what `expected_args_contain` specifies
+5. Logs pass/fail with the actual tool called and actual args
+
+Total accuracy is what I report. But I also group failures by tool, because "17 failures" is less useful than "12 of the 17 failures are `update_customer` getting called when it shouldn't be."
+
+The script takes about 4 minutes to run 200 queries against a real model. I run it before and after any change to tool descriptions or schemas.
+
+```python
+results = []
+for row in test_cases:
+    response = agent.run(row["query"])
+    tool_called = response.tool_name
+    args = response.tool_args
+
+    correct_tool = tool_called == row["expected_tool"]
+    correct_args = row["expected_args_contain"] in str(args)
+
+    results.append({
+        "query": row["query"],
+        "expected": row["expected_tool"],
+        "actual": tool_called,
+        "pass": correct_tool and correct_args,
+    })
+
+accuracy = sum(r["pass"] for r in results) / len(results)
+```
+
+That's the whole thing. No framework. No LLM-as-judge. Just: did it call the right tool with the right arguments.
+
+## what the numbers looked like
+
+My baseline on the first MCP server was 60%. That's 80 wrong answers out of 200. When I first saw it I assumed I had a bug in the script. I didn't.
+
+After rewriting tool descriptions — specifically adding explicit negative scopes ("does not update, does not create") and making verb choices unambiguous — I hit 91%. After filtering which tools are visible per request intent, 97%.
+
+The 3% that remain are genuinely hard cases: ambiguous queries where even a human would need to ask a clarifying question. I've made peace with that.
+
+## what to do when the number doesn't move
+
+This happened twice. I rewrote descriptions and the score barely changed. Both times, the actual problem wasn't the description — it was the tool names.
+
+I had `get_customer` and `fetch_customer` registered at the same time doing subtly different things. The model wasn't confused by the descriptions. It was confused by having two tools that sounded identical. Renaming one of them (and deprecating the other) moved the score by 8 points.
+
+The other time, the problem was the test set itself. I'd written 15 test cases for one rarely-used tool and 3 for one that gets called constantly. The accuracy number was flattering because it was weighted toward the easy stuff. I rebalanced, the score dropped, and I had a more honest picture.
+
+Accuracy is a lagging indicator. If you're not looking at the failure distribution, you're missing most of the information.
+
+## the thing I wish I'd done on day one
+
+Write 50 labeled queries before writing any tool code. Not after. Before.
+
+If you can't generate 50 realistic queries for a tool that doesn't exist yet, you don't know what the tool should do. This sounds like a product exercise, not an engineering one. It is both.
+
+The test set forces you to think about the tool from the caller's perspective. That's the perspective that matters. The model calling your tool has no idea what it does — it only has the name and the description. Writing test queries before writing code makes that obvious in a way that reading your own documentation never does.
+
+Two hours upfront. Versus a production incident and an afternoon of data cleanup. I know which one I'd pick now.

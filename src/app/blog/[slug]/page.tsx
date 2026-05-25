@@ -46,6 +46,15 @@ export default async function BlogPostPage({ params }: Props) {
       </Link>
 
       <article className="mt-8">
+        {post.draft && (
+          <div className="mb-6 px-4 py-3 rounded-lg border border-[#f97316]/40 bg-[#f97316]/10 text-sm text-[#f97316] font-medium">
+            🚧 This post is in staging — not yet publicly listed. Go to{" "}
+            <a href="/staging" className="underline hover:no-underline">
+              /staging
+            </a>{" "}
+            to approve &amp; publish it.
+          </div>
+        )}
         <header className="mb-10">
           <h1 className="text-3xl sm:text-4xl font-bold font-heading mb-3">
             {post.title}

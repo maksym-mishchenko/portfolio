@@ -365,7 +365,7 @@ function FlowTemplate({ title, input, steps, outputs, avatar }: { title: string;
 }
 
 // --- Image Generation ---
-async function generateImage(template: any, width: number, height: number, filename: string) {
+async function generateImage(template: Parameters<typeof satori>[0], width: number, height: number, filename: string) {
   const svg = await satori(template, {
     width,
     height,

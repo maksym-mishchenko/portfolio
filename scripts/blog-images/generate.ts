@@ -365,6 +365,7 @@ function FlowTemplate({ title, input, steps, outputs, avatar }: { title: string;
 }
 
 // --- Image Generation ---
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function generateImage(template: any, width: number, height: number, filename: string) {
   const svg = await satori(template, {
     width,

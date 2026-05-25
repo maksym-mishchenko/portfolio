@@ -22,6 +22,20 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  async redirects() {
+    return [
+      {
+        source: "/blog/building-better-ai-agents-lessons-from-running-40-in-product",
+        destination: "/blog/building-better-ai-agents",
+        permanent: true,
+      },
+      {
+        source: "/blog/from-copy-pasting-code-to-ai-led-development-how-copilot-cli",
+        destination: "/blog/from-copy-pasting-chatgpt",
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {

@@ -22,19 +22,19 @@ export function TerminalTyping({
   const [currentLine, setCurrentLine] = useState(0);
   const [charIndex, setCharIndex] = useState(0);
   const [showResponse, setShowResponse] = useState(false);
-  const [completedLines, setCompletedLines] = useState<number[]>([]);
-  const [done, setDone] = useState(false);
-  const [reducedMotion, setReducedMotion] = useState(false);
+  const prefersReduced =
+    typeof window !== "undefined" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const [reducedMotion] = useState(prefersReduced);
+  const [completedLines, setCompletedLines] = useState<number[]>(() =>
+    prefersReduced ? lines.map((_, i) => i) : []
+  );
+  const [done, setDone] = useState(prefersReduced);
 
   useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (mq.matches) {
-      setReducedMotion(true);
-      setCompletedLines(lines.map((_, i) => i));
-      setDone(true);
-      onComplete?.();
-    }
-  }, [onComplete]);
+    if (prefersReduced) onComplete?.();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const advance = useCallback(() => {
     if (reducedMotion || done) return;
@@ -64,7 +64,9 @@ export function TerminalTyping({
     }
   }, [reducedMotion, done, currentLine, charIndex, showResponse, onComplete]);
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     advance();
   }, [advance]);
 

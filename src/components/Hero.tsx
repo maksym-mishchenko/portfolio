@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { track } from "@vercel/analytics";
@@ -49,13 +50,13 @@ export function Hero() {
           >
             Projects ↓
           </button>
-          <a
+          <Link
             href="/blog"
             onClick={() => track("cta_click", { label: "blog" })}
             className="border border-[#27272a] hover:border-[#3b82f6] text-[#a1a1aa] hover:text-[#fafafa] px-5 py-3 rounded-lg font-medium transition-colors text-sm sm:text-base"
           >
             Blog →
-          </a>
+          </Link>
           <a
             href="https://github.com/maksym-mishchenko"
             target="_blank"

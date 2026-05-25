@@ -47,11 +47,11 @@ jobs:
               exit 1
             fi
 
-            # Publish blog post only (LinkedIn is manual)
+            # Publish blog post only (LinkedIn is manual, no deploy wait to avoid timeout)
             PAYLOAD=$(jq -n \
               --arg slug "$SLUG" \
               --arg mdx "$MDX_CONTENT" \
-              '{slug: $slug, mdxContent: $mdx, linkedinText: "placeholder", skipLinkedin: true, waitForDeploy: true}')
+              '{slug: $slug, mdxContent: $mdx, linkedinText: "placeholder", skipLinkedin: true, waitForDeploy: false}')
 
             RESPONSE=$(curl -sb /tmp/dlp_cookies.txt -X POST \
               "$DEVLOG_URL/api/publish/full" \

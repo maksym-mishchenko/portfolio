@@ -1,13 +1,13 @@
 ---
 title: "agent security: what microsoft shipped (and what you still need to build)"
 date: "2026-05-26"
-description: "Microsoft Entra Agent ID provides identity and OAuth. It doesn't prevent jailbreaks, enforce tool boundaries, or stop data exfiltration. Here's the architecture gap and what to build."
+description: "Microsoft Entra Agent ID provides identity and OAuth. It does not prevent jailbreaks, enforce tool boundaries, or stop data exfiltration. Here is the architecture gap and what to build."
 tags: ["security", "ai-agents", "entra", "architecture"]
 ---
 
-Microsoft shipped agent identities in April 2026. [Entra Agent ID](https://learn.microsoft.com/en-us/entra/agent-id/what-is-microsoft-entra-agent-id) gives every AI agent an OAuth token, conditional access policies, and audit logs. It's a real foundation — but it solves the *easy* problem (who is this agent?) while leaving the *hard* problems (what should it be allowed to do? how do we enforce that?) entirely to you.
+Microsoft shipped agent identities in April 2026. [Entra Agent ID](https://learn.microsoft.com/en-us/entra/agent-id/what-is-microsoft-entra-agent-id) gives every AI agent an OAuth token, conditional access policies, and audit logs. It is a real foundation — but it solves the *easy* problem (who is this agent?) while leaving the *hard* problems (what should it be allowed to do? how do we enforce that?) entirely to you.
 
-This isn't criticism. It's architecture. Identity systems authenticate. Security enforcement happens elsewhere. This post maps the gap.
+This is not criticism. It is architecture. Identity systems authenticate. Security enforcement happens elsewhere. This post maps the gap.
 
 ## The Identity Layer: What Entra Agent ID Actually Provides
 
@@ -30,27 +30,25 @@ From the [RSAC 2026 announcement](https://techcommunity.microsoft.com/blog/micro
 - **Sign-in and audit logs** — Complete activity tracking (included in base Entra)
 
 <BarChart
-  data={[
-    { feature: 'Agent Identities', coverage: 100 },
-    { feature: 'OAuth/MCP/A2A', coverage: 100 },
-    { feature: 'Conditional Access', coverage: 100 },
-    { feature: 'Audit Logs', coverage: 100 },
-    { feature: 'Tool Permissions', coverage: 0 },
-    { feature: 'Prompt Injection Defense', coverage: 0 },
-    { feature: 'Data Loss Prevention', coverage: 0 },
-    { feature: 'Action Authorization', coverage: 0 }
-  ]}
-  xKey="feature"
-  yKey="coverage"
   title="Entra Agent ID Feature Coverage"
-  description="What's included (100%) vs what you build yourself (0%)"
+  description="What is included (100%) vs what you build yourself (0%)"
+  data='[
+    {"label": "Agent Identities", "value": 100},
+    {"label": "OAuth/MCP/A2A", "value": 100},
+    {"label": "Conditional Access", "value": 100},
+    {"label": "Audit Logs", "value": 100},
+    {"label": "Tool Permissions", "value": 0},
+    {"label": "Prompt Injection Defense", "value": 0},
+    {"label": "Data Loss Prevention", "value": 0},
+    {"label": "Action Authorization", "value": 0}
+  ]'
 />
 
-## The Enforcement Gap: What's Missing
+## The Enforcement Gap: What is Missing
 
 ### 1. Tool Permission Boundaries
 
-**The problem:** An agent with valid OAuth token can call any MCP tool the framework exposes. Entra validates the token. It doesn't know what `mcp_terminal` does, doesn't care if the agent should be allowed to run shell commands.
+**The problem:** An agent with valid OAuth token can call any MCP tool the framework exposes. Entra validates the token. It does not know what `mcp_terminal` does, does not care if the agent should be allowed to run shell commands.
 
 **Real example from our stack:**
 
@@ -65,9 +63,9 @@ await mcpClient.callTool('mcp_terminal', {
 });
 ```
 
-### 2. Prompt Injection & Jailbreak Prevention
+### 2. Prompt Injection and Jailbreak Prevention
 
-**The problem:** OAuth success ≠ safe behavior. A compromised agent with valid credentials can still be manipulated via prompt injection to exfiltrate data, execute unauthorized actions, or bypass guardrails.
+**The problem:** OAuth success does not guarantee safe behavior. A compromised agent with valid credentials can still be manipulated via prompt injection to exfiltrate data, execute unauthorized actions, or bypass guardrails.
 
 From [Perplexity's NIST RFI response (March 2026)](https://arxiv.org/html/2603.12230v1):
 
@@ -90,52 +88,54 @@ These are **authorization failures**, not authentication failures. The agents ha
 From ["Before the Tool Call: Deterministic Pre-Action Authorization for Autonomous AI Agents"](https://arxiv.org/html/2603.20953v1) (March 2026, APort Technologies):
 
 <BarChart
-  data={[
-    { approach: 'Permissive Policy', attack_success: 74.6 },
-    { approach: 'OAP Restrictive Policy', attack_success: 0 }
-  ]}
-  xKey="approach"
-  yKey="attack_success"
   title="Social Engineering Attack Success Rates"
   description="4,437 auth decisions across 1,151 sessions with $5K bounty (Uchibeke, 2026)"
+  data='[
+    {"label": "Permissive Policy", "value": 74.6},
+    {"label": "OAP Restrictive Policy", "value": 0}
+  ]'
 />
 
 **Key finding:** Without deterministic pre-action authorization, 74.6% of social engineering attacks succeeded. With policy enforcement *before* tool execution, 0% succeeded across 879 attempts.
 
 ## Three-Layer Defense Architecture
 
-Research consensus (Uchibeke 2026, Perplexity NIST RFI 2026, ClawLess 2026): You need all three layers. They're complementary, not competing.
+Research consensus (Uchibeke 2026, Perplexity NIST RFI 2026, ClawLess 2026): You need all three layers. They are complementary, not competing.
 
-<FlowDiagram
-  nodes={[
-    { id: '1', label: 'Agent receives user request', type: 'start' },
-    { id: '2', label: 'Layer 1: Identity (Entra)', type: 'process' },
-    { id: '3', label: 'Valid OAuth token?', type: 'decision' },
-    { id: '4', label: 'Layer 2: Pre-Action Authorization', type: 'process' },
-    { id: '5', label: 'Policy allows action?', type: 'decision' },
-    { id: '6', label: 'Layer 3: Sandboxed Execution', type: 'process' },
-    { id: '7', label: 'Execute tool call', type: 'process' },
-    { id: '8', label: 'DENY', type: 'end' }
-  ]}
-  edges={[
-    { from: '1', to: '2' },
-    { from: '2', to: '3' },
-    { from: '3', to: '8', label: 'No' },
-    { from: '3', to: '4', label: 'Yes' },
-    { from: '4', to: '5' },
-    { from: '5', to: '8', label: 'No' },
-    { from: '5', to: '6', label: 'Yes' },
-    { from: '6', to: '7' },
-    { from: '7', to: 'end' }
-  ]}
-  title="Three-Layer Agent Security Architecture"
+<InteractiveFlow
+  height="600px"
+  nodes='[
+    {"id": "user", "data": {"label": "User Request"}, "position": {"x": 250, "y": 0}, "style": {"background": "var(--color-accent)", "color": "white", "fontWeight": 600}},
+    {"id": "agent", "data": {"label": "Agent"}, "position": {"x": 250, "y": 80}},
+    {"id": "l1", "data": {"label": "Layer 1: Identity\\n(Entra Agent ID)"}, "position": {"x": 50, "y": 180}, "style": {"background": "#22c55e", "color": "white", "minWidth": "180px", "textAlign": "center"}},
+    {"id": "l1-check", "data": {"label": "Valid OAuth\\ntoken?"}, "position": {"x": 250, "y": 180}},
+    {"id": "l2", "data": {"label": "Layer 2: Policy\\n(Pre-Action Authorization)"}, "position": {"x": 50, "y": 300}, "style": {"background": "#3b82f6", "color": "white", "minWidth": "180px", "textAlign": "center"}},
+    {"id": "l2-check", "data": {"label": "Policy\\nallows?"}, "position": {"x": 250, "y": 300}},
+    {"id": "l3", "data": {"label": "Layer 3: Sandbox\\n(gVisor/Firecracker)"}, "position": {"x": 50, "y": 420}, "style": {"background": "#a855f7", "color": "white", "minWidth": "180px", "textAlign": "center"}},
+    {"id": "execute", "data": {"label": "Execute Tool"}, "position": {"x": 250, "y": 420}, "style": {"background": "#22c55e", "color": "white", "fontWeight": 600}},
+    {"id": "deny", "data": {"label": "❌ DENY"}, "position": {"x": 450, "y": 240}, "style": {"background": "#ef4444", "color": "white", "fontWeight": 600}}
+  ]'
+  edges='[
+    {"id": "e1", "source": "user", "target": "agent", "animated": true},
+    {"id": "e2", "source": "agent", "target": "l1-check", "animated": true},
+    {"id": "e3", "source": "l1-check", "target": "l1", "label": "validate", "animated": true},
+    {"id": "e4", "source": "l1", "target": "l2-check", "label": "✓ valid", "animated": true},
+    {"id": "e5", "source": "l1-check", "target": "deny", "label": "✗ invalid", "animated": false, "type": "step"},
+    {"id": "e6", "source": "l2-check", "target": "l2", "label": "check policy", "animated": true},
+    {"id": "e7", "source": "l2", "target": "l3", "label": "✓ allowed", "animated": true},
+    {"id": "e8", "source": "l2-check", "target": "deny", "label": "✗ blocked", "animated": false, "type": "step"},
+    {"id": "e9", "source": "l3", "target": "execute", "label": "sandbox", "animated": true}
+  ]'
 />
 
-| Layer | What It Prevents | What It Doesn't Prevent | Overhead |
-|-------|-----------------|------------------------|----------|
-| **1. Identity (Entra)** | Unauthorized agents accessing resources | Authorized agent doing unauthorized things | ~50ms (token validation) |
-| **2. Pre-Action Authorization** | Policy violations, business rule violations, prompt-injected actions | Exploits within allowed tools | ~53ms median (Uchibeke 2026) |
-| **3. Sandboxed Execution** | Host compromise, lateral movement, resource exhaustion | Actions within sandbox permissions | 100-300ms cold start |
+<CompareTable
+  headers='["Layer", "What It Prevents", "What It Does Not Prevent", "Overhead"]'
+  rows='[
+    ["1. Identity (Entra)", "Unauthorized agents accessing resources", "Authorized agent doing unauthorized things", "~50ms (token validation)"],
+    ["2. Pre-Action Authorization", "Policy violations, business rule violations, prompt-injected actions", "Exploits within allowed tools", "~53ms median (Uchibeke 2026)"],
+    ["3. Sandboxed Execution", "Host compromise, lateral movement, resource exhaustion", "Actions within sandbox permissions", "100-300ms cold start"]
+  ]'
+/>
 
 ### Example: $500 Payment Attack
 
@@ -164,7 +164,7 @@ Amount exceeds $100 limit → **DENY** (audit trail generated)
 
 ## What We Built: ToolExecutor with Allowlist Enforcement
 
-When building [OpenClaw](https://github.com/maksym-mishchenko/openclaw-dashboard) (autonomous engineering manager), we hit this exact gap. Entra provides the identity foundation (who is this agent?), but doesn't prevent a compromised agent from calling destructive tools.
+When building [OpenClaw](https://github.com/maksym-mishchenko/openclaw-dashboard) (autonomous engineering manager), we hit this exact gap. Entra provides the identity foundation (who is this agent?), but does not prevent a compromised agent from calling destructive tools.
 
 Our implementation:
 
@@ -200,7 +200,7 @@ class ToolExecutor:
 ```
 
 **Key properties:**
-- **Fail-closed** — If tool not in allowlist, deny (don't fall back to model judgment)
+- **Fail-closed** — If tool not in allowlist, deny (do not fall back to model judgment)
 - **Double validation** — Allowlist check + semantic validation on high-risk tools
 - **Audit trail** — Every decision (allow/deny) logged with agent identity, tool, params
 - **Deterministic** — Same tool call with same params → same decision (no sampling, no temperature)
@@ -208,6 +208,15 @@ class ToolExecutor:
 ## Case Study: GitHub Copilot CLI (12 → 0 Incidents)
 
 GitHub's internal security incident data (shared at [Microsoft Build 2026](https://techcommunity.microsoft.com/blog/microsoft-entra-blog/microsoft-entra-innovations-announced-at-rsac-2026/4502146)):
+
+<BarChart
+  title="GitHub Copilot CLI Security Incidents"
+  description="Q3 2025 (before) vs Q4 2025 - Q1 2026 (after Entra Agent ID + tool boundaries)"
+  data='[
+    {"label": "Before Agent Identities (Q3 2025)", "value": 12},
+    {"label": "After Entra Agent ID + Tool Boundaries (Q4 2025 - Q1 2026)", "value": 0}
+  ]'
+/>
 
 **Before agent identities (Q3 2025):**
 - 12 security incidents involving Copilot CLI in 3 months
@@ -222,7 +231,7 @@ GitHub's internal security incident data (shared at [Microsoft Build 2026](https
 3. Conditional access policies applied (location, risk score, device compliance)
 4. Audit logs enabled mandatory review for financial/PII tool access
 
-The **combination** of identity + authorization enforcement delivered zero incidents. Identity alone wouldn't have prevented the original 12 (they had valid service principals).
+The **combination** of identity + authorization enforcement delivered zero incidents. Identity alone would not have prevented the original 12 (they had valid service principals).
 
 ## Research Perspective: The Authorization Gap is Fundamental
 
@@ -238,25 +247,23 @@ From ["ClawLess: A Security Model of AI Agents"](https://arxiv.org/html/2604.062
 Under these assumptions, **identity alone is insufficient**. You need:
 
 - **Formal policy specification** — Allowlist of tools, resource constraints, business rules
-- **Deterministic enforcement** — Pre-action authorization that can't be bypassed via prompt engineering
+- **Deterministic enforcement** — Pre-action authorization that cannot be bypassed via prompt engineering
 - **Kernel-level isolation** — Sandboxed execution environment (gVisor, Firecracker, Kata Containers)
 
 <BarChart
-  data={[
-    { mechanism: 'Identity (Entra)', security_guarantee: 30 },
-    { mechanism: '+ Tool Allowlist', security_guarantee: 65 },
-    { mechanism: '+ Pre-Action Policy', security_guarantee: 85 },
-    { mechanism: '+ Sandboxed Execution', security_guarantee: 95 }
-  ]}
-  xKey="mechanism"
-  yKey="security_guarantee"
   title="Cumulative Security Guarantees"
   description="Relative security strength across defense layers (ClawLess threat model)"
+  data='[
+    {"label": "Identity (Entra)", "value": 30},
+    {"label": "+ Tool Allowlist", "value": 65},
+    {"label": "+ Pre-Action Policy", "value": 85},
+    {"label": "+ Sandboxed Execution", "value": 95}
+  ]'
 />
 
 ## What You Need to Build
 
-If you're deploying Entra Agent ID in production, here's the implementation checklist:
+If you are deploying Entra Agent ID in production, here is the implementation checklist:
 
 ### 1. Tool Permission System
 
@@ -310,14 +317,17 @@ async def authorize_action(tool_name: str, params: dict, agent_id: str):
 
 ### 3. Sandboxed Execution Environment
 
-Don't run agent code directly on host. Options:
+Do not run agent code directly on host. Options:
 
-| Technology | Security | Performance | Complexity |
-|-----------|----------|-------------|------------|
-| **Docker** | Low (shares host kernel) | High | Low |
-| **gVisor** | High (user-space kernel) | Medium | Medium |
-| **Firecracker** | Very High (microVM) | Medium | High |
-| **Kata Containers** | Very High (VM per container) | Low (cold start) | High |
+<CompareTable
+  headers='["Technology", "Security", "Performance", "Complexity"]'
+  rows='[
+    ["Docker", "Low (shares host kernel)", "High", "Low"],
+    ["gVisor", "High (user-space kernel)", "Medium", "Medium"],
+    ["Firecracker", "Very High (microVM)", "Medium", "High"],
+    ["Kata Containers", "Very High (VM per container)", "Low (cold start)", "High"]
+  ]'
+/>
 
 **Recommendation:** Start with gVisor. Only 1 CVE in 10 years, minimal performance overhead, widely deployed (GKE Sandbox, Cloud Run).
 
@@ -326,7 +336,7 @@ Don't run agent code directly on host. Options:
 Even with identity + tool boundaries + sandbox, prompt injection can manipulate *how* the agent uses allowed tools.
 
 **Defenses:**
-- **System prompt protection** — Framework-managed, agent can't override
+- **System prompt protection** — Framework-managed, agent cannot override
 - **Input sanitization** — Strip markdown, escape special chars in user input
 - **Output validation** — Check tool call params match expected schema
 - **Audit anomaly detection** — Flag unusual sequences (e.g., 10 DB queries in 1 second)
@@ -347,16 +357,16 @@ def sanitize_user_input(text: str) -> str:
     return text
 ```
 
-## What Microsoft Should Add (But Probably Won't)
+## What Microsoft Should Add (But Probably Will Not)
 
-These are **agent-specific security features**, not identity features. Different product domain, different team, different licensing model. Don't expect them in Entra Agent ID.
+These are **agent-specific security features**, not identity features. Different product domain, different team, different licensing model. Do not expect them in Entra Agent ID.
 
 1. **Prompt injection classifier** — Real-time detection of malicious prompts (probabilistic layer, not replacement for deterministic enforcement)
 2. **Tool permission DSL** — Declarative language for "agent X can call tool Y with constraints Z"
 3. **Agent Data Loss Prevention** — Semantic analysis of tool outputs before returning to agent (detect PII, credentials, secrets)
 4. **Federated policy enforcement** — Cross-organization policy sharing (e.g., "no financial tools for agents operating on untrusted data")
 
-Some of these exist in [Microsoft Agent 365 Security Policy Templates](https://techcommunity.microsoft.com/blog/microsoft-entra-blog/microsoft-entra-innovations-announced-at-rsac-2026/4502146), but that's a different product with different licensing. Entra Agent ID is the identity foundation layer.
+Some of these exist in [Microsoft Agent 365 Security Policy Templates](https://techcommunity.microsoft.com/blog/microsoft-entra-blog/microsoft-entra-innovations-announced-at-rsac-2026/4502146), but that is a different product with different licensing. Entra Agent ID is the identity foundation layer.
 
 ## Bottom Line
 
@@ -373,7 +383,7 @@ Some of these exist in [Microsoft Agent 365 Security Policy Templates](https://t
 - Prompt injection defenses (input sanitization, output validation)
 - Agent DLP (semantic analysis of tool outputs)
 
-Identity is the foundation. It's not the whole building.
+Identity is the foundation. It is not the whole building.
 
 ---
 

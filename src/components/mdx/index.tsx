@@ -3,6 +3,8 @@ import { Code } from "./Code";
 import { ImageZoom } from "./ImageZoom";
 import { Tokenizer } from "./interactive/Tokenizer";
 import { FlowDiagram } from "./interactive/FlowDiagram";
+import { InteractiveFlow } from "./interactive/InteractiveFlow";
+import { Mermaid } from "./interactive/Mermaid";
 import { Aside } from "./interactive/Aside";
 import { EmbeddingSpace } from "./interactive/EmbeddingSpace";
 import { Quiz } from "./interactive/Quiz";
@@ -98,6 +100,8 @@ export const mdxComponents: MDXComponents = {
   hr: () => <hr className="border-border my-8" />,
   Tokenizer,
   FlowDiagram,
+  InteractiveFlow,
+  Mermaid,
   Aside,
   EmbeddingSpace,
   Quiz,

@@ -83,8 +83,8 @@ export function InteractiveFlow({
 
   return (
     <div
-      className="my-8 rounded-xl border border-border bg-surface/50 overflow-hidden"
-      style={{ height }}
+      className="my-8 rounded-xl border border-border bg-surface/50 relative"
+      style={{ height, overflow: "hidden", isolation: "isolate" }}
     >
       <ReactFlow
         nodes={nodes}
@@ -93,12 +93,13 @@ export function InteractiveFlow({
         onEdgesChange={onEdgesChange}
         connectionLineType={ConnectionLineType.SmoothStep}
         fitView={fitView}
-        fitViewOptions={{ padding: 0.2 }}
+        fitViewOptions={{ padding: 0.2, minZoom: 0.5, maxZoom: 1.5 }}
         nodesDraggable={interactive}
         nodesConnectable={false}
         elementsSelectable={interactive}
         colorMode="system"
         proOptions={{ hideAttribution: true }}
+        style={{ width: "100%", height: "100%", position: "absolute", top: 0, left: 0 }}
       >
         <Background color="var(--color-border)" gap={16} size={1} />
         {controls && <Controls />}
@@ -109,6 +110,8 @@ export function InteractiveFlow({
             }}
             nodeStrokeWidth={3}
             maskColor="rgba(0, 0, 0, 0.2)"
+            zoomable
+            pannable
           />
         )}
       </ReactFlow>

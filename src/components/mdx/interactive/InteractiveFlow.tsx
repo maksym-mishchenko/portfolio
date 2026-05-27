@@ -4,8 +4,6 @@ import { useCallback, useMemo } from "react";
 import {
   ReactFlow,
   Background,
-  Controls,
-  MiniMap,
   Node,
   Edge,
   ConnectionLineType,
@@ -110,18 +108,6 @@ export function InteractiveFlow({
         style={{ width: "100%", height: "100%", position: "absolute", top: 0, left: 0 }}
       >
         <Background color="var(--color-border)" gap={16} size={1} />
-        {controls && <Controls />}
-        {minimap && (
-          <MiniMap
-            nodeColor={(n) => {
-              return "var(--color-accent)";
-            }}
-            nodeStrokeWidth={3}
-            maskColor="rgba(0, 0, 0, 0.2)"
-            zoomable
-            pannable
-          />
-        )}
       </ReactFlow>
     </div>
   );

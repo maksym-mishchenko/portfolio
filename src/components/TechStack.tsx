@@ -18,7 +18,7 @@ const itemVariants = {
 
 export function TechStack() {
   return (
-    <section id="tech-stack" className="py-24 px-6">
+    <section id="stack" className="py-24 px-6">
       <div className="max-w-4xl mx-auto">
         <SectionReveal>
           <h2 className="text-3xl font-mono font-bold mb-16 text-center">Tech Stack</h2>

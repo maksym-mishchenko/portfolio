@@ -21,6 +21,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${post.title} — Maksym Mishchenko`,
     description: post.description,
+    // Staged posts (published: false) get noindex so search engines skip them
+    ...(post.published === false ? { robots: { index: false, follow: false } } : {}),
     openGraph: {
       title: post.title,
       description: post.description,
@@ -53,6 +55,11 @@ export default async function BlogPostPage({ params }: Props) {
               /staging
             </a>{" "}
             to approve &amp; publish it.
+          </div>
+        )}
+        {!post.draft && post.published === false && (
+          <div className="mb-6 px-4 py-3 rounded-lg border border-[#a78bfa]/40 bg-[#a78bfa]/10 text-sm text-[#a78bfa] font-medium">
+            📅 This post is staged — it will go live at its scheduled time and won&apos;t appear in the blog index until then.
           </div>
         )}
         <header className="mb-10">

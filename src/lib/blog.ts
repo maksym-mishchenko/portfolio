@@ -11,6 +11,8 @@ export interface BlogPost {
   readingTime: string;
   content: string;
   draft?: boolean;
+  /** published: false hides from index/RSS/sitemap but keeps the URL live (staged post) */
+  published?: boolean;
 }
 
 export interface BlogPostMeta {
@@ -21,6 +23,7 @@ export interface BlogPostMeta {
   tags: string[];
   readingTime: string;
   draft?: boolean;
+  published?: boolean;
 }
 
 const BLOG_DIR = path.join(process.cwd(), "content", "blog");
@@ -51,6 +54,8 @@ function getAllPostsIncludingDrafts(): BlogPostMeta[] {
         tags: data.tags ?? [],
         readingTime: calculateReadingTime(content),
         draft: data.draft === true,
+        // published defaults to true; explicit false = staged (hidden from index)
+        published: data.published !== false,
       };
     })
     .filter((post) => post.date)
@@ -60,7 +65,7 @@ function getAllPostsIncludingDrafts(): BlogPostMeta[] {
 }
 
 export function getAllPosts(): BlogPostMeta[] {
-  return getAllPostsIncludingDrafts().filter((post) => !post.draft);
+  return getAllPostsIncludingDrafts().filter((post) => !post.draft && post.published !== false);
 }
 
 export function getAllDraftPosts(): BlogPostMeta[] {
@@ -83,6 +88,7 @@ export function getPostBySlug(slug: string): BlogPost | null {
     readingTime: calculateReadingTime(content),
     content,
     draft: data.draft === true,
+    published: data.published !== false,
   };
 }
 

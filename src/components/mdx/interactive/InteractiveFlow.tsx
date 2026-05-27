@@ -84,7 +84,15 @@ export function InteractiveFlow({
   return (
     <div
       className="my-8 rounded-xl border border-border bg-surface/50 relative"
-      style={{ height, overflow: "hidden", isolation: "isolate" }}
+      style={{
+        height,
+        overflow: "hidden",
+        isolation: "isolate",
+        // Override React Flow dark-mode defaults to match site palette
+        "--xy-background-color-default": "transparent",
+        "--xy-node-background-color-default": "var(--color-surface)",
+        "--xy-edge-label-background-color-default": "var(--color-surface)",
+      } as React.CSSProperties}
     >
       <ReactFlow
         nodes={nodes}
@@ -97,7 +105,7 @@ export function InteractiveFlow({
         nodesDraggable={interactive}
         nodesConnectable={false}
         elementsSelectable={interactive}
-        colorMode="system"
+        colorMode="dark"
         proOptions={{ hideAttribution: true }}
         style={{ width: "100%", height: "100%", position: "absolute", top: 0, left: 0 }}
       >

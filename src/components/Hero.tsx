@@ -2,13 +2,14 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { track } from "@vercel/analytics";
 import { TerminalTyping } from "./TerminalTyping";
 
 export function Hero() {
   const [typingDone, setTypingDone] = useState(false);
+  const prefersReducedMotion = useReducedMotion();
 
   return (
     <section className="min-h-screen flex flex-col items-center justify-center relative px-6">
@@ -34,7 +35,7 @@ export function Hero() {
       {/* CTA buttons */}
       {typingDone && (
         <motion.div
-          initial={{ opacity: 0, y: 12 }}
+          initial={prefersReducedMotion ? false : { opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
           className="flex flex-wrap gap-3 mt-8"
@@ -44,7 +45,7 @@ export function Hero() {
               track("cta_click", { label: "projects" });
               document
                 .getElementById("projects")
-                ?.scrollIntoView({ behavior: "smooth" });
+                ?.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth" });
             }}
             className="bg-[#3b82f6] hover:bg-[#2563eb] text-white px-5 py-3 rounded-lg font-medium transition-colors text-sm sm:text-base"
           >
@@ -72,7 +73,7 @@ export function Hero() {
       {/* Scroll indicator */}
       <motion.div
         className="absolute bottom-8"
-        animate={{ y: [0, 8, 0] }}
+        animate={prefersReducedMotion ? {} : { y: [0, 8, 0] }}
         transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
       >
         <ChevronDown className="w-6 h-6 text-[#71717a]" />

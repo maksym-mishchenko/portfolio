@@ -57,6 +57,7 @@ export interface JourneyNode {
   title: string;
   detail: string;
   link?: string;
+  resumeHide?: boolean;
 }
 
 export const JOURNEY: JourneyNode[] = [
@@ -103,12 +104,14 @@ export const JOURNEY: JourneyNode[] = [
     title: "Investing Treasure Map",
     detail: "Stranger Things-themed interactive investing guide — quizzes, badges, calculators",
     link: "https://investing.mmishchenko.dev",
+    resumeHide: true,
   },
   {
     year: "Now",
     icon: "🔧",
     title: "Building",
     detail: "Side projects, automation, learning security",
+    resumeHide: true,
   },
 ];
 

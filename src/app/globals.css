@@ -111,11 +111,23 @@ html {
 
   body {
     background: white !important;
-    color: black !important;
+    color: #111 !important;
+    font-size: 11pt;
+  }
+
+  @page {
+    margin: 1.2cm 1.5cm;
+    size: A4;
   }
 
   a {
     color: inherit !important;
-    text-decoration: underline;
+    text-decoration: none;
+  }
+
+  /* Ensure borders show in print */
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 }

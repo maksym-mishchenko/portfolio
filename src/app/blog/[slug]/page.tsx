@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { MDXRemote } from "next-mdx-remote/rsc";
-import { getPostBySlug, getAllSlugs } from "@/lib/blog";
+import { getPostBySlug, getAllSlugs, getAllPosts } from "@/lib/blog";
+import type { BlogPostMeta } from "@/lib/blog";
 import { mdxComponents } from "@/components/mdx";
 import { blogPostingSchema } from "@/lib/jsonld";
 
@@ -38,6 +39,11 @@ export default async function BlogPostPage({ params }: Props) {
   const { slug } = await params;
   const post = getPostBySlug(slug);
   if (!post) notFound();
+
+  const allPosts = getAllPosts();
+  const currentIndex = allPosts.findIndex((p) => p.slug === slug);
+  const nextPost: BlogPostMeta | null = currentIndex > 0 ? allPosts[currentIndex - 1] : null;
+  const prevPost: BlogPostMeta | null = currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : null;
 
   return (
     <main id="main" className="max-w-2xl mx-auto px-6 py-20">
@@ -102,6 +108,34 @@ export default async function BlogPostPage({ params }: Props) {
           <MDXRemote source={post.content} components={mdxComponents} />
         </div>
       </article>
+
+      {/* Prev/Next navigation */}
+      {(prevPost || nextPost) && (
+        <div className="mt-12 pt-8 border-t border-border grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {prevPost ? (
+            <Link
+              href={`/blog/${prevPost.slug}`}
+              className="group flex flex-col gap-1 p-4 rounded-lg border border-border hover:border-accent/50 transition-colors"
+            >
+              <span className="text-xs text-muted">← Older</span>
+              <span className="text-sm font-medium group-hover:text-accent transition-colors line-clamp-2">
+                {prevPost.title}
+              </span>
+            </Link>
+          ) : <div />}
+          {nextPost ? (
+            <Link
+              href={`/blog/${nextPost.slug}`}
+              className="group flex flex-col gap-1 p-4 rounded-lg border border-border hover:border-accent/50 transition-colors text-right sm:text-right"
+            >
+              <span className="text-xs text-muted">Newer →</span>
+              <span className="text-sm font-medium group-hover:text-accent transition-colors line-clamp-2">
+                {nextPost.title}
+              </span>
+            </Link>
+          ) : <div />}
+        </div>
+      )}
 
       <div className="mt-16 pt-8 border-t border-border">
         <Link

@@ -40,3 +40,4 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 scripts/blog-images/inter.zip
+.superpowers/

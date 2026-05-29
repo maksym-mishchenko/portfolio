@@ -8,6 +8,7 @@ export const metadata: Metadata = {
 };
 
 export default function ResumePage() {
+  const resumeProjects = PROJECTS.filter((p) => p.resume !== false);
   return (
     <main id="main" className="max-w-3xl mx-auto px-6 py-12 print:py-4 print:px-2 print:max-w-none">
       <ResumeActions />
@@ -58,7 +59,7 @@ export default function ResumePage() {
           Projects
         </h2>
         <div className="space-y-4">
-          {PROJECTS.map((project) => (
+          {resumeProjects.map((project) => (
             <div key={project.title}>
               <div className="flex items-baseline gap-2">
                 <h3 className="font-medium">{project.title}</h3>

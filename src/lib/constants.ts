@@ -17,6 +17,7 @@ export interface Project {
   featured?: boolean;
   thumbnail?: string;
   learned?: string;
+  resume?: boolean;
 }
 
 export const PROJECTS: Project[] = [
@@ -46,6 +47,7 @@ export const PROJECTS: Project[] = [
     live: "https://investing.mmishchenko.dev",
     github: "https://github.com/maksym-mishchenko/investing-treasure-map",
     learned: "Gamification UX patterns and making complex financial concepts accessible.",
+    resume: false,
   },
 ];
 

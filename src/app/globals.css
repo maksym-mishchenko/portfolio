@@ -103,13 +103,13 @@ html {
   overflow-wrap: normal;
 }
 
-/* Print styles for /resume */
+/* Print styles — scoped to resume page only */
 @media print {
-  body::before {
+  body:has(.resume-doc)::before {
     display: none !important;
   }
 
-  body {
+  body:has(.resume-doc) {
     background: white !important;
     color: #111 !important;
     font-size: 11pt;
@@ -120,13 +120,13 @@ html {
     size: A4;
   }
 
-  a {
+  .resume-doc a {
     color: inherit !important;
     text-decoration: none;
   }
 
   /* Ensure borders show in print */
-  * {
+  .resume-doc * {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }

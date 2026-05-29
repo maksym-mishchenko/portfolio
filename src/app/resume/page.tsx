@@ -25,7 +25,7 @@ export default function ResumePage() {
       </div>
 
       {/* Resume document */}
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 pb-16 print:px-0 print:pb-0 print:max-w-none">
+      <div className="resume-doc max-w-5xl mx-auto px-4 sm:px-6 pb-16 print:px-0 print:pb-0 print:max-w-none">
 
         {/* ── Header ── */}
         <header className="py-10 print:py-6 border-b border-border print:border-gray-300">

@@ -11,16 +11,26 @@ interface BlogListProps {
 
 export function BlogList({ posts }: BlogListProps) {
   const [activeTag, setActiveTag] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
 
   const allTags = useMemo(
     () => Array.from(new Set(posts.flatMap((p) => p.tags))).sort(),
     [posts]
   );
 
-  const filtered = useMemo(
-    () => (activeTag ? posts.filter((p) => p.tags.includes(activeTag)) : posts),
-    [activeTag, posts]
-  );
+  const filtered = useMemo(() => {
+    let result = activeTag ? posts.filter((p) => p.tags.includes(activeTag)) : posts;
+    if (query.trim()) {
+      const q = query.toLowerCase();
+      result = result.filter(
+        (p) =>
+          p.title.toLowerCase().includes(q) ||
+          p.description.toLowerCase().includes(q) ||
+          p.tags.some((tag) => tag.toLowerCase().includes(q))
+      );
+    }
+    return result;
+  }, [activeTag, posts, query]);
 
   return (
     <main className="max-w-2xl mx-auto px-6 py-20">
@@ -39,6 +49,15 @@ export function BlogList({ posts }: BlogListProps) {
       <p className="text-muted mb-8">
         Writing about AI agents, engineering workflows, and building things that actually work.
       </p>
+
+      <input
+        type="search"
+        placeholder="Search posts..."
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        className="w-full bg-surface border border-border rounded-lg px-4 py-2.5 text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-accent transition-colors mb-6"
+        aria-label="Search blog posts"
+      />
 
       {allTags.length > 0 && (
         <div className="flex flex-wrap gap-2 mb-10">
@@ -69,7 +88,9 @@ export function BlogList({ posts }: BlogListProps) {
       )}
 
       {filtered.length === 0 ? (
-        <p className="text-muted">No posts found for this tag.</p>
+        <p className="text-muted">
+          {query ? `No posts matching "${query}"` : "No posts found for this tag."}
+        </p>
       ) : (
         <div className="space-y-1">
           {filtered.map((post) => (

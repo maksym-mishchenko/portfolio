@@ -1,6 +1,7 @@
 export const SITE = {
   name: "Maksym Mishchenko",
   title: "Software Engineer II @ Microsoft Security",
+  status: "Software Engineer II @ Microsoft Security",
   url: "https://mmishchenko.dev",
   github: "https://github.com/maksym-mishchenko",
   linkedin: "https://linkedin.com/in/maksym-mishchenko-1036381b8",
@@ -14,6 +15,8 @@ export interface Project {
   github?: string;
   live?: string;
   featured?: boolean;
+  thumbnail?: string;
+  learned?: string;
 }
 
 export const PROJECTS: Project[] = [
@@ -24,6 +27,7 @@ export const PROJECTS: Project[] = [
     tech: ["Next.js", "FastAPI", "Telegram API"],
     featured: true,
     github: "https://github.com/maksym-mishchenko/english-helper-app",
+    learned: "Designing spaced repetition algorithms and securing Telegram Mini Apps with HMAC-SHA256.",
   },
   {
     title: "mmishchenko.dev",
@@ -32,6 +36,7 @@ export const PROJECTS: Project[] = [
     tech: ["Next.js", "MDX", "Tailwind CSS", "Framer Motion"],
     live: "https://mmishchenko.dev",
     github: "https://github.com/maksym-mishchenko/portfolio",
+    learned: "MDX pipelines, satori OG image generation, and print-optimized resume rendering.",
   },
   {
     title: "Investing Treasure Map",
@@ -40,6 +45,7 @@ export const PROJECTS: Project[] = [
     tech: ["Next.js", "TypeScript", "Tailwind CSS"],
     live: "https://investing.mmishchenko.dev",
     github: "https://github.com/maksym-mishchenko/investing-treasure-map",
+    learned: "Gamification UX patterns and making complex financial concepts accessible.",
   },
 ];
 
@@ -115,5 +121,18 @@ export const TECH_STACK: TechCategory[] = [
   { name: "Backend", items: [".NET", "FastAPI", "Spring Boot"] },
   { name: "Cloud", items: ["Azure", "AWS"] },
   { name: "Tools", items: ["Git", "GitHub Actions", "Docker", "Vercel", "Telegram API"] },
+];
+
+export interface NowItem {
+  emoji: string;
+  text: string;
+}
+
+export const NOW: NowItem[] = [
+  { emoji: "💼", text: "Working at Microsoft Security on Identity & Application Governance" },
+  { emoji: "🤖", text: "Building AI agent automation with OpenClaw — personal assistant ecosystem" },
+  { emoji: "📝", text: "Writing about engineering workflows and AI agents on this blog" },
+  { emoji: "🔐", text: "Deepening security expertise — cloud identity, zero trust, AppSec" },
+  { emoji: "🇨🇿", text: "Based in Prague, Czechia" },
 ];
 

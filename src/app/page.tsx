@@ -8,10 +8,15 @@ import { TechStack } from "@/components/TechStack";
 import { About } from "@/components/About";
 import { Contact } from "@/components/Contact";
 import { SITE } from "@/lib/constants";
+import { personSchema } from "@/lib/jsonld";
 
 export default function Home() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema()) }}
+      />
       <ScrollProgress />
       <StickyNav />
       <main id="main">
@@ -26,6 +31,13 @@ export default function Home() {
         <div className="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-sm text-muted">© {new Date().getFullYear()} Maksym Mishchenko.</p>
           <div className="flex items-center gap-4">
+            <a
+              href="/blog/feed.xml"
+              className="text-sm text-muted hover:text-foreground transition-colors"
+              aria-label="RSS Feed"
+            >
+              RSS
+            </a>
             <a
               href={SITE.github}
               target="_blank"

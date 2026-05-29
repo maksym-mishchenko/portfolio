@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { track } from "@vercel/analytics";
+import { SITE } from "@/lib/constants";
 import { TerminalTyping } from "./TerminalTyping";
 
 export function Hero() {
@@ -30,6 +31,12 @@ export function Hero() {
         <div className="p-6 min-h-[200px]">
           <TerminalTyping onComplete={() => setTypingDone(true)} />
         </div>
+      </div>
+
+      {/* Status badge */}
+      <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-border bg-surface/50 px-4 py-1.5 text-xs text-muted">
+        <span className="w-1.5 h-1.5 rounded-full bg-success" aria-hidden="true" />
+        {SITE.status}
       </div>
 
       {/* CTA buttons */}

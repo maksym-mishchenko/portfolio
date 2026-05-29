@@ -4,6 +4,7 @@ import Link from "next/link";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { getPostBySlug, getAllSlugs } from "@/lib/blog";
 import { mdxComponents } from "@/components/mdx";
+import { blogPostingSchema } from "@/lib/jsonld";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -40,6 +41,12 @@ export default async function BlogPostPage({ params }: Props) {
 
   return (
     <main className="max-w-2xl mx-auto px-6 py-20">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(blogPostingSchema(post)),
+        }}
+      />
       <Link
         href="/blog"
         className="text-sm text-muted hover:text-accent transition-colors"

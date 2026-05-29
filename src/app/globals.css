@@ -102,3 +102,20 @@ html {
   word-break: normal;
   overflow-wrap: normal;
 }
+
+/* Print styles for /resume */
+@media print {
+  body::before {
+    display: none !important;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  a {
+    color: inherit !important;
+    text-decoration: underline;
+  }
+}

@@ -55,6 +55,12 @@ function ProjectCard({ project, index, featured }: { project: Project; index: nu
           {project.description}
         </p>
 
+        {project.learned && (
+          <p className={`text-accent/80 italic leading-relaxed ${featured ? "text-sm mb-6" : "text-xs mb-4"}`}>
+            💡 {project.learned}
+          </p>
+        )}
+
         <div className="flex flex-wrap gap-2 mb-4">
           {project.tech.map((t) => (
             <span

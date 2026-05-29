@@ -11,6 +11,8 @@ const NAV_LINKS = [
   { label: "About", href: "#about" },
   { label: "Contact", href: "#contact" },
   { label: "Blog", href: "/blog" },
+  { label: "Now", href: "/now" },
+  { label: "Resume", href: "/resume" },
 ];
 
 export function StickyNav() {

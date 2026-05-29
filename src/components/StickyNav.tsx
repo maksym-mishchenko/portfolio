@@ -13,6 +13,7 @@ const NAV_LINKS = [
   { label: "Blog", href: "/blog" },
   { label: "Now", href: "/now" },
   { label: "Resume", href: "/resume" },
+  { label: "Uses", href: "/uses" },
 ];
 
 export function StickyNav() {
@@ -49,7 +50,7 @@ export function StickyNav() {
                 <button
                   key={label}
                   onClick={() => handleAnchorClick(href)}
-                  className="px-3 py-1 text-sm text-muted hover:text-foreground rounded-full hover:bg-background transition-colors"
+                  className="hidden sm:inline-flex items-center px-3 py-1 text-sm text-muted hover:text-foreground rounded-full hover:bg-background transition-colors"
                 >
                   {label}
                 </button>

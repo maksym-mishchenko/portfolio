@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function ResumePage() {
   return (
-    <main className="max-w-3xl mx-auto px-6 py-12 print:py-4 print:px-2 print:max-w-none">
+    <main id="main" className="max-w-3xl mx-auto px-6 py-12 print:py-4 print:px-2 print:max-w-none">
       <ResumeActions />
 
       {/* Header */}

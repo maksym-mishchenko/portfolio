@@ -40,7 +40,7 @@ export default async function BlogPostPage({ params }: Props) {
   if (!post) notFound();
 
   return (
-    <main className="max-w-2xl mx-auto px-6 py-20">
+    <main id="main" className="max-w-2xl mx-auto px-6 py-20">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

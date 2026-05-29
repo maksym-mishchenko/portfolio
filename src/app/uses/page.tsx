@@ -61,7 +61,7 @@ const USES: UsesCategory[] = [
 
 export default function UsesPage() {
   return (
-    <main className="min-h-screen px-6 py-24">
+    <main id="main" className="min-h-screen px-6 py-24">
       <div className="mx-auto max-w-3xl">
         <Link
           href="/"

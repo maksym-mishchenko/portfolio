@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function NowPage() {
   return (
-    <main className="max-w-2xl mx-auto px-6 py-20">
+    <main id="main" className="max-w-2xl mx-auto px-6 py-20">
       <Link
         href="/"
         className="text-sm text-muted hover:text-accent transition-colors"

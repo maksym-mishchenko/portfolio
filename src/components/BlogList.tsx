@@ -33,7 +33,7 @@ export function BlogList({ posts }: BlogListProps) {
   }, [activeTag, posts, query]);
 
   return (
-    <main className="max-w-2xl mx-auto px-6 py-20">
+    <main id="main" className="max-w-2xl mx-auto px-6 py-20">
       <div className="flex items-start justify-between mb-2">
         <h1 className="text-4xl font-bold font-heading">Blog</h1>
         <a

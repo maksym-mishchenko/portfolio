@@ -22,15 +22,6 @@ export interface Project {
 
 export const PROJECTS: Project[] = [
   {
-    title: "English Helper",
-    description:
-      "Telegram Mini App for vocabulary learning with spaced repetition, HMAC-SHA256 auth, and 19 API routes.",
-    tech: ["Next.js", "FastAPI", "Telegram API"],
-    featured: true,
-    github: "https://github.com/maksym-mishchenko/english-helper-app",
-    learned: "Designing spaced repetition algorithms and securing Telegram Mini Apps with HMAC-SHA256.",
-  },
-  {
     title: "mmishchenko.dev",
     description:
       "This portfolio — built with Next.js 16, MDX blog with interactive animated components, RSS feed, and automated devlog publishing pipeline.",

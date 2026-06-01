@@ -18,6 +18,6 @@ Last updated: 2026-06-01 by maksym
   (unused props/setters/import).
 
 ## Next steps
-- Implement `docs/superpowers/plans/2026-06-01-case-study-distribution-kit.md`.
+- Review PR #9 (feat/case-study-distribution-kit) and wait for merge.
 - Phase 3 backlog: client-side blog search over title/description/tags. (/now already exists.)
 - Future: swap generated SVG thumbnails for real screenshots if desired.

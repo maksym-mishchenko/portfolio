@@ -437,21 +437,15 @@ git commit -m "feat(case-studies): include share kits in sitemap" \
 **Files:**
 - Modify: `.agent/STATE.md`
 
-- [ ] **Step 1: Update agent state**
+- [x] **Step 1: Update agent state**
 
-In `.agent/STATE.md`, change the in-progress line:
-
-```md
-- Spec branch `docs/case-study-distribution-kit-spec` defines a recruiter-focused distribution kit for the mcpgate case study.
-```
-
-to:
+Ensure `.agent/STATE.md` records the implementation as complete with PR open. The final desired `In progress` line is:
 
 ```md
-- Case-study distribution kit implementation is in progress; planned route is `/case-studies/mcpgate-v1-1/share`.
+- Case-study distribution kit implemented on `feat/case-study-distribution-kit`; PR pending/open for `/case-studies/mcpgate-v1-1/share`.
 ```
 
-- [ ] **Step 2: Run full validation**
+- [x] **Step 2: Run full validation**
 
 Run:
 
@@ -467,7 +461,7 @@ Expected:
 - `npx tsc --noEmit` exits with code `0`.
 - `npm run build` exits with code `0` and includes `/case-studies/mcpgate-v1-1/share`.
 
-- [ ] **Step 3: Review the final diff**
+- [x] **Step 3: Review the final diff**
 
 Run:
 
@@ -483,7 +477,7 @@ Expected:
 - No dependencies are added.
 - No secrets or credentials appear in the diff.
 
-- [ ] **Step 4: Commit final state update**
+- [x] **Step 4: Commit final state update**
 
 Run:
 
@@ -495,12 +489,12 @@ git commit -m "docs(case-studies): update share kit state" \
   -m "Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>"
 ```
 
-- [ ] **Step 5: Push and open PR**
+- [x] **Step 5: Push and open PR**
 
 Run:
 
 ```bash
-git push -u origin docs/case-study-distribution-kit-spec
+git push -u origin feat/case-study-distribution-kit
 gh pr create \
   --title "feat(case-studies): add mcpgate share kit" \
   --body "## Summary

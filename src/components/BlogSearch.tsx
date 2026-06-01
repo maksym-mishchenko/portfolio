@@ -67,43 +67,42 @@ export function BlogSearch({ posts }: BlogSearchProps) {
       </div>
 
       {filteredPosts.length > 0 ? (
-        <div className="space-y-6">
+        <div className="space-y-1">
           {filteredPosts.map((post) => (
-            <article
+            <Link
               key={post.slug}
-              className="group rounded-2xl border border-white/10 bg-white/[0.03] p-6 transition hover:border-emerald-400/40 hover:bg-emerald-400/[0.04]"
+              href={`/blog/${post.slug}`}
+              className="group block py-4 -mx-4 px-4 rounded-lg hover:bg-surface transition-colors"
             >
-              <div className="mb-3 flex flex-wrap items-center gap-3 text-xs uppercase tracking-[0.2em] text-slate-500">
-                <time dateTime={post.date}>
+              <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
+                <h2 className="text-lg font-medium text-foreground group-hover:text-accent transition-colors">
+                  {post.title}
+                </h2>
+                <span className="text-sm text-muted shrink-0 tabular-nums">
                   {new Date(post.date).toLocaleDateString("en-US", {
                     year: "numeric",
-                    month: "long",
+                    month: "short",
                     day: "numeric",
                   })}
-                </time>
-                <span>/</span>
-                <span>{post.readingTime}</span>
+                </span>
               </div>
-
-              <h2 className="mb-3 text-2xl font-bold text-white group-hover:text-emerald-300">
-                <Link href={`/blog/${post.slug}`}>{post.title}</Link>
-              </h2>
-
-              <p className="mb-4 text-slate-400">{post.description}</p>
-
-              {post.tags && post.tags.length > 0 ? (
-                <div className="flex flex-wrap gap-2">
-                  {post.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-xs text-emerald-300"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              ) : null}
-            </article>
+              <p className="text-sm text-muted mt-1">{post.description}</p>
+              <div className="flex items-center gap-3 mt-2">
+                <span className="text-xs text-muted">{post.readingTime}</span>
+                {post.tags.length > 0 && (
+                  <div className="flex gap-1.5 flex-wrap">
+                    {post.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="text-xs px-2 py-0.5 rounded-full border bg-surface border-border text-muted"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </Link>
           ))}
         </div>
       ) : (

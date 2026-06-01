@@ -34,8 +34,8 @@ export function InteractiveFlow({
 }: InteractiveFlowProps) {
   const initialNodes: Node[] = useMemo(() => {
     if (!nodesStr) return [];
-    const parsed = JSON.parse(nodesStr);
-    return parsed.map((node: any) => ({
+    const parsed = JSON.parse(nodesStr) as Node[];
+    return parsed.map((node) => ({
       ...node,
       draggable: interactive,
       style: {
@@ -53,8 +53,8 @@ export function InteractiveFlow({
 
   const initialEdges: Edge[] = useMemo(() => {
     if (!edgesStr) return [];
-    const parsed = JSON.parse(edgesStr);
-    return parsed.map((edge: any) => ({
+    const parsed = JSON.parse(edgesStr) as Edge[];
+    return parsed.map((edge) => ({
       ...edge,
       type: edge.type || "smoothstep",
       animated: edge.animated ?? true,

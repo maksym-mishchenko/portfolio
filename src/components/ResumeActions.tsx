@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { track } from "@vercel/analytics";
 
 export function ResumeActions() {
@@ -14,12 +15,12 @@ export function ResumeActions() {
       >
         Download PDF
       </button>
-      <a
+      <Link
         href="/"
         className="border border-border hover:border-accent text-muted hover:text-foreground px-5 py-2.5 rounded-lg font-medium transition-colors text-sm"
       >
         ← Back to site
-      </a>
+      </Link>
     </div>
   );
 }

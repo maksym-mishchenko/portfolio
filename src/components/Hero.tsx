@@ -6,6 +6,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { track } from "@vercel/analytics";
 import { TerminalTyping } from "./TerminalTyping";
+import { SITE } from "@/lib/constants";
 
 export function Hero() {
   const [typingDone, setTypingDone] = useState(false);
@@ -14,6 +15,11 @@ export function Hero() {
   return (
     <section className="min-h-screen flex flex-col items-center justify-center relative px-6">
       <h1 className="sr-only">Maksym Mishchenko — Software Engineer II at Microsoft Security</h1>
+      {/* Status badge */}
+      <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#27272a] bg-[#18181b] px-3.5 py-1.5 text-xs font-mono text-[#a1a1aa]">
+        <span className="h-1.5 w-1.5 rounded-full bg-[#3b82f6]" aria-hidden="true" />
+        {SITE.status}
+      </div>
       {/* Terminal card */}
       <div className="max-w-2xl w-full mx-auto bg-[#18181b] rounded-xl border border-[#27272a] overflow-hidden">
         {/* Title bar */}

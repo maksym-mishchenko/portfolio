@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { getAllCaseStudySlugs, getCaseStudyBySlug } from "@/lib/case-studies";
+import { getShareKitBySlug } from "@/lib/case-study-share-kits";
 import { mdxComponents } from "@/components/mdx";
 import { safeJsonLd, techArticleSchema } from "@/lib/jsonld";
 
@@ -36,6 +37,8 @@ export default async function CaseStudyPage({ params }: Props) {
   const { slug } = await params;
   const study = getCaseStudyBySlug(slug);
   if (!study) notFound();
+
+  const shareKit = getShareKitBySlug(slug);
 
   return (
     <main id="main" className="max-w-3xl mx-auto px-6 py-20">
@@ -76,6 +79,14 @@ export default async function CaseStudyPage({ params }: Props) {
               </span>
             ))}
           </div>
+          {shareKit && (
+            <Link
+              href={`/case-studies/${study.slug}/share`}
+              className="mt-6 inline-flex rounded-full border border-accent/40 px-4 py-2 text-sm text-accent transition-colors hover:border-accent hover:text-foreground"
+            >
+              Share-ready summary -&gt;
+            </Link>
+          )}
         </header>
 
         <section className="mb-10 rounded-xl border border-accent/30 bg-accent/5 p-5">

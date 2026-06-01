@@ -35,7 +35,7 @@ No homepage/project CTA is included in v1. The case-study page already has the c
 **Files:**
 - Create: `src/lib/case-study-share-kits.ts`
 
-- [ ] **Step 1: Write the type and lookup helper skeleton**
+- [x] **Step 1: Write the type and lookup helper skeleton**
 
 Create `src/lib/case-study-share-kits.ts` with:
 
@@ -61,7 +61,7 @@ export function getAllShareKitSlugs(): string[] {
 }
 ```
 
-- [ ] **Step 2: Run type-check to verify the skeleton compiles**
+- [x] **Step 2: Run type-check to verify the skeleton compiles**
 
 Run:
 
@@ -71,7 +71,7 @@ npx tsc --noEmit
 
 Expected: exits with code `0`.
 
-- [ ] **Step 3: Add the mcpgate share kit content**
+- [x] **Step 3: Add the mcpgate share kit content**
 
 Replace `const SHARE_KITS: CaseStudyShareKit[] = [];` with:
 
@@ -98,7 +98,7 @@ const SHARE_KITS: CaseStudyShareKit[] = [
 ];
 ```
 
-- [ ] **Step 4: Re-run type-check**
+- [x] **Step 4: Re-run type-check**
 
 Run:
 
@@ -108,7 +108,7 @@ npx tsc --noEmit
 
 Expected: exits with code `0`.
 
-- [ ] **Step 5: Commit Task 1**
+- [x] **Step 5: Commit Task 1**
 
 Run:
 
@@ -127,7 +127,7 @@ git commit -m "feat(case-studies): add share kit content" \
 **Files:**
 - Create: `src/app/case-studies/[slug]/share/page.tsx`
 
-- [ ] **Step 1: Create the route**
+- [x] **Step 1: Create the route**
 
 Create `src/app/case-studies/[slug]/share/page.tsx` with:
 
@@ -217,7 +217,7 @@ export default async function CaseStudySharePage({ params }: Props) {
 }
 ```
 
-- [ ] **Step 2: Run type-check**
+- [x] **Step 2: Run type-check**
 
 Run:
 
@@ -227,7 +227,7 @@ npx tsc --noEmit
 
 Expected: exits with code `0`.
 
-- [ ] **Step 3: Build and verify the route is generated**
+- [x] **Step 3: Build and verify the route is generated**
 
 Run:
 
@@ -242,7 +242,7 @@ Expected: output includes:
 /case-studies/mcpgate-v1-1/share
 ```
 
-- [ ] **Step 4: Commit Task 2**
+- [x] **Step 4: Commit Task 2**
 
 Run:
 
@@ -261,7 +261,7 @@ git commit -m "feat(case-studies): add share kit route" \
 **Files:**
 - Modify: `src/app/case-studies/[slug]/page.tsx`
 
-- [ ] **Step 1: Add the share-kit lookup import**
+- [x] **Step 1: Add the share-kit lookup import**
 
 Change the imports at the top of `src/app/case-studies/[slug]/page.tsx` from:
 
@@ -280,7 +280,7 @@ import { mdxComponents } from "@/components/mdx";
 import { safeJsonLd, techArticleSchema } from "@/lib/jsonld";
 ```
 
-- [ ] **Step 2: Load the share kit after the study**
+- [x] **Step 2: Load the share kit after the study**
 
 Inside `CaseStudyPage`, change:
 
@@ -298,7 +298,7 @@ if (!study) notFound();
 const shareKit = getShareKitBySlug(slug);
 ```
 
-- [ ] **Step 3: Add the CTA in the header metadata row**
+- [x] **Step 3: Add the CTA in the header metadata row**
 
 After the closing `</div>` for the tag list in the article header, add:
 
@@ -315,7 +315,7 @@ After the closing `</div>` for the tag list in the article header, add:
 
 The CTA should render before the `</header>` closing tag.
 
-- [ ] **Step 4: Run lint and type-check**
+- [x] **Step 4: Run lint and type-check**
 
 Run:
 
@@ -329,7 +329,7 @@ Expected:
 - `npm run lint` exits with code `0`. Existing warnings in unrelated files may still appear.
 - `npx tsc --noEmit` exits with code `0`.
 
-- [ ] **Step 5: Commit Task 3**
+- [x] **Step 5: Commit Task 3**
 
 Run:
 
@@ -348,7 +348,7 @@ git commit -m "feat(case-studies): link share kit from case study" \
 **Files:**
 - Modify: `src/app/sitemap.ts`
 
-- [ ] **Step 1: Import share-kit slugs and case-study lookup**
+- [x] **Step 1: Import share-kit slugs and case-study lookup**
 
 Change the imports from:
 
@@ -365,7 +365,7 @@ import { getAllShareKitSlugs } from "@/lib/case-study-share-kits";
 import { SITE } from "@/lib/constants";
 ```
 
-- [ ] **Step 2: Build share-kit sitemap entries**
+- [x] **Step 2: Build share-kit sitemap entries**
 
 After `const caseStudies = getAllCaseStudies();`, add:
 
@@ -391,7 +391,7 @@ const shareKitEntries = shareKitSlugs.flatMap((slug) => {
 
 Using `flatMap` with a `getCaseStudyBySlug` guard ensures that share-kit slugs without a matching case-study file are silently skipped, and `new Date(study.date)` keeps the sitemap timestamp consistent with the actual content date rather than the build time.
 
-- [ ] **Step 3: Return share-kit entries**
+- [x] **Step 3: Return share-kit entries**
 
 Change the return list ending from:
 
@@ -408,7 +408,7 @@ to:
 ...shareKitEntries,
 ```
 
-- [ ] **Step 4: Run build**
+- [x] **Step 4: Run build**
 
 Run:
 
@@ -418,7 +418,7 @@ npm run build
 
 Expected: exits with code `0`.
 
-- [ ] **Step 5: Commit Task 4**
+- [x] **Step 5: Commit Task 4**
 
 Run:
 

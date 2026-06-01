@@ -1,5 +1,9 @@
 import { SITE } from "./constants";
 
+export function safeJsonLd(value: unknown): string {
+  return JSON.stringify(value).replace(/</g, "\\u003c").replace(/>/g, "\\u003e");
+}
+
 export function personSchema() {
   return {
     "@context": "https://schema.org",

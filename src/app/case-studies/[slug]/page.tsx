@@ -4,7 +4,7 @@ import Link from "next/link";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { getAllCaseStudySlugs, getCaseStudyBySlug } from "@/lib/case-studies";
 import { mdxComponents } from "@/components/mdx";
-import { techArticleSchema } from "@/lib/jsonld";
+import { safeJsonLd, techArticleSchema } from "@/lib/jsonld";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -42,7 +42,7 @@ export default async function CaseStudyPage({ params }: Props) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(techArticleSchema(study)),
+          __html: safeJsonLd(techArticleSchema(study)),
         }}
       />
 

@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { useState, MouseEvent } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { ExternalLink } from "lucide-react";
 import { track } from "@vercel/analytics";
 
@@ -85,7 +86,16 @@ function ProjectCard({ project, index, featured }: { project: Project; index: nu
           ))}
         </div>
 
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3">
+          {project.caseStudySlug && (
+            <Link
+              href={`/case-studies/${project.caseStudySlug}`}
+              onClick={() => track("project_click", { project: project.title, type: "case_study" })}
+              className="inline-flex items-center gap-1.5 text-sm text-accent hover:text-foreground transition-colors"
+            >
+              Case study
+            </Link>
+          )}
           {project.github && (
             <a
               href={project.github}

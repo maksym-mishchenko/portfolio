@@ -18,9 +18,20 @@ export interface Project {
   thumbnail?: string;
   learned?: string;
   resume?: boolean;
+  caseStudySlug?: string;
 }
 
 export const PROJECTS: Project[] = [
+  {
+    title: "mcpgate",
+    description:
+      "Security gateway for MCP tool calls with policy enforcement, audit trails, and reverse-channel prompt-injection defenses.",
+    tech: ["Go", "MCP", "AI Security", "SQLite"],
+    github: "https://github.com/maksym-mishchenko/mcpgate",
+    featured: true,
+    learned: "Agent tool output is untrusted input; security controls need to inspect both result and error channels.",
+    caseStudySlug: "mcpgate-v1-1",
+  },
   {
     title: "mmishchenko.dev",
     description:
@@ -133,4 +144,3 @@ export const NOW: NowItem[] = [
   { emoji: "🔐", text: "Deepening security expertise — cloud identity, zero trust, AppSec" },
   { emoji: "🇨🇿", text: "Based in Prague, Czechia" },
 ];
-

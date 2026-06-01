@@ -11,13 +11,13 @@ Last updated: 2026-06-01 by maksym
 - Flagship mcpgate case study shipped at `/case-studies/mcpgate-v1-1`. [PR #8 merged]
 
 ## In progress
-- Spec branch `docs/case-study-distribution-kit-spec` defines a recruiter-focused distribution kit for the mcpgate case study.
+- Case-study distribution kit plan is ready for implementation; planned route is `/case-studies/mcpgate-v1-1/share`.
 
 ## Known issues
 - 6 non-failing lint warnings remain in `mdx/interactive/InteractiveFlow.tsx`
   (unused props/setters/import).
 
 ## Next steps
-- Review and approve `docs/superpowers/specs/2026-06-01-case-study-distribution-kit-design.md`, then create the implementation plan.
+- Implement `docs/superpowers/plans/2026-06-01-case-study-distribution-kit.md`.
 - Phase 3 backlog: client-side blog search over title/description/tags. (/now already exists.)
 - Future: swap generated SVG thumbnails for real screenshots if desired.

@@ -7,14 +7,14 @@ import { Journey } from "@/components/Journey";
 import { TechStack } from "@/components/TechStack";
 import { About } from "@/components/About";
 import { Contact } from "@/components/Contact";
-import { personSchema } from "@/lib/jsonld";
+import { personSchema, safeJsonLd } from "@/lib/jsonld";
 
 export default function Home() {
   return (
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema()) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(personSchema()) }}
       />
       <ScrollProgress />
       <StickyNav />

@@ -11,6 +11,7 @@ Last updated: 2026-06-01 by maksym
 
 ## In progress
 - PR (feat/project-thumbnails) — project card thumbnails.
+- Case-study implementation planned and ready for PR execution; first flagship is mcpgate v1.1.0.
 
 ## Known issues
 - 6 non-failing lint warnings remain in `mdx/interactive/InteractiveFlow.tsx`

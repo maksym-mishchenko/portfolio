@@ -5,7 +5,7 @@ import { MDXRemote } from "next-mdx-remote/rsc";
 import { getPostBySlug, getAllSlugs, getAllPosts } from "@/lib/blog";
 import type { BlogPostMeta } from "@/lib/blog";
 import { mdxComponents } from "@/components/mdx";
-import { blogPostingSchema } from "@/lib/jsonld";
+import { blogPostingSchema, safeJsonLd } from "@/lib/jsonld";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -50,7 +50,7 @@ export default async function BlogPostPage({ params }: Props) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(blogPostingSchema(post)),
+          __html: safeJsonLd(blogPostingSchema(post)),
         }}
       />
       <Link

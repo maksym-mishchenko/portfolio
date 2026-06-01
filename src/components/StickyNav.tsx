@@ -11,6 +11,7 @@ const NAV_LINKS = [
   { label: "About", href: "#about" },
   { label: "Contact", href: "#contact" },
   { label: "Blog", href: "/blog" },
+  { label: "Case Studies", href: "/case-studies" },
   { label: "Now", href: "/now" },
   { label: "Resume", href: "/resume" },
   { label: "Uses", href: "/uses" },
@@ -44,7 +45,7 @@ export function StickyNav() {
           className="fixed top-0 left-0 right-0 z-50 flex justify-center px-4 pt-3"
           aria-label="Site navigation"
         >
-          <div className="flex items-center gap-1 rounded-full border border-border bg-surface/90 backdrop-blur-md px-3 py-1.5 shadow-lg">
+          <div className="flex items-center gap-1 overflow-x-auto rounded-full border border-border bg-surface/90 backdrop-blur-md px-3 py-1.5 shadow-lg">
             {NAV_LINKS.map(({ label, href }) =>
               href.startsWith("#") ? (
                 <button
@@ -58,7 +59,7 @@ export function StickyNav() {
                 <Link
                   key={label}
                   href={href}
-                  className="px-3 py-1 text-sm text-muted hover:text-foreground rounded-full hover:bg-background transition-colors"
+                  className="whitespace-nowrap px-3 py-1 text-sm text-muted hover:text-foreground rounded-full hover:bg-background transition-colors"
                 >
                   {label}
                 </Link>

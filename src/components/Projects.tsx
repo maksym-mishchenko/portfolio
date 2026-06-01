@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { useState, MouseEvent } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { ExternalLink } from "lucide-react";
 import { track } from "@vercel/analytics";
 
@@ -85,7 +86,16 @@ function ProjectCard({ project, index, featured }: { project: Project; index: nu
           ))}
         </div>
 
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3">
+          {project.caseStudySlug && (
+            <Link
+              href={`/case-studies/${project.caseStudySlug}`}
+              onClick={() => track("project_click", { project: project.title, type: "case_study" })}
+              className="inline-flex items-center gap-1.5 text-sm text-accent hover:text-foreground transition-colors"
+            >
+              Case study
+            </Link>
+          )}
           {project.github && (
             <a
               href={project.github}
@@ -117,7 +127,7 @@ function ProjectCard({ project, index, featured }: { project: Project; index: nu
 }
 
 export function Projects() {
-  const featured = PROJECTS.find((p) => p.featured);
+  const featured = PROJECTS.filter((p) => p.featured);
   const rest = PROJECTS.filter((p) => !p.featured);
 
   return (
@@ -128,9 +138,11 @@ export function Projects() {
         </SectionReveal>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {featured && <ProjectCard project={featured} index={0} featured />}
+          {featured.map((project, i) => (
+            <ProjectCard key={project.title} project={project} index={i} featured />
+          ))}
           {rest.map((project, i) => (
-            <ProjectCard key={project.title} project={project} index={i + 1} />
+            <ProjectCard key={project.title} project={project} index={i + featured.length} />
           ))}
         </div>
       </div>

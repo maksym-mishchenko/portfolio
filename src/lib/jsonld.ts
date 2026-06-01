@@ -1,5 +1,9 @@
 import { SITE } from "./constants";
 
+export function safeJsonLd(value: unknown): string {
+  return JSON.stringify(value).replace(/</g, "\\u003c").replace(/>/g, "\\u003e");
+}
+
 export function personSchema() {
   return {
     "@context": "https://schema.org",
@@ -31,5 +35,34 @@ export function blogPostingSchema(post: {
       url: SITE.url,
     },
     keywords: post.tags,
+  };
+}
+
+export function techArticleSchema(study: {
+  title: string;
+  summary: string;
+  date: string;
+  slug: string;
+  tags: string[];
+}) {
+  const url = `${SITE.url}/case-studies/${study.slug}`;
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    headline: study.title,
+    description: study.summary,
+    datePublished: study.date,
+    author: {
+      "@type": "Person",
+      name: SITE.name,
+      url: SITE.url,
+    },
+    keywords: study.tags,
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": url,
+    },
+    url,
   };
 }

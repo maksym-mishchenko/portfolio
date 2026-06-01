@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="Investing Treasure Map terminal preview">
+  <rect width="1200" height="630" fill="#0a0a0a"/>
+  <g font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace">
+    <!-- terminal window -->
+    <rect x="120" y="95" width="960" height="440" rx="16" fill="#18181b" stroke="#27272a" stroke-width="2"/>
+    <!-- title bar -->
+    <line x1="120" y1="155" x2="1080" y2="155" stroke="#27272a" stroke-width="2"/>
+    <circle cx="160" cy="125" r="7" fill="#ef4444"/>
+    <circle cx="186" cy="125" r="7" fill="#eab308"/>
+    <circle cx="212" cy="125" r="7" fill="#22c55e"/>
+    <text x="250" y="131" font-size="20" fill="#71717a">investing.mmishchenko.dev</text>
+    <!-- body -->
+    <text x="160" y="225" font-size="26" fill="#ef4444">&gt; ./start_investing</text>
+    <text x="190" y="265" font-size="30" fill="#fafafa" font-weight="700">Investing Treasure Map 🗺️</text>
+    <text x="160" y="335" font-size="26" fill="#ef4444">&gt; cat theme.txt</text>
+    <text x="190" y="373" font-size="24" fill="#a1a1aa">Stranger Things · the Upside Down of finance</text>
+    <text x="160" y="443" font-size="26" fill="#ef4444">&gt; features</text>
+    <text x="190" y="481" font-size="24" fill="#a1a1aa">Quizzes · badges · calculators</text>
+    <rect x="196" y="461" width="13" height="26" fill="#ef4444"/>
+  </g>
+</svg>

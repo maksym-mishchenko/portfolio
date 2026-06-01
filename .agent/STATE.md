@@ -2,21 +2,20 @@
 Last updated: 2026-06-01 by maksym
 
 ## Done
-- Phase 1 backlog largely shipped (fleet): `/resume` print-to-PDF, per-post OG images
-  (`blog/[slug]/opengraph-image.tsx`), JSON-LD `Person`/`BlogPosting` (`lib/jsonld.ts`),
-  RSS footer link, `/now` page.
-- Neutral status badge: `SITE.status` now rendered as a pill in `Hero.tsx` (PR #6).
-- Cleared blocking lint errors that pre-existed on main (ResumeActions `<Link>`,
-  InteractiveFlow `JSON.parse` typing) — CI lint gate green again.
+- Phase 1 complete: /resume print-to-PDF, per-post OG images, JSON-LD Person/BlogPosting,
+  RSS footer link, /now page, neutral status badge (SITE.status in Hero.tsx). [PR #6 merged]
+- Phase 2 — richer project cards: `Project.thumbnail` now rendered as a 16:9 banner at the
+  top of each card in `Projects.tsx` (next/image, unoptimized for SVG). On-brand terminal
+  SVG thumbnails added for both projects in `public/images/portfolio/`. `learned` line
+  already shipped. [feat/project-thumbnails]
 
 ## In progress
-- PR #6 `feat/status-badge` open — status badge + lint fixes.
+- PR (feat/project-thumbnails) — project card thumbnails.
 
 ## Known issues
 - 6 non-failing lint warnings remain in `mdx/interactive/InteractiveFlow.tsx`
-  (unused `minimap`/`controls` props, `setNodes`/`setEdges`, `useCallback`).
+  (unused props/setters/import).
 
 ## Next steps
-- Phase 2: richer project cards — `Project.thumbnail` exists in the interface but is not
-  rendered in `Projects.tsx` (only `learned` is). Wire thumbnails or drop the field.
-- Phase 3: client-side blog search over title/description/tags.
+- Phase 3: client-side blog search over title/description/tags. (/now already exists.)
+- Future: swap generated SVG thumbnails for real screenshots if desired.

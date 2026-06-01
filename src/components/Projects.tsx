@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useState, MouseEvent } from "react";
+import Image from "next/image";
 import { ExternalLink } from "lucide-react";
 import { track } from "@vercel/analytics";
 
@@ -48,6 +49,18 @@ function ProjectCard({ project, index, featured }: { project: Project; index: nu
       )}
 
       <div className="relative z-10">
+        {project.thumbnail && (
+          <div className="mb-5 overflow-hidden rounded-lg border border-border">
+            <Image
+              src={project.thumbnail}
+              alt={`${project.title} preview`}
+              width={1200}
+              height={630}
+              unoptimized
+              className="w-full h-auto"
+            />
+          </div>
+        )}
         <h3 className={`font-mono font-bold ${featured ? "text-2xl mb-3" : "text-lg mb-2"}`}>
           {project.title}
         </h3>

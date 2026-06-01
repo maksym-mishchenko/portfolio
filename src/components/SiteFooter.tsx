@@ -7,6 +7,12 @@ export function SiteFooter() {
         <p className="text-sm text-muted">© {new Date().getFullYear()} Maksym Mishchenko.</p>
         <div className="flex items-center gap-4">
           <a
+            href="/about"
+            className="text-sm text-muted hover:text-foreground transition-colors"
+          >
+            About
+          </a>
+          <a
             href="/blog/feed.xml"
             className="text-sm text-muted hover:text-foreground transition-colors"
             aria-label="RSS Feed"

@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { SITE } from "@/lib/constants";
 
 export function SiteFooter() {
@@ -6,12 +8,12 @@ export function SiteFooter() {
       <div className="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
         <p className="text-sm text-muted">© {new Date().getFullYear()} Maksym Mishchenko.</p>
         <div className="flex items-center gap-4">
-          <a
+          <Link
             href="/about"
             className="text-sm text-muted hover:text-foreground transition-colors"
           >
             About
-          </a>
+          </Link>
           <a
             href="/blog/feed.xml"
             className="text-sm text-muted hover:text-foreground transition-colors"

@@ -1,26 +1,45 @@
+import type { Metadata } from "next";
+import { Rss } from "lucide-react";
+import Link from "next/link";
 import { BlogSearch } from "@/components/BlogSearch";
 import { getAllPosts } from "@/lib/blog";
 
-export const metadata = {
-  title: "Blog | Maksym Mishchenko",
-  description: "Thoughts on software engineering, AI systems, and building products.",
+export const metadata: Metadata = {
+  title: "Blog — Maksym Mishchenko",
+  description:
+    "Writing about AI agents, engineering workflows, and building things that actually work.",
 };
 
-export default async function BlogPage() {
-  const posts = await getAllPosts();
+export default function BlogPage() {
+  const posts = getAllPosts();
 
   return (
-    <main className="min-h-screen px-4 py-24 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-4xl">
-        <div className="mb-12">
-          <p className="mb-4 font-mono text-sm text-emerald-400">$ ls ~/blog</p>
-          <h1 className="mb-4 text-4xl font-bold text-white sm:text-5xl">Blog</h1>
-          <p className="text-lg text-slate-400">
-            Notes on engineering, AI, and the craft of building software.
-          </p>
-        </div>
+    <main id="main" className="max-w-2xl mx-auto px-6 py-20">
+      <div className="flex items-start justify-between mb-2">
+        <h1 className="text-4xl font-bold font-heading">Blog</h1>
+        <a
+          href="/blog/feed.xml"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="RSS Feed"
+          className="mt-2 text-muted hover:text-accent transition-colors"
+        >
+          <Rss className="w-5 h-5" />
+        </a>
+      </div>
+      <p className="text-muted mb-8">
+        Writing about AI agents, engineering workflows, and building things that actually work.
+      </p>
 
-        <BlogSearch posts={posts} />
+      <BlogSearch posts={posts} />
+
+      <div className="mt-16 pt-8 border-t border-border">
+        <Link
+          href="/"
+          className="text-sm text-muted hover:text-accent transition-colors"
+        >
+          ← Back home
+        </Link>
       </div>
     </main>
   );

@@ -9,15 +9,16 @@ Last updated: 2026-06-01 by maksym
   SVG thumbnails added for both projects in `public/images/portfolio/`. `learned` line
   already shipped. [feat/project-thumbnails]
 - Flagship mcpgate case study shipped at `/case-studies/mcpgate-v1-1`. [PR #8 merged]
+- Case-study distribution kit shipped at `/case-studies/mcpgate-v1-1/share`. [PR #9 merged]
 
 ## In progress
-- Case-study distribution kit implemented on `feat/case-study-distribution-kit`; PR pending/open for `/case-studies/mcpgate-v1-1/share`.
+- About professional snapshot implemented on `issue-10/about-professional-snapshot`; PR pending/open for `/about`.
 
 ## Known issues
 - 6 non-failing lint warnings remain in `mdx/interactive/InteractiveFlow.tsx`
   (unused props/setters/import).
 
 ## Next steps
-- Review PR #9 (feat/case-study-distribution-kit) and wait for merge.
+- Review and merge the `/about` professional snapshot PR.
 - Phase 3 backlog: client-side blog search over title/description/tags. (/now already exists.)
 - Future: swap generated SVG thumbnails for real screenshots if desired.

@@ -8,8 +8,9 @@ const NAV_LINKS = [
   { label: "Projects", href: "#projects" },
   { label: "Journey", href: "#journey" },
   { label: "Stack", href: "#stack" },
-  { label: "About", href: "#about" },
+  { label: "Intro", href: "#about" },
   { label: "Contact", href: "#contact" },
+  { label: "About", href: "/about" },
   { label: "Blog", href: "/blog" },
   { label: "Case Studies", href: "/case-studies" },
   { label: "Now", href: "/now" },
@@ -49,7 +50,7 @@ export function StickyNav() {
             {NAV_LINKS.map(({ label, href }) =>
               href.startsWith("#") ? (
                 <button
-                  key={label}
+                  key={href}
                   onClick={() => handleAnchorClick(href)}
                   className="hidden sm:inline-flex items-center px-3 py-1 text-sm text-muted hover:text-foreground rounded-full hover:bg-background transition-colors"
                 >
@@ -57,7 +58,7 @@ export function StickyNav() {
                 </button>
               ) : (
                 <Link
-                  key={label}
+                  key={href}
                   href={href}
                   className="whitespace-nowrap px-3 py-1 text-sm text-muted hover:text-foreground rounded-full hover:bg-background transition-colors"
                 >

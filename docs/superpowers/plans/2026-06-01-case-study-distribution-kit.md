@@ -348,7 +348,7 @@ git commit -m "feat(case-studies): link share kit from case study" \
 **Files:**
 - Modify: `src/app/sitemap.ts`
 
-- [ ] **Step 1: Import share-kit slugs**
+- [ ] **Step 1: Import share-kit slugs and case-study lookup**
 
 Change the imports from:
 
@@ -360,7 +360,7 @@ import { SITE } from "@/lib/constants";
 to:
 
 ```ts
-import { getAllCaseStudies } from "@/lib/case-studies";
+import { getAllCaseStudies, getCaseStudyBySlug } from "@/lib/case-studies";
 import { getAllShareKitSlugs } from "@/lib/case-study-share-kits";
 import { SITE } from "@/lib/constants";
 ```
@@ -376,11 +376,20 @@ const shareKitSlugs = getAllShareKitSlugs();
 After the `caseStudyEntries` declaration, add:
 
 ```ts
-const shareKitEntries = shareKitSlugs.map((slug) => ({
-  url: `${siteUrl}/case-studies/${slug}/share`,
-  lastModified: new Date(),
-}));
+const shareKitEntries = shareKitSlugs.flatMap((slug) => {
+  const study = getCaseStudyBySlug(slug);
+  if (!study) return [];
+
+  return [
+    {
+      url: `${siteUrl}/case-studies/${slug}/share`,
+      lastModified: new Date(study.date),
+    },
+  ];
+});
 ```
+
+Using `flatMap` with a `getCaseStudyBySlug` guard ensures that share-kit slugs without a matching case-study file are silently skipped, and `new Date(study.date)` keeps the sitemap timestamp consistent with the actual content date rather than the build time.
 
 - [ ] **Step 3: Return share-kit entries**
 

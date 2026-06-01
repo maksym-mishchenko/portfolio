@@ -11,7 +11,7 @@ Last updated: 2026-06-01 by maksym
 - Flagship mcpgate case study shipped at `/case-studies/mcpgate-v1-1`. [PR #8 merged]
 
 ## In progress
-- Case-study distribution kit plan is ready for implementation; planned route is `/case-studies/mcpgate-v1-1/share`.
+- Case-study distribution kit implemented on `feat/case-study-distribution-kit`; PR pending/open for `/case-studies/mcpgate-v1-1/share`.
 
 ## Known issues
 - 6 non-failing lint warnings remain in `mdx/interactive/InteractiveFlow.tsx`

@@ -127,7 +127,7 @@ function ProjectCard({ project, index, featured }: { project: Project; index: nu
 }
 
 export function Projects() {
-  const featured = PROJECTS.find((p) => p.featured);
+  const featured = PROJECTS.filter((p) => p.featured);
   const rest = PROJECTS.filter((p) => !p.featured);
 
   return (
@@ -138,9 +138,11 @@ export function Projects() {
         </SectionReveal>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {featured && <ProjectCard project={featured} index={0} featured />}
+          {featured.map((project, i) => (
+            <ProjectCard key={project.title} project={project} index={i} featured />
+          ))}
           {rest.map((project, i) => (
-            <ProjectCard key={project.title} project={project} index={i + 1} />
+            <ProjectCard key={project.title} project={project} index={i + featured.length} />
           ))}
         </div>
       </div>

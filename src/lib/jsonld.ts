@@ -33,3 +33,32 @@ export function blogPostingSchema(post: {
     keywords: post.tags,
   };
 }
+
+export function techArticleSchema(study: {
+  title: string;
+  summary: string;
+  date: string;
+  slug: string;
+  tags: string[];
+}) {
+  const url = `${SITE.url}/case-studies/${study.slug}`;
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    headline: study.title,
+    description: study.summary,
+    datePublished: study.date,
+    author: {
+      "@type": "Person",
+      name: SITE.name,
+      url: SITE.url,
+    },
+    keywords: study.tags,
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": url,
+    },
+    url,
+  };
+}

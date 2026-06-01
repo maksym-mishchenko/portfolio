@@ -8,6 +8,8 @@
 
 Add a case-study layer to the portfolio that turns shipped engineering work into clear hiring signal. The first flagship case study should be **mcpgate v1.1.0: securing AI agent tool calls**.
 
+The case study should lead with the senior-engineering signal: identifying and reducing AI-agent tool-call risk before it becomes production damage. The first screen should make this clear in hiring-manager language: I found a real agent security risk, designed policy and audit controls, shipped the mitigation, and verified the result. Technical proof should appear immediately underneath for senior engineers and security reviewers.
+
 ## Problem
 
 The portfolio now has strong surfaces: homepage, projects, blog, `/resume`, `/now`, RSS, per-post OG images, and structured data. The missing career-conversion piece is a deeper narrative that shows how Maksym thinks through constraints, security tradeoffs, review loops, and production release decisions.
@@ -16,7 +18,8 @@ Project cards prove that work exists. Case studies should prove senior engineeri
 
 ## Success Criteria
 
-- A recruiter or engineering manager can understand the flagship project in 3-5 minutes.
+- A recruiter or engineering manager can understand the flagship project and its risk-reduction value in 3-5 minutes.
+- The first screen is readable by non-specialists, with deeper technical evidence available one scroll below.
 - The case study explains the problem, threat model, architecture, tradeoffs, validation, release outcome, and follow-up opportunities.
 - The homepage and project cards guide visitors to the case study without adding clutter.
 - The implementation follows existing Next.js App Router, MDX, and metadata patterns.
@@ -64,15 +67,16 @@ outcome:
 
 The MDX body should follow this narrative:
 
-1. Context: why MCP tool calls need a gateway.
-2. Threat model: prompt injection and tool poisoning through tool results.
-3. Constraints: no LLM dependency, local-first CLI, deterministic behavior, fail-closed security posture.
-4. Architecture: proxy path, outbound policy checks, inbound result scanning, block-on-warn behavior.
-5. Review finding: `resp.Result` was scanned but `resp.Error` was initially missed.
-6. Fix: scan both result and error channels; add regression coverage.
-7. Release: tag moved to include the fix; GitHub Release cut.
-8. What this demonstrates: security mindset, test discipline, and practical product judgment.
-9. Next steps: stronger policy config, fuzz cases, and additional transport coverage.
+1. Executive summary: the risk found, the mitigation shipped, and the outcome verified.
+2. Context: why MCP tool calls need a gateway.
+3. Threat model: prompt injection and tool poisoning through tool results.
+4. Constraints: no LLM dependency, local-first CLI, deterministic behavior, fail-closed security posture.
+5. Architecture: proxy path, outbound policy checks, inbound result scanning, block-on-warn behavior.
+6. Review finding: `resp.Result` was scanned but `resp.Error` was initially missed.
+7. Fix: scan both result and error channels; add regression coverage.
+8. Release: tag moved to include the fix; GitHub Release cut.
+9. What this demonstrates: security mindset, test discipline, and practical product judgment.
+10. Next steps: stronger policy config, fuzz cases, and additional transport coverage.
 
 ## UI Design
 
@@ -95,7 +99,7 @@ The detail page should prioritize readability:
 
 - headline and summary
 - metadata row: project, date, tags
-- compact outcome panel
+- compact outcome panel focused on risk found, control shipped, and result verified
 - MDX article body
 - closing CTA back to projects or resume
 

@@ -28,6 +28,7 @@ export const PROJECTS: Project[] = [
     tech: ["Next.js", "MDX", "Tailwind CSS", "Framer Motion"],
     live: "https://mmishchenko.dev",
     github: "https://github.com/maksym-mishchenko/portfolio",
+    thumbnail: "/images/portfolio/mmishchenko-dev.svg",
     learned: "MDX pipelines, satori OG image generation, and print-optimized resume rendering.",
   },
   {
@@ -37,6 +38,7 @@ export const PROJECTS: Project[] = [
     tech: ["Next.js", "TypeScript", "Tailwind CSS"],
     live: "https://investing.mmishchenko.dev",
     github: "https://github.com/maksym-mishchenko/investing-treasure-map",
+    thumbnail: "/images/portfolio/investing-treasure-map.svg",
     learned: "Gamification UX patterns and making complex financial concepts accessible.",
     resume: false,
   },

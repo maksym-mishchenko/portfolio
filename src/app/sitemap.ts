@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getAllPosts } from "@/lib/blog";
-import { getAllCaseStudies } from "@/lib/case-studies";
+import { getAllCaseStudies, getCaseStudyBySlug } from "@/lib/case-studies";
 import { getAllShareKitSlugs } from "@/lib/case-study-share-kits";
 import { SITE } from "@/lib/constants";
 
@@ -20,10 +20,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: new Date(study.date),
   }));
 
-  const shareKitEntries = shareKitSlugs.map((slug) => ({
-    url: `${siteUrl}/case-studies/${slug}/share`,
-    lastModified: new Date(),
-  }));
+  const shareKitEntries = shareKitSlugs.flatMap((slug) => {
+    const study = getCaseStudyBySlug(slug);
+    if (!study) return [];
+
+    return [
+      {
+        url: `${siteUrl}/case-studies/${slug}/share`,
+        lastModified: new Date(study.date),
+      },
+    ];
+  });
 
   return [
     { url: siteUrl, lastModified: new Date(), changeFrequency: "monthly" as const, priority: 1 },

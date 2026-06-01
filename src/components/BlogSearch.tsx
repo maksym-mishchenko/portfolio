@@ -3,24 +3,17 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
-type BlogSearchPost = {
-  slug: string;
-  title: string;
-  date: string;
-  description: string;
-  readingTime: string;
-  tags?: string[];
-};
+import type { BlogPostMeta } from "@/lib/blog";
 
 type BlogSearchProps = {
-  posts: BlogSearchPost[];
+  posts: BlogPostMeta[];
 };
 
 function normalizeSearchValue(value: string) {
   return value.trim().toLowerCase();
 }
 
-function postMatchesQuery(post: BlogSearchPost, normalizedQuery: string) {
+function postMatchesQuery(post: BlogPostMeta, normalizedQuery: string) {
   if (normalizedQuery.length === 0) {
     return true;
   }

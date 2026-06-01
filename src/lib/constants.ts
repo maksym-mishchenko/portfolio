@@ -144,3 +144,47 @@ export const NOW: NowItem[] = [
   { emoji: "🔐", text: "Deepening security expertise — cloud identity, zero trust, AppSec" },
   { emoji: "🇨🇿", text: "Based in Prague, Czechia" },
 ];
+
+export const ABOUT = {
+  eyebrow: "Professional snapshot",
+  headline: "I build security-minded systems, developer tooling, and AI-agent automation.",
+  summary:
+    "Software Engineer II at Microsoft Security working on Identity & Application Governance. I focus on backend systems, security controls, automation, and practical AI-agent workflows that make engineering teams safer and faster.",
+  focusAreas: [
+    {
+      title: "Identity & security systems",
+      description:
+        "Current work in Microsoft Security, with a focus on governance, trust boundaries, and secure enterprise workflows.",
+      proof: "See the mcpgate case study for policy enforcement, audit trails, and prompt-injection defenses.",
+    },
+    {
+      title: "Developer tooling",
+      description:
+        "Experience building CI/CD, package management, licensing, and workflow automation across enterprise environments.",
+      proof: "See the resume for Microsoft Security, EPAM, and Stora Enso experience.",
+    },
+    {
+      title: "Agentic AI & automation",
+      description:
+        "Hands-on work with MCP, AI-agent governance, personal automation, and human-in-the-loop workflows.",
+      proof: "See OpenClaw and mcpgate-related portfolio work.",
+    },
+  ],
+  proofLinks: [
+    {
+      label: "Read the mcpgate case study",
+      href: "/case-studies/mcpgate-v1-1",
+      description: "Deep technical write-up on MCP gateway security controls.",
+    },
+    {
+      label: "Open the share-ready summary",
+      href: "/case-studies/mcpgate-v1-1/share",
+      description: "Copy-ready recruiter and referral summary.",
+    },
+    {
+      label: "View resume",
+      href: "/resume",
+      description: "Print-optimized professional experience and project summary.",
+    },
+  ],
+} as const;

@@ -1,5 +1,5 @@
 # State — portfolio
-Last updated: 2026-06-01 by maksym
+Last updated: 2026-06-02 by Copilot
 
 ## Done
 - Phase 1 complete: /resume print-to-PDF, per-post OG images, JSON-LD Person/BlogPosting,
@@ -10,6 +10,7 @@ Last updated: 2026-06-01 by maksym
   already shipped. [feat/project-thumbnails]
 - Flagship mcpgate case study shipped at `/case-studies/mcpgate-v1-1`. [PR #8 merged]
 - Case-study distribution kit shipped at `/case-studies/mcpgate-v1-1/share`. [PR #9 merged]
+- Phase 3 blog search implemented on `issue-13/blog-search`; PR #14 links issue #13 and is ready to merge after CI.
 
 ## In progress
 - About professional snapshot implemented on `issue-10/about-professional-snapshot`; PR pending/open for `/about`.
@@ -20,5 +21,5 @@ Last updated: 2026-06-01 by maksym
 
 ## Next steps
 - Review and merge the `/about` professional snapshot PR.
-- Phase 3 backlog: client-side blog search over title/description/tags. (/now already exists.)
+- Merge the Phase 3 blog search PR #14 and remove the local worktree after merge.
 - Future: swap generated SVG thumbnails for real screenshots if desired.

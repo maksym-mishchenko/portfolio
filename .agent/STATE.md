@@ -14,15 +14,15 @@ Last updated: 2026-06-02 by Copilot
 - Maintenance readiness sweep complete: preserved local planning commits, aligned local `main`
   with `origin/main`, refreshed agent state, and updated changelog hygiene. [PR #16 merged]
 - Dependency modernization and quality cleanup complete: updated direct dependencies, cleared lint warnings, validated typecheck/build, and documented deferred upstream audit/tooling follow-ups. [issue #17]
+- Dependency audit follow-up complete: forced PostCSS 8.5.15 via npm overrides so Next.js uses the patched transitive version and `npm audit --audit-level=moderate` passes. [issue #18]
 
 ## In progress
 - None.
 
 ## Known issues
-- Next.js 16.2.7 still bundles a PostCSS version affected by moderate npm audit advisories; no stable non-breaking Next.js fix is available yet. [follow-up #18]
-- ESLint 10 remains deferred until eslint-config-next and its bundled plugins support it. [follow-up #18]
+- ESLint 10 remains deferred until eslint-config-next and its bundled React/import/a11y plugins support it. [follow-up #20]
 
 ## Next steps
-- Track deferred dependency follow-ups in #18.
+- Track ESLint 10 compatibility in #20.
 - Decide the next product/content investment after technical quality cleanup is merged.
 - Future: swap generated SVG thumbnails for real screenshots if desired.

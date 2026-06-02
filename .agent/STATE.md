@@ -19,10 +19,10 @@ Last updated: 2026-06-02 by Copilot
 - None.
 
 ## Known issues
-- Next.js 16.2.7 still bundles a PostCSS version affected by moderate npm audit advisories; no stable non-breaking Next.js fix is available yet.
-- ESLint 10 remains deferred until eslint-config-next and its bundled plugins support it.
+- Next.js 16.2.7 still bundles a PostCSS version affected by moderate npm audit advisories; no stable non-breaking Next.js fix is available yet. [follow-up #18]
+- ESLint 10 remains deferred until eslint-config-next and its bundled plugins support it. [follow-up #18]
 
 ## Next steps
-- Create follow-up tracking for the deferred Next.js/PostCSS audit exception and ESLint 10 upgrade.
+- Track deferred dependency follow-ups in #18.
 - Decide the next product/content investment after technical quality cleanup is merged.
 - Future: swap generated SVG thumbnails for real screenshots if desired.

@@ -11,16 +11,16 @@ Last updated: 2026-06-02 by Copilot
 - About professional snapshot shipped at `/about`. [PR #11 merged]
 - Phase 3 blog search shipped: `/blog` remains server-rendered and delegates client-side
   filtering to `BlogSearch`. Search covers title, description, date, reading time, and tags. [PR #14 merged]
+- Maintenance readiness sweep complete: preserved local planning commits, aligned local `main`
+  with `origin/main`, refreshed agent state, and updated changelog hygiene. [PR #16 merged]
 
 ## In progress
-- Maintenance readiness sweep: preserve local planning commits, align local `main` with
-  `origin/main`, refresh agent state, and update changelog hygiene.
+- None.
 
 ## Known issues
 - 6 non-failing lint warnings remain in `mdx/interactive/InteractiveFlow.tsx`
   (unused props/setters/import), if still present after the next lint run.
 
 ## Next steps
-- Complete the maintenance readiness sweep PR.
 - Decide the next product/content investment after repo state is clean.
 - Future: swap generated SVG thumbnails for real screenshots if desired.

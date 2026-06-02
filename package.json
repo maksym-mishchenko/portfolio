@@ -11,28 +11,28 @@
   "dependencies": {
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
-    "@xyflow/react": "^12.10.2",
-    "framer-motion": "^12.38.0",
+    "@xyflow/react": "^12.11.0",
+    "framer-motion": "^12.40.0",
     "gray-matter": "^4.0.3",
-    "lucide-react": "^1.14.0",
+    "lucide-react": "^1.17.0",
     "mermaid": "^11.15.0",
     "next": "^16.2.7",
     "next-mdx-remote": "^6.0.0",
-    "react": "19.2.4",
-    "react-dom": "19.2.4",
-    "sugar-high": "^1.1.0",
-    "zod": "^4.4.2"
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "sugar-high": "^1.2.1",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
+    "@tailwindcss/postcss": "^4.3.0",
+    "@types/node": "^25.9.1",
+    "@types/react": "^19.2.16",
+    "@types/react-dom": "^19.2.3",
+    "eslint": "^9.39.4",
     "eslint-config-next": "^16.2.7",
     "satori": "^0.26.0",
     "sharp": "^0.34.5",
-    "tailwindcss": "^4",
-    "typescript": "^5"
+    "tailwindcss": "^4.3.0",
+    "typescript": "^6.0.3"
   }
 }

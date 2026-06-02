@@ -29,3 +29,4 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Blog post titles capitalized on render
 - Removed private OpenClaw Dashboard reference from published blog post
 - Refreshed agent-facing project state after blog search merge
+- Modernized direct dependencies and cleared known lint warnings.

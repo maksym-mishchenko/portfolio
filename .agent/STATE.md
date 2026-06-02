@@ -15,12 +15,13 @@ Last updated: 2026-06-02 by Copilot
   with `origin/main`, refreshed agent state, and updated changelog hygiene. [PR #16 merged]
 
 ## In progress
-- None.
+- Dependency modernization and quality cleanup: update direct dependencies, clear lint warnings,
+  validate audit/typecheck/build, and open an issue-linked PR.
 
 ## Known issues
-- 6 non-failing lint warnings remain in `mdx/interactive/InteractiveFlow.tsx`
-  (unused props/setters/import), if still present after the next lint run.
+- None currently tracked after dependency modernization validation.
 
 ## Next steps
-- Decide the next product/content investment after repo state is clean.
+- Complete the dependency modernization and quality cleanup PR.
+- Decide the next product/content investment after technical quality cleanup is merged.
 - Future: swap generated SVG thumbnails for real screenshots if desired.

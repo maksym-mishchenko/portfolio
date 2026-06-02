@@ -1,9 +1,11 @@
 "use client";
 
-import { useCallback, useMemo } from "react";
+import { type CSSProperties, useMemo } from "react";
 import {
   ReactFlow,
   Background,
+  Controls,
+  MiniMap,
   Node,
   Edge,
   ConnectionLineType,
@@ -76,8 +78,8 @@ export function InteractiveFlow({
     }));
   }, [edgesStr]);
 
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const [nodes, , onNodesChange] = useNodesState(initialNodes);
+  const [edges, , onEdgesChange] = useEdgesState(initialEdges);
 
   return (
     <div
@@ -90,7 +92,7 @@ export function InteractiveFlow({
         "--xy-background-color-default": "transparent",
         "--xy-node-background-color-default": "var(--color-surface)",
         "--xy-edge-label-background-color-default": "var(--color-surface)",
-      } as React.CSSProperties}
+      } as CSSProperties}
     >
       <ReactFlow
         nodes={nodes}
@@ -108,6 +110,15 @@ export function InteractiveFlow({
         style={{ width: "100%", height: "100%", position: "absolute", top: 0, left: 0 }}
       >
         <Background color="var(--color-border)" gap={16} size={1} />
+        {controls && <Controls showInteractive={interactive} />}
+        {minimap && (
+          <MiniMap
+            pannable
+            zoomable
+            nodeColor="var(--color-surface)"
+            maskColor="rgba(0, 0, 0, 0.35)"
+          />
+        )}
       </ReactFlow>
     </div>
   );

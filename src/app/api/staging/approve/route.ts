@@ -1,5 +1,4 @@
 import { NextRequest } from "next/server";
-import { cookies } from "next/headers";
 
 const STAGING_SECRET = process.env.STAGING_SECRET ?? "";
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN ?? "";

@@ -7,7 +7,7 @@ import { Journey } from "@/components/Journey";
 import { TechStack } from "@/components/TechStack";
 import { About } from "@/components/About";
 import { Contact } from "@/components/Contact";
-import { personSchema, safeJsonLd } from "@/lib/jsonld";
+import { personSchema, websiteSchema, safeJsonLd } from "@/lib/jsonld";
 
 export default function Home() {
   return (
@@ -15,6 +15,10 @@ export default function Home() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: safeJsonLd(personSchema()) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(websiteSchema()) }}
       />
       <ScrollProgress />
       <StickyNav />

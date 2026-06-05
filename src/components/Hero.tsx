@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
@@ -9,19 +8,65 @@ import { TerminalTyping } from "./TerminalTyping";
 import { SITE } from "@/lib/constants";
 
 export function Hero() {
-  const [typingDone, setTypingDone] = useState(false);
   const prefersReducedMotion = useReducedMotion();
 
   return (
-    <section className="min-h-screen flex flex-col items-center justify-center relative px-6">
-      <h1 className="sr-only">Maksym Mishchenko — Software Engineer II at Microsoft Security</h1>
+    <section className="relative flex min-h-screen flex-col items-center justify-center px-6 py-28 text-center">
       {/* Status badge */}
       <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#27272a] bg-[#18181b] px-3.5 py-1.5 text-xs font-mono text-[#a1a1aa]">
         <span className="h-1.5 w-1.5 rounded-full bg-[#3b82f6]" aria-hidden="true" />
         {SITE.status}
       </div>
+
+      <div className="mx-auto max-w-3xl">
+        <h1 className="text-4xl font-bold tracking-tight text-[#fafafa] sm:text-5xl lg:text-6xl">
+          Maksym Mishchenko
+        </h1>
+        <p className="mt-4 text-lg leading-relaxed text-[#a1a1aa] sm:text-xl">
+          Security-minded software engineer building identity systems, developer tooling, and governed AI-agent automation.
+        </p>
+      </div>
+
+      {/* CTA buttons */}
+      <div className="mt-8 flex flex-wrap justify-center gap-3">
+        <Link
+          href="/resume"
+          onClick={() => track("cta_click", { label: "resume" })}
+          className="rounded-lg bg-[#3b82f6] px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-[#2563eb] sm:text-base"
+        >
+          Resume →
+        </Link>
+        <button
+          onClick={() => {
+            track("cta_click", { label: "projects" });
+            document
+              .getElementById("projects")
+              ?.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth" });
+          }}
+          className="rounded-lg border border-[#27272a] px-5 py-3 text-sm font-medium text-[#a1a1aa] transition-colors hover:border-[#3b82f6] hover:text-[#fafafa] sm:text-base"
+        >
+          Projects ↓
+        </button>
+        <Link
+          href="/blog"
+          onClick={() => track("cta_click", { label: "blog" })}
+          className="rounded-lg border border-[#27272a] px-5 py-3 text-sm font-medium text-[#a1a1aa] transition-colors hover:border-[#3b82f6] hover:text-[#fafafa] sm:text-base"
+        >
+          Blog →
+        </Link>
+        <a
+          href="https://github.com/maksym-mishchenko"
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => track("cta_click", { label: "github" })}
+          className="rounded-lg border border-[#27272a] px-5 py-3 text-sm font-medium text-[#a1a1aa] transition-colors hover:border-[#3b82f6] hover:text-[#fafafa] sm:text-base"
+        >
+          GitHub →
+        </a>
+      </div>
+
       {/* Terminal card */}
-      <div className="max-w-2xl w-full mx-auto bg-[#18181b] rounded-xl border border-[#27272a] overflow-hidden">
+      <div className="mx-auto mt-10 w-full max-w-3xl overflow-hidden rounded-xl border border-[#27272a] bg-[#18181b] text-left">
         {/* Title bar */}
         <div className="flex items-center gap-2 px-4 py-3 bg-[#18181b] border-b border-[#27272a]">
           <span className="w-3 h-3 rounded-full bg-[#ef4444]" />
@@ -34,47 +79,9 @@ export function Hero() {
 
         {/* Terminal body */}
         <div className="p-6 min-h-[200px]">
-          <TerminalTyping onComplete={() => setTypingDone(true)} />
+          <TerminalTyping />
         </div>
       </div>
-
-      {/* CTA buttons */}
-      {typingDone && (
-        <motion.div
-          initial={prefersReducedMotion ? false : { opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="flex flex-wrap gap-3 mt-8"
-        >
-          <button
-            onClick={() => {
-              track("cta_click", { label: "projects" });
-              document
-                .getElementById("projects")
-                ?.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth" });
-            }}
-            className="bg-[#3b82f6] hover:bg-[#2563eb] text-white px-5 py-3 rounded-lg font-medium transition-colors text-sm sm:text-base"
-          >
-            Projects ↓
-          </button>
-          <Link
-            href="/blog"
-            onClick={() => track("cta_click", { label: "blog" })}
-            className="border border-[#27272a] hover:border-[#3b82f6] text-[#a1a1aa] hover:text-[#fafafa] px-5 py-3 rounded-lg font-medium transition-colors text-sm sm:text-base"
-          >
-            Blog →
-          </Link>
-          <a
-            href="https://github.com/maksym-mishchenko"
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => track("cta_click", { label: "github" })}
-            className="border border-[#27272a] hover:border-[#3b82f6] text-[#a1a1aa] hover:text-[#fafafa] px-5 py-3 rounded-lg font-medium transition-colors text-sm sm:text-base"
-          >
-            GitHub →
-          </a>
-        </motion.div>
-      )}
 
       {/* Scroll indicator */}
       <motion.div

@@ -32,3 +32,4 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Modernized direct dependencies and cleared known lint warnings.
 - Added a PostCSS npm override so dependency audit passes while Next.js upstream catches up.
 - Replaced the duplicated hero terminal title line with focused security/automation copy.
+- Lifted homepage credibility by making hero identity/CTAs immediate and surfacing About proof cards.

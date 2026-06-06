@@ -53,6 +53,22 @@ export const PROJECTS: Project[] = [
     learned: "Gamification UX patterns and making complex financial concepts accessible.",
     resume: false,
   },
+  {
+    title: "Smart Wardrobe",
+    description:
+      "Telegram bot for outfit planning with CV-based colour extraction and a spaced-repetition algorithm. Manages 97+ wardrobe items and suggests daily outfits based on weather, occasion, and wear history.",
+    tech: ["FastAPI", "Python", "Telegram API", "PostgreSQL"],
+    live: "https://t.me/SmartWardrobeHelperBot",
+    featured: true,
+    learned: "Spaced-repetition scheduling applied outside language learning — wear-frequency fairness beats naive random selection.",
+  },
+  {
+    title: "crypto-funding-lab",
+    description:
+      "Autonomous funding-rate arbitrage research bot running in simulation. Monitors Binance/Bybit perpetual spreads, generates entry/exit signals, and logs P&L to measure strategy viability before live deployment.",
+    tech: ["Python", "FastAPI", "Redis", "Telegram API"],
+    learned: "Simulation fidelity matters — slippage and fee drag erode theoretical edge faster than backtests suggest.",
+  },
 ];
 
 export interface JourneyNode {
@@ -126,6 +142,17 @@ export interface TechCategory {
 
 export const TECH_STACK: TechCategory[] = [
   { name: "Languages", items: ["Java", "C#", "Python", "TypeScript"] },
+  {
+    name: "AI & Agents",
+    items: [
+      "LLM Orchestration",
+      "MCP",
+      "Claude API",
+      "OpenAI API",
+      "LangChain",
+      "Autonomous Agents",
+    ],
+  },
   { name: "Frontend", items: ["Next.js", "React", "Tailwind CSS"] },
   { name: "Backend", items: [".NET", "FastAPI", "Spring Boot"] },
   { name: "Cloud", items: ["Azure", "AWS"] },

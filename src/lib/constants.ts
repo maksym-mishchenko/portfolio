@@ -3,6 +3,8 @@ export const SITE = {
   title: "Software Engineer II @ Microsoft Security",
   status: "Software Engineer II @ Microsoft Security",
   url: "https://mmishchenko.dev",
+  image: "https://mmishchenko.dev/avatar.webp",
+  location: "Prague, Czechia",
   github: "https://github.com/maksym-mishchenko",
   linkedin: "https://linkedin.com/in/maksym-mishchenko-1036381b8",
   email: "mailto:maksym@mmishchenko.dev",

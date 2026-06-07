@@ -11,7 +11,24 @@ export function personSchema() {
     name: SITE.name,
     jobTitle: SITE.status,
     url: SITE.url,
+    image: SITE.image,
     sameAs: [SITE.github, SITE.linkedin],
+    worksFor: {
+      "@type": "Organization",
+      name: "Microsoft Security",
+    },
+    knowsAbout: [
+      "Identity and access governance",
+      "Application security",
+      "Backend systems",
+      "Developer tooling",
+      "AI agent governance",
+    ],
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Prague",
+      addressCountry: "CZ",
+    },
   };
 }
 
@@ -29,10 +46,20 @@ export function blogPostingSchema(post: {
     description: post.description,
     datePublished: post.date,
     url: `${SITE.url}/blog/${post.slug}`,
+    image: `${SITE.url}/blog/${post.slug}/opengraph-image`,
     author: {
       "@type": "Person",
       name: SITE.name,
       url: SITE.url,
+    },
+    publisher: {
+      "@type": "Person",
+      name: SITE.name,
+      url: SITE.url,
+    },
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `${SITE.url}/blog/${post.slug}`,
     },
     keywords: post.tags,
   };
@@ -53,7 +80,13 @@ export function techArticleSchema(study: {
     headline: study.title,
     description: study.summary,
     datePublished: study.date,
+    image: `${SITE.url}/opengraph-image`,
     author: {
+      "@type": "Person",
+      name: SITE.name,
+      url: SITE.url,
+    },
+    publisher: {
       "@type": "Person",
       name: SITE.name,
       url: SITE.url,

@@ -23,7 +23,7 @@ export function Hero() {
           Maksym Mishchenko
         </h1>
         <p className="mt-4 text-lg leading-relaxed text-[#a1a1aa] sm:text-xl">
-          Security-minded software engineer building identity systems, developer tooling, and governed AI-agent automation.
+          Software engineer at Microsoft Security, building AI-agent automation on the side.
         </p>
       </div>
 

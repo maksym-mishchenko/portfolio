@@ -23,9 +23,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${study.title} - Maksym Mishchenko`,
     description: study.summary,
+    alternates: { canonical: `/case-studies/${study.slug}` },
     openGraph: {
       title: study.title,
       description: study.summary,
+      url: `/case-studies/${study.slug}`,
       type: "article",
       publishedTime: study.date,
       tags: study.tags,

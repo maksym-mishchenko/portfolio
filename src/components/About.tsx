@@ -1,8 +1,11 @@
 "use client";
 
+import Link from "next/link";
 import { Mail } from "lucide-react";
 import Image from "next/image";
 import { track } from "@vercel/analytics";
+import { ABOUT, SITE } from "@/lib/constants";
+import { SectionReveal } from "./SectionReveal";
 
 function GithubIcon({ size = 20 }: { size?: number }) {
   return (
@@ -19,8 +22,6 @@ function LinkedinIcon({ size = 20 }: { size?: number }) {
     </svg>
   );
 }
-import { SITE } from "@/lib/constants";
-import { SectionReveal } from "./SectionReveal";
 
 export function About() {
   return (
@@ -93,6 +94,46 @@ export function About() {
             </div>
           </SectionReveal>
         </div>
+
+        <SectionReveal delay={0.3}>
+          <div className="mt-14">
+            <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <p className="font-mono text-xs uppercase tracking-[0.3em] text-accent">
+                  Proof path
+                </p>
+                <h3 className="mt-2 text-2xl font-semibold text-foreground">
+                  Security, tooling, and agent automation
+                </h3>
+              </div>
+              <Link href="/about" className="text-sm text-accent hover:underline">
+                Full professional snapshot -&gt;
+              </Link>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-3">
+              {ABOUT.focusAreas.map((area) => (
+                <article key={area.title} className="rounded-xl border border-border bg-surface/40 p-5">
+                  <h4 className="text-base font-semibold text-foreground">{area.title}</h4>
+                  <p className="mt-3 text-sm leading-relaxed text-muted">{area.description}</p>
+                  <p className="mt-4 text-sm leading-relaxed text-accent">{area.proof}</p>
+                </article>
+              ))}
+            </div>
+
+            <div className="mt-5 flex flex-wrap gap-3">
+              {ABOUT.proofLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="rounded-full border border-border px-3 py-1.5 text-sm text-muted transition-colors hover:border-accent hover:text-foreground"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </SectionReveal>
       </div>
     </section>
   );

@@ -31,12 +31,14 @@ export const metadata: Metadata = {
     siteName: "mmishchenko.dev",
     locale: "en_US",
     type: "website",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Maksym Mishchenko portfolio" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Maksym Mishchenko — Software Engineer",
     description:
       "Software Engineer at Microsoft. Building tools that solve real problems.",
+    images: ["/opengraph-image"],
   },
   robots: { index: true, follow: true },
   alternates: { canonical: "https://mmishchenko.dev" },

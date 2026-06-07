@@ -25,9 +25,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description: post.description,
     // Staged posts (published: false) get noindex so search engines skip them
     ...(post.published === false ? { robots: { index: false, follow: false } } : {}),
+    alternates: { canonical: `/blog/${post.slug}` },
     openGraph: {
       title: post.title,
       description: post.description,
+      url: `/blog/${post.slug}`,
       type: "article",
       publishedTime: post.date,
       tags: post.tags,

@@ -6,6 +6,7 @@ import { SITE } from "@/lib/constants";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const siteUrl = SITE.url;
+  const staticLastModified = new Date("2026-06-01");
   const posts = getAllPosts();
   const caseStudies = getAllCaseStudies();
   const shareKitSlugs = getAllShareKitSlugs();
@@ -33,13 +34,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
   });
 
   return [
-    { url: siteUrl, lastModified: new Date(), changeFrequency: "monthly" as const, priority: 1 },
-    { url: `${siteUrl}/about`, lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.8 },
-    { url: `${siteUrl}/blog`, lastModified: new Date(), changeFrequency: "weekly" as const, priority: 0.8 },
-    { url: `${siteUrl}/case-studies`, lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.7 },
-    { url: `${siteUrl}/now`, lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.6 },
-    { url: `${siteUrl}/resume`, lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.7 },
-    { url: `${siteUrl}/uses`, lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.5 },
+    { url: siteUrl, lastModified: staticLastModified, changeFrequency: "monthly" as const, priority: 1 },
+    { url: `${siteUrl}/about`, lastModified: staticLastModified, changeFrequency: "monthly" as const, priority: 0.8 },
+    { url: `${siteUrl}/blog`, lastModified: staticLastModified, changeFrequency: "weekly" as const, priority: 0.8 },
+    { url: `${siteUrl}/case-studies`, lastModified: staticLastModified, changeFrequency: "monthly" as const, priority: 0.7 },
+    { url: `${siteUrl}/now`, lastModified: staticLastModified, changeFrequency: "monthly" as const, priority: 0.6 },
+    { url: `${siteUrl}/resume`, lastModified: staticLastModified, changeFrequency: "monthly" as const, priority: 0.7 },
+    { url: `${siteUrl}/uses`, lastModified: staticLastModified, changeFrequency: "monthly" as const, priority: 0.5 },
     ...blogEntries,
     ...caseStudyEntries,
     ...shareKitEntries,

@@ -60,6 +60,7 @@ export interface JourneyNode {
   icon: string;
   title: string;
   detail: string;
+  achievements?: string[];
   link?: string;
   resumeHide?: boolean;
 }
@@ -82,12 +83,20 @@ export const JOURNEY: JourneyNode[] = [
     icon: "💼",
     title: "Stora Enso",
     detail: "Java Developer — invoice processing, land management systems",
+    achievements: [
+      "Built and maintained Java business-system features for invoice processing and land-management workflows.",
+      "Worked on enterprise data flows where reliability, traceability, and business correctness mattered.",
+    ],
   },
   {
     year: "2022",
     icon: "💼",
     title: "EPAM Systems",
     detail: "SW Engineer → Senior SE — DevEx, licensing & package management in CI/CD (financial services)",
+    achievements: [
+      "Delivered developer-experience work around CI/CD, licensing, and package-management workflows for financial-services environments.",
+      "Progressed from Software Engineer to Senior Software Engineer while working across enterprise delivery constraints.",
+    ],
   },
   {
     year: "2023",
@@ -101,6 +110,10 @@ export const JOURNEY: JourneyNode[] = [
     icon: "🚀",
     title: "Microsoft Security",
     detail: "Software Engineer II — Identity & Application Governance, Prague",
+    achievements: [
+      "Work on Identity & Application Governance systems in Microsoft Security.",
+      "Focus on governance, trust boundaries, secure enterprise workflows, and practical security controls.",
+    ],
   },
   {
     year: "2026",

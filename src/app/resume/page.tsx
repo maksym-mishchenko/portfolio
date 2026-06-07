@@ -174,11 +174,24 @@ export default function ResumePage() {
                       <span className="text-xs font-mono text-accent shrink-0 print:text-gray-500">
                         {node.year}
                       </span>
-                    </div>
-                    <p className="text-sm text-muted mt-1 print:text-gray-600 print:text-xs">{node.detail}</p>
-                  </div>
-                ))}
-              </div>
+                     </div>
+                     <p className="text-sm text-muted mt-1 print:text-gray-600 print:text-xs">{node.detail}</p>
+                    {node.achievements && (
+                      <ul className="mt-2 space-y-1.5 text-sm text-muted print:text-xs print:text-gray-700">
+                        {node.achievements.map((achievement) => (
+                          <li key={achievement} className="flex gap-2">
+                            <span
+                              className="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent print:bg-gray-500"
+                              aria-hidden="true"
+                            />
+                            <span>{achievement}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                   </div>
+                 ))}
+               </div>
             </section>
 
             {/* Projects */}
@@ -243,4 +256,3 @@ export default function ResumePage() {
     </main>
   );
 }
-

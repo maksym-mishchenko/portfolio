@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { SITE, NOW } from "@/lib/constants";
+import { SITE, NOW, NOW_LAST_UPDATED } from "@/lib/constants";
 
 export const metadata: Metadata = {
   title: "Now — Maksym Mishchenko",
@@ -42,7 +42,7 @@ export default function NowPage() {
       </ul>
 
       <p className="text-xs text-muted mt-16 border-t border-border pt-6">
-        Last updated: {new Date().toLocaleDateString("en-US", { year: "numeric", month: "long" })} ·{" "}
+        Last updated: {NOW_LAST_UPDATED} ·{" "}
         <a href={SITE.github} className="text-accent hover:underline" target="_blank" rel="noopener noreferrer">
           View source
         </a>

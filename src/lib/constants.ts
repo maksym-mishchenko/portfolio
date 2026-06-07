@@ -158,6 +158,8 @@ export const NOW: NowItem[] = [
   { emoji: "🇨🇿", text: "Based in Prague, Czechia" },
 ];
 
+export const NOW_LAST_UPDATED = "June 2026";
+
 export const ABOUT = {
   eyebrow: "Professional snapshot",
   headline: "I build security-minded systems, developer tooling, and AI-agent automation.",

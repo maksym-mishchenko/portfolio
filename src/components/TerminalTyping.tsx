@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 
 const lines = [
-  { prompt: "> whoami", response: "  Maksym Mishchenko" },
+  { prompt: "> whoami", response: "  Software Engineer II @ Microsoft Security" },
   { prompt: "> focus", response: "  Identity · Access Governance · Security Controls" },
   {
     prompt: "> cat interests.txt",

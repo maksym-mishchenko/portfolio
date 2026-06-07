@@ -47,7 +47,7 @@ export function BlogSearch({ posts }: BlogSearchProps) {
 
   return (
     <section className="space-y-6">
-      <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 shadow-[0_0_40px_rgba(34,197,94,0.08)]">
+      <div className="rounded-2xl border border-border bg-surface/40 p-4">
         <label htmlFor="blog-search" className="sr-only">
           Search blog posts
         </label>
@@ -58,9 +58,9 @@ export function BlogSearch({ posts }: BlogSearchProps) {
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search posts by title, topic, or tag..."
-            className="min-h-11 flex-1 rounded-xl border border-white/10 bg-black/30 px-4 py-2 text-sm text-white placeholder:text-slate-500 outline-none transition focus:border-emerald-400/60 focus:ring-2 focus:ring-emerald-400/20"
+            className="min-h-11 flex-1 rounded-xl border border-border bg-background px-4 py-2 text-sm text-foreground placeholder:text-muted outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
           />
-          <span className="text-sm text-slate-400" aria-live="polite">
+          <span className="text-sm text-muted" aria-live="polite">
             {resultLabel}
           </span>
         </div>
@@ -106,15 +106,15 @@ export function BlogSearch({ posts }: BlogSearchProps) {
           ))}
         </div>
       ) : (
-        <div className="rounded-2xl border border-dashed border-white/10 bg-white/[0.02] p-8 text-center">
-          <p className="text-lg font-semibold text-white">No posts found</p>
-          <p className="mt-2 text-sm text-slate-400">
+        <div className="rounded-2xl border border-dashed border-border bg-surface/40 p-8 text-center">
+          <p className="text-lg font-semibold text-foreground">No posts found</p>
+          <p className="mt-2 text-sm text-muted">
             Try a different title, topic, or tag.
           </p>
           <button
             type="button"
             onClick={() => setQuery("")}
-            className="mt-5 rounded-full border border-emerald-400/30 px-4 py-2 text-sm font-medium text-emerald-300 transition hover:border-emerald-300 hover:bg-emerald-400/10"
+            className="mt-5 rounded-full border border-accent/40 px-4 py-2 text-sm font-medium text-accent transition hover:border-accent hover:bg-accent/10"
           >
             Clear search
           </button>

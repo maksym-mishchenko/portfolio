@@ -10,7 +10,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-06-07
+
 ### Added
+- Public-launch hardening sprint: resume proof bullets, flagship case-study framing, blog discovery polish, intentional `/now` freshness, enriched metadata, and launch smoke checks.
 - Phase 1 portfolio SEO/discoverability bundle: `/resume`, per-post OG images, JSON-LD Person/BlogPosting, RSS footer link, `/now`, and neutral Microsoft Security status badge (PR #6)
 - Richer project cards with terminal-style thumbnails and learned lines (PR #7)
 - Flagship mcpgate case study at `/case-studies/mcpgate-v1-1` (PR #8)

@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 
 const lines = [
   { prompt: "> whoami", response: "  Security engineer, Prague 🇨🇿" },
-  { prompt: "> focus", response: "  Identity · Access Governance · Security Controls" },
+  { prompt: "> focus", response: "  Identity & Application Governance" },
   {
     prompt: "> cat interests.txt",
     response: "  Backend · Distributed Systems · Security · Agent Automation",

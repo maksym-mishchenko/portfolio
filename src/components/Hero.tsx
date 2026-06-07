@@ -12,12 +12,6 @@ export function Hero() {
 
   return (
     <section className="relative flex min-h-screen flex-col items-center justify-center px-6 py-28 text-center">
-      {/* Status badge */}
-      <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#27272a] bg-[#18181b] px-3.5 py-1.5 text-xs font-mono text-[#a1a1aa]">
-        <span className="h-1.5 w-1.5 rounded-full bg-[#3b82f6]" aria-hidden="true" />
-        {SITE.status}
-      </div>
-
       <div className="mx-auto max-w-3xl">
         <h1 className="text-4xl font-bold tracking-tight text-[#fafafa] sm:text-5xl lg:text-6xl">
           Maksym Mishchenko

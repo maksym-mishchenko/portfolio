@@ -9,19 +9,15 @@ export function personSchema() {
     "@context": "https://schema.org",
     "@type": "Person",
     name: SITE.name,
-    jobTitle: "Software Engineer II",
+    jobTitle: SITE.status,
     worksFor: {
       "@type": "Organization",
-      name: "Microsoft",
+      name: "Microsoft Security",
       url: "https://www.microsoft.com",
     },
     url: SITE.url,
     image: SITE.image,
     sameAs: [SITE.github, SITE.linkedin],
-    worksFor: {
-      "@type": "Organization",
-      name: "Microsoft Security",
-    },
     knowsAbout: [
       "Identity and access governance",
       "Application security",

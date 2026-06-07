@@ -9,7 +9,12 @@ export function personSchema() {
     "@context": "https://schema.org",
     "@type": "Person",
     name: SITE.name,
-    jobTitle: SITE.status,
+    jobTitle: "Software Engineer II",
+    worksFor: {
+      "@type": "Organization",
+      name: "Microsoft",
+      url: "https://www.microsoft.com",
+    },
     url: SITE.url,
     image: SITE.image,
     sameAs: [SITE.github, SITE.linkedin],
@@ -28,6 +33,20 @@ export function personSchema() {
       "@type": "PostalAddress",
       addressLocality: "Prague",
       addressCountry: "CZ",
+    },
+  };
+}
+
+export function websiteSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "mmishchenko.dev",
+    url: SITE.url,
+    author: {
+      "@type": "Person",
+      name: SITE.name,
+      url: SITE.url,
     },
   };
 }

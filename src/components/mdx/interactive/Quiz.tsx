@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { MdxJsonError, isStringArray, parseMdxJsonProp } from "./mdx-json";
 
 interface QuizProps {
   question: string;
@@ -13,8 +14,8 @@ interface QuizProps {
 export function Quiz({ question, options, answer, explanation }: QuizProps) {
   const [selected, setSelected] = useState<string | null>(null);
   const [revealed, setRevealed] = useState(false);
-  // Guard: options may be undefined during SSR prerendering
-  const parsedOptions: string[] = options ? JSON.parse(options) : [];
+  const optionsResult = parseMdxJsonProp(options, "options", isStringArray);
+  const parsedOptions = optionsResult.value ?? [];
 
   const handleSelect = (option: string) => {
     if (revealed) return;
@@ -22,6 +23,7 @@ export function Quiz({ question, options, answer, explanation }: QuizProps) {
     setRevealed(true);
   };
 
+  if (optionsResult.error) return <MdxJsonError component="Quiz" error={optionsResult.error} />;
   if (!parsedOptions.length) return null;
 
   return (

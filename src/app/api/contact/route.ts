@@ -39,34 +39,34 @@ export async function POST(req: NextRequest) {
 
   const { name, email, message } = parsed.data;
 
-  // If RESEND_API_KEY is set, send email; otherwise just log
   const resendKey = process.env.RESEND_API_KEY;
-  if (resendKey) {
-    try {
-      const res = await fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${resendKey}`,
-        },
-        body: JSON.stringify({
-          from: "Portfolio <maksym@mmishchenko.dev>",
-          to: process.env.CONTACT_EMAIL ?? "maksimus2998@gmail.com",
-          subject: `Portfolio contact from ${name}`,
-          text: `Name: ${name}\nEmail: ${email}\n\n${message}`,
-        }),
-      });
+  if (!resendKey) {
+    console.error("Contact form email delivery is not configured.");
+    return NextResponse.json({ error: "Contact form is temporarily unavailable" }, { status: 503 });
+  }
 
-      if (!res.ok) {
-        console.error("Resend error:", await res.text());
-        return NextResponse.json({ error: "Failed to send message" }, { status: 500 });
-      }
-    } catch (err) {
-      console.error("Resend error:", err);
+  try {
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${resendKey}`,
+      },
+      body: JSON.stringify({
+        from: "Portfolio <maksym@mmishchenko.dev>",
+        to: process.env.CONTACT_EMAIL ?? "maksimus2998@gmail.com",
+        subject: `Portfolio contact from ${name}`,
+        text: `Name: ${name}\nEmail: ${email}\n\n${message}`,
+      }),
+    });
+
+    if (!res.ok) {
+      console.error("Resend email delivery failed with status:", res.status);
       return NextResponse.json({ error: "Failed to send message" }, { status: 500 });
     }
-  } else {
-    console.log("[Contact]", { name, email, message: message.slice(0, 100) });
+  } catch (err) {
+    console.error("Resend request failed:", err);
+    return NextResponse.json({ error: "Failed to send message" }, { status: 500 });
   }
 
   return NextResponse.json(

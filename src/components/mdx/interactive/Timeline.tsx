@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { MdxJsonError, isRecord, parseMdxJsonProp } from "./mdx-json";
 
 interface TimelineEvent {
   label: string;
@@ -12,10 +13,24 @@ interface TimelineProps {
   events: string; // JSON array of TimelineEvent
 }
 
-export function Timeline({ events }: TimelineProps) {
-  // Guard: events may be undefined during SSR prerendering
-  const parsedEvents: TimelineEvent[] = events ? JSON.parse(events) : [];
+function isTimelineEventArray(value: unknown): value is TimelineEvent[] {
+  return (
+    Array.isArray(value) &&
+    value.every(
+      (item) =>
+        isRecord(item) &&
+        typeof item.label === "string" &&
+        typeof item.description === "string" &&
+        (item.icon === undefined || typeof item.icon === "string")
+    )
+  );
+}
 
+export function Timeline({ events }: TimelineProps) {
+  const eventsResult = parseMdxJsonProp(events, "events", isTimelineEventArray);
+  const parsedEvents = eventsResult.value ?? [];
+
+  if (eventsResult.error) return <MdxJsonError component="Timeline" error={eventsResult.error} />;
   if (!parsedEvents.length) return null;
 
   return (

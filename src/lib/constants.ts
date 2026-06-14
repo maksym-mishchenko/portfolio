@@ -86,18 +86,18 @@ export const JOURNEY: JourneyNode[] = [
     title: "Stora Enso",
     detail: "Java Developer — invoice processing, land management systems",
     achievements: [
-      "Built and maintained Java business-system features for invoice processing and land-management workflows.",
-      "Worked on enterprise data flows where reliability, traceability, and business correctness mattered.",
+      "Delivered Java features for invoice-processing and land-management systems used in business-critical back-office workflows.",
+      "Improved reliability and maintainability of data-heavy enterprise processes where traceability and financial correctness mattered.",
     ],
   },
   {
     year: "2022",
     icon: "💼",
     title: "EPAM Systems",
-    detail: "SW Engineer → Senior SE — DevEx, licensing & package management in CI/CD (financial services)",
+    detail: "Software Engineer → Senior Software Engineer — DevEx, licensing & package management in CI/CD (financial services)",
     achievements: [
-      "Delivered developer-experience work around CI/CD, licensing, and package-management workflows for financial-services environments.",
-      "Progressed from Software Engineer to Senior Software Engineer while working across enterprise delivery constraints.",
+      "Built CI/CD developer tooling that reduced friction around license compliance, package management, and delivery workflows for financial-services teams.",
+      "Grew into a senior role by owning cross-team delivery constraints, build/release reliability, and developer-experience improvements.",
     ],
   },
   {
@@ -113,8 +113,8 @@ export const JOURNEY: JourneyNode[] = [
     title: "Microsoft Security",
     detail: "Software Engineer II — Identity & Application Governance, Prague",
     achievements: [
-      "Work on Identity & Application Governance systems in Microsoft Security.",
-      "Focus on governance, trust boundaries, secure enterprise workflows, and practical security controls.",
+      "Build Identity & Application Governance capabilities that support secure enterprise access and application-governance workflows.",
+      "Translate governance and trust-boundary requirements into backend systems, automation, and practical security controls.",
     ],
   },
   {

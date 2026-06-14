@@ -84,10 +84,11 @@ export const JOURNEY: JourneyNode[] = [
     year: "2019",
     icon: "💼",
     title: "Stora Enso",
-    detail: "Java Developer — invoice processing, land management systems",
+    detail: "Java Developer — CI/CD regression gates, invoice processing, WebSphere MQ",
     achievements: [
-      "Delivered Java features for invoice-processing and land-management systems used in business-critical back-office workflows.",
-      "Improved reliability and maintainability of data-heavy enterprise processes where traceability and financial correctness mattered.",
+      "Built the Selenium regression-test suite used as a CI/CD pull-request gate for the whole team before changes could be approved.",
+      "Worked in a two-person team on the invoice-processing system, expanding it to support an additional department and coordinating requirements directly with the PM.",
+      "Owned delivery beyond implementation: deployments, testing, on-call outage support, WebSphere MQ integration work, and test-coverage improvements.",
     ],
   },
   {

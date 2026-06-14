@@ -18,6 +18,7 @@ Last updated: 2026-06-15 by Copilot
 - Public-launch completion sprint complete: homepage credibility lift deployed, resume proof bullets, flagship case-study framing, blog discovery polish, static /now freshness, richer metadata, launch smoke checks, and v0.2.0 release prep. [issue #25]
 - App review fixes complete: hardened production CSP by removing `unsafe-eval`, noindexed URL-live drafts, validated blog publish payloads, made contact delivery fail closed when email is not configured, and added safe JSON parsing for interactive MDX props.
 - Resume impact bullets refreshed for Stora Enso, EPAM Systems, and Microsoft Security with stronger action/result language that avoids invented metrics. [issue #29]
+- Stora Enso resume bullets updated with concrete CI/CD Selenium gate, invoice-processing expansion, PM coordination, deployment/testing/on-call ownership, WebSphere MQ, and test-coverage details.
 
 ## In progress
 - None.

@@ -86,7 +86,7 @@ export const JOURNEY: JourneyNode[] = [
     title: "Stora Enso",
     detail: "Java Developer — CI/CD regression gates, invoice processing, WebSphere MQ",
     achievements: [
-      "Built the Selenium regression-test suite used as a CI/CD pull-request gate for the whole team before changes could be approved.",
+      "Built the Selenium regression-test suite used as a CI/CD pull-request gate for the whole team before pull requests were approved.",
       "Worked in a two-person team on the invoice-processing system, expanding it to support an additional department and coordinating requirements directly with the PM.",
       "Owned delivery beyond implementation: deployments, testing, on-call outage support, WebSphere MQ integration work, and test-coverage improvements.",
     ],
@@ -95,10 +95,11 @@ export const JOURNEY: JourneyNode[] = [
     year: "2022",
     icon: "💼",
     title: "EPAM Systems",
-    detail: "Software Engineer → Senior Software Engineer — DevEx, licensing & package management in CI/CD (financial services)",
+    detail: "Software Engineer → Senior Software Engineer — investing platform DevEx, licensing & package management",
     achievements: [
-      "Built CI/CD developer tooling that reduced friction around license compliance, package management, and delivery workflows for financial-services teams.",
-      "Grew into a senior role by owning cross-team delivery constraints, build/release reliability, and developer-experience improvements.",
+      "Built developer-experience tooling for an investing platform, including licensing libraries for license validation, package management, and license accountability.",
+      "Improved manual licensing workflows, reducing tickets handed to human reviewers by 70%.",
+      "Partnered directly with developers to troubleshoot issues, gather feedback, and turn recurring pain points into library and workflow improvements.",
     ],
   },
   {

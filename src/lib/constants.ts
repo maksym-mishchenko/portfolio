@@ -110,7 +110,7 @@ export const JOURNEY: JourneyNode[] = [
     link: "https://www.credly.com/badges/3617b306-40c2-4bab-94e4-2f20265e41d3",
   },
   {
-    year: "2025",
+    year: "2025–Now",
     icon: "🚀",
     title: "Microsoft Security",
     detail: "Software Engineer II — Identity & Application Governance, Prague",

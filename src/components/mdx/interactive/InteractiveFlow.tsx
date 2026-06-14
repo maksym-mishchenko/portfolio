@@ -14,6 +14,7 @@ import {
   useEdgesState,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
+import { MdxJsonError, isRecord, parseMdxJsonProp } from "./mdx-json";
 
 interface InteractiveFlowProps {
   nodes: string; // JSON string: [{id, data: {label}, position: {x, y}, type?, style?}]
@@ -25,6 +26,34 @@ interface InteractiveFlowProps {
   fitView?: boolean;
 }
 
+function isFlowNodeArray(value: unknown): value is Node[] {
+  return (
+    Array.isArray(value) &&
+    value.every(
+      (item) =>
+        isRecord(item) &&
+        typeof item.id === "string" &&
+        isRecord(item.data) &&
+        isRecord(item.position) &&
+        typeof item.position.x === "number" &&
+        typeof item.position.y === "number"
+    )
+  );
+}
+
+function isFlowEdgeArray(value: unknown): value is Edge[] {
+  return (
+    Array.isArray(value) &&
+    value.every(
+      (item) =>
+        isRecord(item) &&
+        typeof item.id === "string" &&
+        typeof item.source === "string" &&
+        typeof item.target === "string"
+    )
+  );
+}
+
 export function InteractiveFlow({
   nodes: nodesStr,
   edges: edgesStr,
@@ -34,9 +63,17 @@ export function InteractiveFlow({
   interactive = true,
   fitView = true,
 }: InteractiveFlowProps) {
+  const nodesResult = useMemo(
+    () => parseMdxJsonProp(nodesStr, "nodes", isFlowNodeArray),
+    [nodesStr]
+  );
+  const edgesResult = useMemo(
+    () => parseMdxJsonProp(edgesStr, "edges", isFlowEdgeArray),
+    [edgesStr]
+  );
+
   const initialNodes: Node[] = useMemo(() => {
-    if (!nodesStr) return [];
-    const parsed = JSON.parse(nodesStr) as Node[];
+    const parsed = nodesResult.value ?? [];
     return parsed.map((node) => ({
       ...node,
       draggable: interactive,
@@ -51,11 +88,10 @@ export function InteractiveFlow({
         ...node.style,
       },
     }));
-  }, [nodesStr, interactive]);
+  }, [nodesResult.value, interactive]);
 
   const initialEdges: Edge[] = useMemo(() => {
-    if (!edgesStr) return [];
-    const parsed = JSON.parse(edgesStr) as Edge[];
+    const parsed = edgesResult.value ?? [];
     return parsed.map((edge) => ({
       ...edge,
       type: edge.type || "smoothstep",
@@ -76,10 +112,13 @@ export function InteractiveFlow({
         fill: "var(--color-surface)",
       },
     }));
-  }, [edgesStr]);
+  }, [edgesResult.value]);
 
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
   const [edges, , onEdgesChange] = useEdgesState(initialEdges);
+  const parseError = nodesResult.error ?? edgesResult.error;
+
+  if (parseError) return <MdxJsonError component="InteractiveFlow" error={parseError} />;
 
   return (
     <div

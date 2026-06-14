@@ -23,8 +23,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${post.title} — Maksym Mishchenko`,
     description: post.description,
-    // Staged posts (published: false) get noindex so search engines skip them
-    ...(post.published === false ? { robots: { index: false, follow: false } } : {}),
+    // URL-live drafts and staged posts must stay out of search results.
+    ...(post.draft || post.published === false
+      ? { robots: { index: false, follow: false } }
+      : {}),
     alternates: { canonical: `/blog/${post.slug}` },
     openGraph: {
       title: post.title,

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { MdxJsonError, isRecord, parseMdxJsonProp } from "./mdx-json";
 
 interface FlowStep {
   label: string;
@@ -14,8 +15,21 @@ interface FlowDiagramProps {
   loop?: boolean;
 }
 
+function isFlowStepArray(value: unknown): value is FlowStep[] {
+  return (
+    Array.isArray(value) &&
+    value.every(
+      (item) =>
+        isRecord(item) &&
+        typeof item.label === "string" &&
+        (item.description === undefined || typeof item.description === "string")
+    )
+  );
+}
+
 export function FlowDiagram({ steps: stepsStr, speed = 1, loop = false }: FlowDiagramProps) {
-  const steps: FlowStep[] = stepsStr ? JSON.parse(stepsStr) : [];
+  const stepsResult = parseMdxJsonProp(stepsStr, "steps", isFlowStepArray);
+  const steps = stepsResult.value ?? [];
   const [activeStep, setActiveStep] = useState(-1);
   const [isPlaying, setIsPlaying] = useState(false);
 
@@ -40,6 +54,7 @@ export function FlowDiagram({ steps: stepsStr, speed = 1, loop = false }: FlowDi
     setIsPlaying(true);
   };
 
+  if (stepsResult.error) return <MdxJsonError component="FlowDiagram" error={stepsResult.error} />;
   if (!steps.length) return null;
 
   return (

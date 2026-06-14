@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
+import { MdxJsonError, isRecord, parseMdxJsonProp } from "./mdx-json";
 
 interface Bar {
   label: string;
@@ -34,8 +35,23 @@ const LABEL_MAP: Record<string, string> = {
   gray:   "text-zinc-400",
 };
 
+function isBarArray(value: unknown): value is Bar[] {
+  return (
+    Array.isArray(value) &&
+    value.every(
+      (item) =>
+        isRecord(item) &&
+        typeof item.label === "string" &&
+        typeof item.value === "number" &&
+        (item.suffix === undefined || typeof item.suffix === "string") &&
+        (item.color === undefined || typeof item.color === "string")
+    )
+  );
+}
+
 export function BarChart({ bars: barsStr, title, caption }: BarChartProps) {
-  const parsed: Bar[] = barsStr ? JSON.parse(barsStr) : [];
+  const barsResult = parseMdxJsonProp(barsStr, "bars", isBarArray);
+  const parsed = barsResult.value ?? [];
   const [visible, setVisible] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -49,6 +65,7 @@ export function BarChart({ bars: barsStr, title, caption }: BarChartProps) {
     return () => observer.disconnect();
   }, [parsed.length]);
 
+  if (barsResult.error) return <MdxJsonError component="BarChart" error={barsResult.error} />;
   if (!parsed.length) return null;
 
   const max = Math.max(...parsed.map((b) => b.value));
@@ -60,7 +77,7 @@ export function BarChart({ bars: barsStr, title, caption }: BarChartProps) {
       )}
       <div className="space-y-4">
         {parsed.map((bar, i) => {
-          const pct = (bar.value / max) * 100;
+          const pct = max > 0 ? (bar.value / max) * 100 : 0;
           const colorBar = COLOR_MAP[bar.color ?? "blue"] ?? COLOR_MAP.blue;
           const colorLabel = LABEL_MAP[bar.color ?? "blue"] ?? LABEL_MAP.blue;
           return (

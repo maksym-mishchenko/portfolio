@@ -5,7 +5,6 @@ import { motion, useReducedMotion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { track } from "@vercel/analytics";
 import { TerminalTyping } from "./TerminalTyping";
-import { SITE } from "@/lib/constants";
 
 export function Hero() {
   const prefersReducedMotion = useReducedMotion();

@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { MdxJsonError, isStringArray, isStringMatrix, parseMdxJsonProp } from "./mdx-json";
 
 interface CompareTableProps {
   headers: string; // JSON array: ["Feature", "Option A", "Option B"]
@@ -9,11 +10,14 @@ interface CompareTableProps {
 }
 
 export function CompareTable({ headers, rows, highlight }: CompareTableProps) {
-  // Guard: props may be undefined during SSR prerendering
-  const parsedHeaders: string[] = headers ? JSON.parse(headers) : [];
-  const parsedRows: string[][] = rows ? JSON.parse(rows) : [];
+  const headersResult = parseMdxJsonProp(headers, "headers", isStringArray);
+  const rowsResult = parseMdxJsonProp(rows, "rows", isStringMatrix);
+  const parsedHeaders = headersResult.value ?? [];
+  const parsedRows = rowsResult.value ?? [];
   const highlightCol = highlight ? parseInt(highlight) : -1;
 
+  const parseError = headersResult.error ?? rowsResult.error;
+  if (parseError) return <MdxJsonError component="CompareTable" error={parseError} />;
   if (!parsedHeaders.length) return null;
 
   return (

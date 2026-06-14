@@ -1,6 +1,29 @@
 import { NextRequest } from "next/server";
+import matter from "gray-matter";
+import { z } from "zod";
 
 const PUBLISH_SECRET = process.env.BLOG_PUBLISH_SECRET ?? "";
+
+const publishRequestSchema = z.object({
+  slug: z.string().regex(/^[a-z0-9-]+$/, "Invalid slug format"),
+  title: z.string().min(1).max(200),
+  description: z.string().max(500).optional().default(""),
+  tags: z.array(z.string().min(1).max(50)).max(20).optional().default([]),
+  content: z.string().min(1),
+  date: z.iso.date().optional(),
+});
+
+const githubContentSchema = z.object({
+  sha: z.string().min(1),
+});
+
+const githubWriteResultSchema = z.object({
+  commit: z
+    .object({
+      sha: z.string().min(1),
+    })
+    .optional(),
+});
 
 export async function POST(request: NextRequest) {
   // Authenticate
@@ -16,37 +39,22 @@ export async function POST(request: NextRequest) {
     return Response.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  const { slug, title, description, tags, content, date } = body as {
-    slug?: string;
-    title?: string;
-    description?: string;
-    tags?: string[];
-    content?: string;
-    date?: string;
-  };
-
-  if (!slug || !title || !content) {
-    return Response.json({ error: "slug, title, and content are required" }, { status: 400 });
+  const parsed = publishRequestSchema.safeParse(body);
+  if (!parsed.success) {
+    return Response.json(
+      { error: "Invalid input", details: parsed.error.flatten().fieldErrors },
+      { status: 400 }
+    );
   }
 
-  if (!/^[a-z0-9-]+$/.test(slug)) {
-    return Response.json({ error: "Invalid slug format" }, { status: 400 });
-  }
-
-  // Build MDX frontmatter + content
+  const { slug, title, description, tags, content, date } = parsed.data;
   const postDate = date ?? new Date().toISOString().split("T")[0];
-  const tagList = tags ?? [];
-  const desc = description ?? "";
-
-  const mdxContent = `---
-title: "${title.replace(/"/g, '\\"')}"
-date: "${postDate}"
-description: "${desc.replace(/"/g, '\\"')}"
-tags: [${tagList.map((t) => `"${t}"`).join(", ")}]
----
-
-${content}
-`;
+  const mdxContent = matter.stringify(content, {
+    title,
+    date: postDate,
+    description,
+    tags,
+  });
 
   // Push to GitHub via API
   const ghToken = process.env.GITHUB_TOKEN;
@@ -64,11 +72,13 @@ ${content}
       headers: { Authorization: `Bearer ${ghToken}`, Accept: "application/vnd.github.v3+json" },
     });
     if (existing.ok) {
-      const data = await existing.json();
-      existingSha = data.sha;
+      const existingData = githubContentSchema.safeParse(await existing.json());
+      if (existingData.success) {
+        existingSha = existingData.data.sha;
+      }
     }
   } catch {
-    // File doesn't exist, that's fine
+    return Response.json({ error: "Failed to check existing post" }, { status: 502 });
   }
 
   // Create or update the file
@@ -91,11 +101,11 @@ ${content}
     return Response.json({ error: "GitHub API error", details: err }, { status: 502 });
   }
 
-  const result = await res.json();
+  const result = githubWriteResultSchema.safeParse(await res.json());
 
   return Response.json({
     success: true,
     url: `https://mmishchenko.dev/blog/${slug}`,
-    commit: result.commit?.sha?.slice(0, 7),
+    commit: result.success ? result.data.commit?.sha.slice(0, 7) : undefined,
   });
 }

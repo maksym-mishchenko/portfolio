@@ -14,14 +14,13 @@ export function Contact() {
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setState("submitting");
-    setError("");
-
     const form = e.currentTarget;
     const data = new FormData(form);
 
-    // Honeypot check
     if (data.get("website")) return;
+
+    setState("submitting");
+    setError("");
 
     try {
       const res = await fetch("/api/contact", {

@@ -10,6 +10,15 @@
 **Rejected:** <alternatives and why not> (optional)
 
 -->
+## [2026-06-14] App review hardening  #api
+**What:** Blog publish now validates payloads with Zod and serializes frontmatter with `gray-matter`; contact form returns 503 when email delivery is not configured and avoids logging submitted PII; URL-live drafts now emit noindex metadata.
+**Why:** Public endpoints and staged content should fail explicitly, preserve valid content shape, and avoid accidental indexing or silent message loss.
+**Rejected:** Keeping development-style permissive fallbacks that report success without durable delivery.
+
+## [2026-06-14] Safe MDX interactive props  #ui
+**What:** Interactive MDX components now parse JSON props through shared typed guards and render author-facing configuration errors instead of throwing during render.
+**Why:** A malformed MDX prop should not crash a blog or case-study page.
+
 ## [2026-05-29] Two-column resume with scoped print CSS  #ui
 **What:** Redesigned the resume into a left sidebar (skills/certs/education) + right timeline, with @media print rules scoped to a `.resume-doc` wrapper via `:has()` so dark-mode isn't stripped from other pages (8ce80f3).
 **Why:** Print-to-PDF must use light colors; scoping the print CSS prevents it bleeding into and breaking other pages' dark theme.

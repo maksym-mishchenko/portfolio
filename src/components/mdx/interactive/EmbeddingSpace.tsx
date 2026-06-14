@@ -2,6 +2,7 @@
 
 import { useRef, useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { MdxJsonError, isRecord, isStringArray, parseMdxJsonProp } from "./mdx-json";
 
 interface Word {
   label: string;
@@ -23,17 +24,34 @@ const GROUP_COLORS: Record<string, string> = {
   default: "#94a3b8",
 };
 
+function isWordArray(value: unknown): value is Word[] {
+  return (
+    Array.isArray(value) &&
+    value.every(
+      (item) =>
+        isRecord(item) &&
+        typeof item.label === "string" &&
+        typeof item.x === "number" &&
+        typeof item.y === "number" &&
+        (item.group === undefined || typeof item.group === "string")
+    )
+  );
+}
+
+function isConnectionArray(value: unknown): value is [string, string][] {
+  return Array.isArray(value) && value.every((item) => isStringArray(item) && item.length === 2);
+}
+
 export function EmbeddingSpace({
   words: wordsStr,
   connections,
   width = 400,
   height = 300,
 }: EmbeddingSpaceProps) {
-  // Guard: wordsStr may be undefined during SSR prerendering
-  const words: Word[] = wordsStr ? JSON.parse(wordsStr) : [];
-  const parsedConnections: [string, string][] = connections
-    ? JSON.parse(connections)
-    : [];
+  const wordsResult = parseMdxJsonProp(wordsStr, "words", isWordArray);
+  const connectionsResult = parseMdxJsonProp(connections, "connections", isConnectionArray);
+  const words = wordsResult.value ?? [];
+  const parsedConnections = connectionsResult.value ?? [];
   const containerRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
 
@@ -48,6 +66,8 @@ export function EmbeddingSpace({
     return () => observer.disconnect();
   }, [width]);
 
+  const parseError = wordsResult.error ?? connectionsResult.error;
+  if (parseError) return <MdxJsonError component="EmbeddingSpace" error={parseError} />;
   if (!words.length) return null;
 
   const wordMap = Object.fromEntries(words.map((w) => [w.label, w]));

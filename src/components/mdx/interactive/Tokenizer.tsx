@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { MdxJsonError, isNumberArray, isStringArray, parseMdxJsonProp } from "./mdx-json";
 
 interface TokenizerProps {
   text: string;
@@ -11,9 +12,10 @@ interface TokenizerProps {
 }
 
 export function Tokenizer({ text, tokens: tokensStr, tokenIds: idsStr, speed = 1 }: TokenizerProps) {
-  // Guard: props may be undefined during SSR prerendering
-  const tokens: string[] = tokensStr ? JSON.parse(tokensStr) : [];
-  const tokenIds: number[] = idsStr ? JSON.parse(idsStr) : [];
+  const tokensResult = parseMdxJsonProp(tokensStr, "tokens", isStringArray);
+  const tokenIdsResult = parseMdxJsonProp(idsStr, "tokenIds", isNumberArray);
+  const tokens = tokensResult.value ?? [];
+  const tokenIds = tokenIdsResult.value ?? [];
   const [step, setStep] = useState(0); // 0=text, 1=tokens, 2=ids
   const [isPlaying, setIsPlaying] = useState(false);
   const [activeSpeed, setActiveSpeed] = useState(speed);
@@ -38,6 +40,8 @@ export function Tokenizer({ text, tokens: tokensStr, tokenIds: idsStr, speed = 1
     setIsPlaying(true);
   };
 
+  const parseError = tokensResult.error ?? tokenIdsResult.error;
+  if (parseError) return <MdxJsonError component="Tokenizer" error={parseError} />;
   if (!tokens.length) return null;
 
   return (

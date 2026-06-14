@@ -1,5 +1,5 @@
 # State — portfolio
-Last updated: 2026-06-07 by Copilot
+Last updated: 2026-06-14 by Copilot
 
 ## Done
 - Phase 1 complete: /resume print-to-PDF, per-post OG images, JSON-LD Person/BlogPosting,
@@ -16,6 +16,7 @@ Last updated: 2026-06-07 by Copilot
 - Dependency modernization and quality cleanup complete: updated direct dependencies, cleared lint warnings, validated typecheck/build, and documented deferred upstream audit/tooling follow-ups. [issue #17]
 - Dependency audit follow-up complete: forced PostCSS 8.5.15 via npm overrides so Next.js uses the patched transitive version and `npm audit --audit-level=moderate` passes. [issue #18]
 - Public-launch completion sprint complete: homepage credibility lift deployed, resume proof bullets, flagship case-study framing, blog discovery polish, static /now freshness, richer metadata, launch smoke checks, and v0.2.0 release prep. [issue #25]
+- App review fixes complete: hardened production CSP by removing `unsafe-eval`, noindexed URL-live drafts, validated blog publish payloads, made contact delivery fail closed when email is not configured, and added safe JSON parsing for interactive MDX props.
 
 ## In progress
 - None.

@@ -14,7 +14,9 @@ export default function ResumePage() {
   const education = resumeJourney.filter((n) =>
     ["🎓", "🇺🇦"].includes(n.icon)
   );
-  const experience = resumeJourney.filter((n) => n.icon === "💼" || n.icon === "🚀");
+  const experience = resumeJourney
+    .filter((n) => n.icon === "💼" || n.icon === "🚀")
+    .reverse();
   const certifications = resumeJourney.filter((n) => n.icon === "☁️");
 
   return (

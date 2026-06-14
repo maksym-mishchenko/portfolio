@@ -21,6 +21,7 @@ Last updated: 2026-06-15 by Copilot
 - Stora Enso resume bullets updated with concrete CI/CD Selenium gate, invoice-processing expansion, PM coordination, deployment/testing/on-call ownership, WebSphere MQ, and test-coverage details.
 - EPAM resume bullets updated with investing-platform DevEx, licensing validation libraries, package management, 70% ticket handoff reduction, developer support, feedback gathering, and license-accountability work.
 - Resume experience now renders newest-first, with Microsoft Security labeled `2025–Now` before EPAM Systems and Stora Enso.
+- Resume PDF action now triggers browser print/save before non-critical analytics, so blocked analytics cannot break the button.
 
 ## In progress
 - None.

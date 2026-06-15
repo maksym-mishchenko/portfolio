@@ -16,13 +16,13 @@ export function ResumeActions() {
 
   return (
     <div className="flex flex-wrap gap-3 print:hidden mb-8">
-      <Link
+      <a
         href="/resume.pdf"
         download
         className="inline-flex min-h-11 items-center rounded-lg bg-accent px-5 py-2.5 text-sm font-medium text-background transition-colors hover:bg-accent-hover"
       >
         Download PDF
-      </Link>
+      </a>
       <button
         type="button"
         onClick={handlePrintResume}

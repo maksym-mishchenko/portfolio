@@ -4,6 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Uses — Maksym Mishchenko",
   description: "The tools, hardware, and software I use for software engineering.",
+  alternates: { canonical: "/uses" },
 };
 
 interface UsesCategory {

@@ -5,6 +5,7 @@ import { SITE, NOW, NOW_LAST_UPDATED } from "@/lib/constants";
 export const metadata: Metadata = {
   title: "Now — Maksym Mishchenko",
   description: "What I'm currently focused on.",
+  alternates: { canonical: "/now" },
 };
 
 export default function NowPage() {

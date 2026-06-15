@@ -34,7 +34,7 @@ export function TechStack() {
                 <motion.div
                   className="flex flex-wrap gap-2"
                   variants={containerVariants}
-                  initial="hidden"
+                  initial={false}
                   whileInView="visible"
                   viewport={{ once: true }}
                 >

@@ -15,17 +15,24 @@ export function ResumeActions() {
   }
 
   return (
-    <div className="flex gap-3 print:hidden mb-8">
+    <div className="flex flex-wrap gap-3 print:hidden mb-8">
+      <Link
+        href="/resume.pdf"
+        download
+        className="inline-flex min-h-11 items-center rounded-lg bg-accent px-5 py-2.5 text-sm font-medium text-background transition-colors hover:bg-accent-hover"
+      >
+        Download PDF
+      </Link>
       <button
         type="button"
         onClick={handlePrintResume}
-        className="bg-accent hover:bg-accent-hover text-white px-5 py-2.5 rounded-lg font-medium transition-colors text-sm"
+        className="inline-flex min-h-11 items-center rounded-lg border border-border px-5 py-2.5 text-sm font-medium text-muted transition-colors hover:border-accent hover:text-foreground"
       >
         Print / Save PDF
       </button>
       <Link
         href="/"
-        className="border border-border hover:border-accent text-muted hover:text-foreground px-5 py-2.5 rounded-lg font-medium transition-colors text-sm"
+        className="inline-flex min-h-11 items-center rounded-lg border border-border px-5 py-2.5 text-sm font-medium text-muted transition-colors hover:border-accent hover:text-foreground"
       >
         ← Back to site
       </Link>

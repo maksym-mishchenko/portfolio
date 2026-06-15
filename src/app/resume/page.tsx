@@ -5,6 +5,7 @@ import { ResumeActions } from "@/components/ResumeActions";
 export const metadata: Metadata = {
   title: "Resume — Maksym Mishchenko",
   description: "Software Engineer II at Microsoft Security. Resume and professional experience.",
+  alternates: { canonical: "/resume" },
 };
 
 export default function ResumePage() {

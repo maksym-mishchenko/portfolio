@@ -80,11 +80,11 @@ export function TerminalTyping({
         return (
           <div key={i} className="mb-1">
             <div>
-              <span className="text-[#3b82f6]">
+              <span className="text-accent">
                 {isCompleted ? line.prompt : line.prompt.slice(0, charIndex)}
               </span>
               {isCurrent && !showResponse && (
-                <span className="inline-block w-2 h-5 bg-[#3b82f6] ml-1 align-middle animate-terminal-blink" />
+                <span className="inline-block w-2 h-5 bg-accent ml-1 align-middle animate-terminal-blink" />
               )}
             </div>
             {(isCompleted || showResponse) && (
@@ -94,7 +94,7 @@ export function TerminalTyping({
         );
       })}
       {done && (
-        <span className="inline-block w-2 h-5 bg-[#3b82f6] ml-1 align-middle animate-terminal-blink" />
+        <span className="inline-block w-2 h-5 bg-accent ml-1 align-middle animate-terminal-blink" />
       )}
 
       <style jsx>{`

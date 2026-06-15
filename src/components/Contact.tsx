@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Send, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
 import { track } from "@vercel/analytics";
@@ -11,6 +11,13 @@ type FormState = "idle" | "submitting" | "success" | "error";
 export function Contact() {
   const [state, setState] = useState<FormState>("idle");
   const [error, setError] = useState("");
+  const feedbackRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (state === "success" || state === "error") {
+      feedbackRef.current?.focus();
+    }
+  }, [state]);
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -39,8 +46,13 @@ export function Contact() {
       }
 
       setState("success");
-      track("contact_submit", { status: "success" });
       form.reset();
+
+      try {
+        track("contact_submit", { status: "success" });
+      } catch (error) {
+        console.warn("Contact analytics failed", error);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
       setState("error");
@@ -60,17 +72,22 @@ export function Contact() {
               {state === "success" ? (
                 <motion.div
                   key="success"
-                  initial={{ opacity: 0, scale: 0.9 }}
+                  ref={feedbackRef}
+                  role="status"
+                  aria-live="polite"
+                  tabIndex={-1}
+                  initial={false}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0 }}
-                  className="flex flex-col items-center gap-4 py-8"
+                  className="flex flex-col items-center gap-4 py-8 outline-none"
                 >
                   <CheckCircle size={48} className="text-success" />
                   <p className="text-lg font-medium">Message sent!</p>
                   <p className="text-sm text-muted">I&apos;ll get back to you soon.</p>
                   <button
+                    type="button"
                     onClick={() => setState("idle")}
-                    className="text-sm text-accent hover:text-accent-hover transition-colors mt-2"
+                    className="mt-2 min-h-11 rounded-lg px-4 text-sm text-accent transition-colors hover:text-accent-hover"
                   >
                     Send another
                   </button>
@@ -79,7 +96,7 @@ export function Contact() {
                 <motion.form
                   key="form"
                   onSubmit={handleSubmit}
-                  initial={{ opacity: 0 }}
+                  initial={false}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   className="space-y-5"
@@ -103,6 +120,7 @@ export function Contact() {
                       name="name"
                       type="text"
                       required
+                      autoComplete="name"
                       maxLength={100}
                       placeholder="Your name"
                       className="w-full rounded-lg bg-background border border-border px-4 py-3 text-sm text-foreground placeholder:text-muted/50 focus:outline-none focus:border-accent transition-colors"
@@ -118,6 +136,7 @@ export function Contact() {
                       name="email"
                       type="email"
                       required
+                      autoComplete="email"
                       placeholder="you@example.com"
                       className="w-full rounded-lg bg-background border border-border px-4 py-3 text-sm text-foreground placeholder:text-muted/50 focus:outline-none focus:border-accent transition-colors"
                     />
@@ -140,19 +159,22 @@ export function Contact() {
 
                   {state === "error" && (
                     <motion.div
-                      initial={{ opacity: 0, x: -10 }}
+                      ref={feedbackRef}
+                      role="alert"
+                      tabIndex={-1}
+                      initial={false}
                       animate={{ opacity: 1, x: 0 }}
-                      className="flex items-center gap-2 text-sm text-danger"
+                      className="flex items-center gap-2 rounded-lg border border-danger/40 bg-danger/10 p-3 text-sm text-danger outline-none"
                     >
-                      <AlertCircle size={16} />
-                      {error}
+                      <AlertCircle size={16} aria-hidden="true" />
+                      <span>{error}</span>
                     </motion.div>
                   )}
 
                   <button
                     type="submit"
                     disabled={state === "submitting"}
-                    className="w-full flex items-center justify-center gap-2 bg-accent hover:bg-accent-hover disabled:opacity-50 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+                    className="flex min-h-11 w-full items-center justify-center gap-2 rounded-lg bg-accent px-6 py-3 font-medium text-background transition-colors hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {state === "submitting" ? (
                       <Loader2 size={18} className="animate-spin" />

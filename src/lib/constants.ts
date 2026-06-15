@@ -81,7 +81,7 @@ export const JOURNEY: JourneyNode[] = [
     detail: "Technical University of Ostrava",
   },
   {
-    year: "2019",
+    year: "2019–2022",
     icon: "💼",
     title: "Stora Enso",
     detail: "Java Developer — CI/CD regression gates, invoice processing, WebSphere MQ",
@@ -92,7 +92,7 @@ export const JOURNEY: JourneyNode[] = [
     ],
   },
   {
-    year: "2022",
+    year: "2022–2025",
     icon: "💼",
     title: "EPAM Systems",
     detail: "Software Engineer → Senior Software Engineer — investing platform DevEx, licensing & package management",

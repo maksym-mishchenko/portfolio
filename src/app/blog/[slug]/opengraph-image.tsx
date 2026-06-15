@@ -37,7 +37,7 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
           <div
             style={{
               fontSize: 20,
-              color: "#3b82f6",
+              color: "#60a5fa",
               marginBottom: 24,
               display: "flex",
             }}

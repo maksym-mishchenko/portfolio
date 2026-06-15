@@ -24,7 +24,7 @@ export function JourneyNode({
   return (
     <motion.div
       className="relative flex items-start gap-6"
-      initial={{ opacity: 0, y: 20 }}
+      initial={false}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.4, delay: index * 0.1 }}
@@ -38,13 +38,13 @@ export function JourneyNode({
       <div className="relative flex flex-col items-center">
         <div
           className={`relative z-10 flex h-12 w-12 items-center justify-center rounded-full border-2 bg-[#18181b] text-xl ${
-            isLast ? "border-[#3b82f6]" : "border-[#27272a]"
+            isLast ? "border-accent" : "border-[#27272a]"
           }`}
         >
           {icon}
 
           {isLast && (
-            <span className="absolute inset-0 animate-ping rounded-full border-2 border-[#3b82f6] opacity-30" />
+            <span className="absolute inset-0 animate-ping rounded-full border-2 border-accent opacity-30" />
           )}
         </div>
 
@@ -68,7 +68,7 @@ export function JourneyNode({
                 href={link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[#3b82f6] hover:underline"
+                className="text-accent hover:underline"
               >
                 ↗ View
               </a>

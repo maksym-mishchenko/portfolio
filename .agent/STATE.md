@@ -22,6 +22,7 @@ Last updated: 2026-06-15 by Copilot
 - EPAM resume bullets updated with investing-platform DevEx, licensing validation libraries, package management, 70% ticket handoff reduction, developer support, feedback gathering, and license-accountability work.
 - Resume experience now renders newest-first, with Microsoft Security labeled `2025–Now` before EPAM Systems and Stora Enso.
 - Resume PDF action now triggers browser print/save before non-critical analytics, so blocked analytics cannot break the button.
+- UX polish pass complete: contrast, no-JS homepage resilience, contact form announcements, nav semantics/touch targets, canonical metadata, resume date ranges, direct PDF, favicon fallback, and duplicate blog-list cleanup.
 
 ## In progress
 - None.

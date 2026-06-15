@@ -127,7 +127,7 @@ export function Tokenizer({ text, tokens: tokensStr, tokenIds: idsStr, speed = 1
               onClick={() => setActiveSpeed(s)}
               className={`px-2 py-1 text-xs rounded-md border transition-colors ${
                 activeSpeed === s
-                  ? "bg-accent text-white border-accent"
+                  ? "bg-accent text-background border-accent"
                   : "bg-surface border-border text-muted hover:border-accent/50"
               }`}
             >

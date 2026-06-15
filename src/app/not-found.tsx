@@ -15,31 +15,31 @@ export default function NotFound() {
         {/* Terminal body */}
         <div className="p-6 font-mono text-sm space-y-2">
           <p>
-            <span className="text-[#3b82f6]">$</span>{" "}
+            <span className="text-accent">$</span>{" "}
             <span className="text-[#fafafa]">GET /this-page</span>
           </p>
           <p className="text-[#ef4444]">Error: 404 Not Found</p>
           <p className="text-[#71717a]">The page you&apos;re looking for doesn&apos;t exist.</p>
           <div className="pt-4 flex flex-col gap-2">
             <p>
-              <span className="text-[#3b82f6]">$</span>{" "}
+              <span className="text-accent">$</span>{" "}
               <span className="text-[#71717a]">Available routes:</span>
             </p>
             <p>
-              <span className="text-[#3b82f6]">→</span>{" "}
-              <Link href="/" className="text-[#3b82f6] hover:underline">
+              <span className="text-accent">→</span>{" "}
+              <Link href="/" className="text-accent hover:underline">
                 /home
               </Link>
             </p>
             <p>
-              <span className="text-[#3b82f6]">→</span>{" "}
-              <Link href="/blog" className="text-[#3b82f6] hover:underline">
+              <span className="text-accent">→</span>{" "}
+              <Link href="/blog" className="text-accent hover:underline">
                 /blog
               </Link>
             </p>
             <p>
-              <span className="text-[#3b82f6]">→</span>{" "}
-              <Link href="/now" className="text-[#3b82f6] hover:underline">
+              <span className="text-accent">→</span>{" "}
+              <Link href="/now" className="text-accent hover:underline">
                 /now
               </Link>
             </p>

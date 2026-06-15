@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   title: "About — Maksym Mishchenko",
   description:
     "Professional snapshot for Maksym Mishchenko, Software Engineer II at Microsoft Security working on identity, security, developer tooling, and AI-agent automation.",
+  alternates: { canonical: "/about" },
 };
 
 const professionalJourney = JOURNEY.filter((item) => !item.resumeHide);

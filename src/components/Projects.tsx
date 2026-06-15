@@ -28,7 +28,7 @@ function ProjectCard({ project, index, featured }: { project: Project; index: nu
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={false}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
@@ -91,7 +91,7 @@ function ProjectCard({ project, index, featured }: { project: Project; index: nu
             <Link
               href={`/case-studies/${project.caseStudySlug}`}
               onClick={() => track("project_click", { project: project.title, type: "case_study" })}
-              className="inline-flex items-center gap-1.5 text-sm text-accent hover:text-foreground transition-colors"
+              className="inline-flex min-h-11 items-center gap-1.5 text-sm text-accent hover:text-foreground transition-colors"
             >
               Case study
             </Link>
@@ -102,7 +102,7 @@ function ProjectCard({ project, index, featured }: { project: Project; index: nu
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => track("project_click", { project: project.title, type: "github" })}
-              className="inline-flex items-center gap-1.5 text-sm text-muted hover:text-foreground transition-colors"
+              className="inline-flex min-h-11 items-center gap-1.5 text-sm text-muted hover:text-foreground transition-colors"
             >
               <GithubIcon size={16} />
               Code
@@ -114,7 +114,7 @@ function ProjectCard({ project, index, featured }: { project: Project; index: nu
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => track("project_click", { project: project.title, type: "live" })}
-              className="inline-flex items-center gap-1.5 text-sm text-muted hover:text-foreground transition-colors"
+              className="inline-flex min-h-11 items-center gap-1.5 text-sm text-muted hover:text-foreground transition-colors"
             >
               <ExternalLink size={16} />
               Live

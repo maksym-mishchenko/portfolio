@@ -23,7 +23,7 @@ export default function OGImage() {
         <div
           style={{
             fontSize: 20,
-            color: "#3b82f6",
+            color: "#60a5fa",
             marginBottom: 16,
             display: "flex",
           }}

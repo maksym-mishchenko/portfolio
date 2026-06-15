@@ -28,12 +28,6 @@ export function StickyNav() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const handleAnchorClick = (href: string) => {
-    if (!href.startsWith("#")) return;
-    const id = href.slice(1);
-    document.getElementById(id)?.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth" });
-  };
-
   return (
     <AnimatePresence>
       {visible && (
@@ -49,18 +43,18 @@ export function StickyNav() {
           <div className="flex items-center gap-1 overflow-x-auto rounded-full border border-border bg-surface/90 backdrop-blur-md px-3 py-1.5 shadow-lg">
             {NAV_LINKS.map(({ label, href }) =>
               href.startsWith("#") ? (
-                <button
+                <a
                   key={href}
-                  onClick={() => handleAnchorClick(href)}
-                  className="hidden sm:inline-flex items-center px-3 py-1 text-sm text-muted hover:text-foreground rounded-full hover:bg-background transition-colors"
+                  href={href}
+                  className="hidden min-h-11 items-center rounded-full px-3 py-2 text-sm text-muted transition-colors hover:bg-background hover:text-foreground sm:inline-flex"
                 >
                   {label}
-                </button>
+                </a>
               ) : (
                 <Link
                   key={href}
                   href={href}
-                  className="whitespace-nowrap px-3 py-1 text-sm text-muted hover:text-foreground rounded-full hover:bg-background transition-colors"
+                  className="inline-flex min-h-11 items-center whitespace-nowrap rounded-full px-3 py-2 text-sm text-muted transition-colors hover:bg-background hover:text-foreground"
                 >
                   {label}
                 </Link>

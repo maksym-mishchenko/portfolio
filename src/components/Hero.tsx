@@ -25,25 +25,21 @@ export function Hero() {
         <Link
           href="/resume"
           onClick={() => track("cta_click", { label: "resume" })}
-          className="rounded-lg bg-[#3b82f6] px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-[#2563eb] sm:text-base"
+          className="min-h-11 rounded-lg bg-accent px-5 py-3 text-sm font-medium text-background transition-colors hover:bg-accent-hover sm:text-base"
         >
           Resume →
         </Link>
-        <button
-          onClick={() => {
-            track("cta_click", { label: "projects" });
-            document
-              .getElementById("projects")
-              ?.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth" });
-          }}
-          className="rounded-lg border border-[#27272a] px-5 py-3 text-sm font-medium text-[#a1a1aa] transition-colors hover:border-[#3b82f6] hover:text-[#fafafa] sm:text-base"
+        <a
+          href="#projects"
+          onClick={() => track("cta_click", { label: "projects" })}
+          className="min-h-11 rounded-lg border border-[#27272a] px-5 py-3 text-sm font-medium text-[#a1a1aa] transition-colors hover:border-accent hover:text-[#fafafa] sm:text-base"
         >
           Projects ↓
-        </button>
+        </a>
         <Link
           href="/blog"
           onClick={() => track("cta_click", { label: "blog" })}
-          className="rounded-lg border border-[#27272a] px-5 py-3 text-sm font-medium text-[#a1a1aa] transition-colors hover:border-[#3b82f6] hover:text-[#fafafa] sm:text-base"
+          className="min-h-11 rounded-lg border border-[#27272a] px-5 py-3 text-sm font-medium text-[#a1a1aa] transition-colors hover:border-accent hover:text-[#fafafa] sm:text-base"
         >
           Blog →
         </Link>
@@ -52,7 +48,7 @@ export function Hero() {
           target="_blank"
           rel="noopener noreferrer"
           onClick={() => track("cta_click", { label: "github" })}
-          className="rounded-lg border border-[#27272a] px-5 py-3 text-sm font-medium text-[#a1a1aa] transition-colors hover:border-[#3b82f6] hover:text-[#fafafa] sm:text-base"
+          className="min-h-11 rounded-lg border border-[#27272a] px-5 py-3 text-sm font-medium text-[#a1a1aa] transition-colors hover:border-accent hover:text-[#fafafa] sm:text-base"
         >
           GitHub →
         </a>
@@ -65,7 +61,7 @@ export function Hero() {
           <span className="w-3 h-3 rounded-full bg-[#ef4444]" />
           <span className="w-3 h-3 rounded-full bg-[#eab308]" />
           <span className="w-3 h-3 rounded-full bg-[#22c55e]" />
-          <span className="ml-2 text-xs text-[#71717a] font-mono">
+          <span className="ml-2 text-xs text-[#a1a1aa] font-mono">
             terminal
           </span>
         </div>

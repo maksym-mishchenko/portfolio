@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: "Case Study - Maksym Mishchenko",
   description:
     "Flagship deep dive into shipped security engineering work, MCP gateway design, and AI-agent governance tradeoffs.",
+  alternates: { canonical: "/case-studies" },
 };
 
 export default function CaseStudiesPage() {

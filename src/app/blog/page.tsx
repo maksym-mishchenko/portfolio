@@ -8,11 +8,15 @@ export const metadata: Metadata = {
   title: "Blog — Maksym Mishchenko",
   description:
     "Writing about AI agents, engineering workflows, and building things that actually work.",
+  alternates: { canonical: "/blog" },
 };
 
 export default function BlogPage() {
   const posts = getAllPosts();
   const featuredPost = posts.find((post) => post.slug === "mcp-servers-in-production") ?? posts[0];
+  const listedPosts = featuredPost
+    ? posts.filter((post) => post.slug !== featuredPost.slug)
+    : posts;
 
   return (
     <main id="main" className="max-w-2xl mx-auto px-6 py-20">
@@ -44,7 +48,7 @@ export default function BlogPage() {
         </Link>
       )}
 
-      <BlogSearch posts={posts} />
+      <BlogSearch posts={listedPosts} />
 
       <div className="mt-16 pt-8 border-t border-border">
         <Link

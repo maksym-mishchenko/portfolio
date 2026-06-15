@@ -47,6 +47,16 @@ export default function CaseStudiesPage() {
                 {study.title}
               </h2>
               <p className="text-sm text-muted leading-relaxed">{study.summary}</p>
+              <div className="grid gap-2 sm:grid-cols-3">
+                {study.outcome.map((item) => (
+                  <span
+                    key={item}
+                    className="rounded-xl border border-border bg-background/70 p-3 text-xs leading-relaxed text-muted"
+                  >
+                    {item}
+                  </span>
+                ))}
+              </div>
               <div className="flex flex-wrap gap-2">
                 {study.tags.map((tag) => (
                   <span

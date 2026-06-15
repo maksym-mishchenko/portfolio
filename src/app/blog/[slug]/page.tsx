@@ -6,6 +6,7 @@ import { getPostBySlug, getAllSlugs, getAllPosts } from "@/lib/blog";
 import type { BlogPostMeta } from "@/lib/blog";
 import { mdxComponents } from "@/components/mdx";
 import { blogPostingSchema, safeJsonLd } from "@/lib/jsonld";
+import { extractSecondLevelHeadings } from "@/lib/mdx-headings";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -48,6 +49,7 @@ export default async function BlogPostPage({ params }: Props) {
   const currentIndex = allPosts.findIndex((p) => p.slug === slug);
   const nextPost: BlogPostMeta | null = currentIndex > 0 ? allPosts[currentIndex - 1] : null;
   const prevPost: BlogPostMeta | null = currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : null;
+  const headings = extractSecondLevelHeadings(post.content);
 
   return (
     <main id="main" className="max-w-2xl mx-auto px-6 py-20">
@@ -95,7 +97,7 @@ export default async function BlogPostPage({ params }: Props) {
             <span>{post.readingTime}</span>
           </div>
           {post.tags.length > 0 && (
-            <div className="flex gap-1.5 mt-3">
+            <div className="flex flex-wrap gap-1.5 mt-3">
               {post.tags.map((tag) => (
                 <span
                   key={tag}
@@ -107,6 +109,28 @@ export default async function BlogPostPage({ params }: Props) {
             </div>
           )}
         </header>
+
+        {headings.length > 1 && (
+          <nav
+            aria-label="Article sections"
+            className="mb-10 rounded-xl border border-border bg-surface/40 p-4"
+          >
+            <p className="mb-3 font-mono text-xs uppercase tracking-[0.25em] text-accent">
+              In this article
+            </p>
+            <div className="grid gap-2 sm:grid-cols-2">
+              {headings.map((heading) => (
+                <a
+                  key={heading.id}
+                  href={`#${heading.id}`}
+                  className="inline-flex min-h-11 items-center rounded-lg px-3 py-2 text-sm text-muted transition-colors hover:bg-background hover:text-foreground"
+                >
+                  {heading.text}
+                </a>
+              ))}
+            </div>
+          </nav>
+        )}
 
         <div className="prose-custom">
           <MDXRemote source={post.content} components={mdxComponents} />

@@ -164,13 +164,13 @@ export default function ResumePage() {
               <h2 className="text-xs font-bold uppercase tracking-widest text-accent mb-4 print:text-gray-500">
                 Experience
               </h2>
-              <div className="space-y-5">
+              <div className="space-y-6 sm:space-y-5">
                 {experience.map((node) => (
                   <div
                     key={node.title}
-                    className="relative pl-4 border-l-2 border-border hover:border-accent transition-colors print:border-gray-300 print:pl-3"
+                    className="relative pl-5 border-l-2 border-border hover:border-accent transition-colors print:border-gray-300 print:pl-3"
                   >
-                    <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-0.5 print:flex-row print:justify-between">
+                    <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 print:flex-row print:justify-between">
                       <h3 className="text-base font-semibold text-foreground print:text-black print:text-sm">
                         {node.title}
                       </h3>
@@ -178,9 +178,9 @@ export default function ResumePage() {
                         {node.year}
                       </span>
                      </div>
-                     <p className="text-sm text-muted mt-1 print:text-gray-600 print:text-xs">{node.detail}</p>
+                     <p className="text-[0.95rem] leading-relaxed text-muted mt-1.5 sm:text-sm print:text-gray-600 print:text-xs">{node.detail}</p>
                     {node.achievements && (
-                      <ul className="mt-2 space-y-1.5 text-sm text-muted print:text-xs print:text-gray-700">
+                     <ul className="mt-3 space-y-2.5 text-[0.95rem] leading-relaxed text-muted sm:mt-2 sm:space-y-1.5 sm:text-sm print:text-xs print:text-gray-700">
                         {node.achievements.map((achievement) => (
                           <li key={achievement} className="flex gap-2">
                             <span

@@ -6,6 +6,7 @@ import { getAllCaseStudySlugs, getCaseStudyBySlug } from "@/lib/case-studies";
 import { getShareKitBySlug } from "@/lib/case-study-share-kits";
 import { mdxComponents } from "@/components/mdx";
 import { safeJsonLd, techArticleSchema } from "@/lib/jsonld";
+import { extractSecondLevelHeadings } from "@/lib/mdx-headings";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -41,6 +42,7 @@ export default async function CaseStudyPage({ params }: Props) {
   if (!study) notFound();
 
   const shareKit = getShareKitBySlug(slug);
+  const headings = extractSecondLevelHeadings(study.content);
 
   return (
     <main id="main" className="max-w-3xl mx-auto px-6 py-20">
@@ -84,24 +86,49 @@ export default async function CaseStudyPage({ params }: Props) {
           {shareKit && (
             <Link
               href={`/case-studies/${study.slug}/share`}
-              className="mt-6 inline-flex rounded-full border border-accent/40 px-4 py-2 text-sm text-accent transition-colors hover:border-accent hover:text-foreground"
+              className="mt-6 inline-flex min-h-11 items-center rounded-full border border-accent/40 px-4 py-2 text-sm text-accent transition-colors hover:border-accent hover:text-foreground"
             >
               Share-ready summary -&gt;
             </Link>
           )}
         </header>
 
-        <section className="mb-10 rounded-xl border border-accent/30 bg-accent/5 p-5">
-          <h2 className="text-sm font-mono text-accent mb-4">Risk reduction summary</h2>
-          <ul className="space-y-3">
+        <section className="mb-8 rounded-2xl border border-accent/30 bg-accent/5 p-5 sm:p-6">
+          <p className="mb-3 font-mono text-xs uppercase tracking-[0.25em] text-accent">
+            Outcome at a glance
+          </p>
+          <h2 className="text-2xl font-semibold text-foreground">What changed</h2>
+          <div className="mt-5 grid gap-3 sm:grid-cols-3">
             {study.outcome.map((item) => (
-              <li key={item} className="flex gap-3 text-sm text-muted">
-                <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" aria-hidden="true" />
-                <span>{item}</span>
-              </li>
+              <article key={item} className="rounded-xl border border-border bg-background/60 p-4">
+                <span className="mb-3 block h-1.5 w-8 rounded-full bg-accent" aria-hidden="true" />
+                <p className="text-sm leading-relaxed text-muted">{item}</p>
+              </article>
             ))}
-          </ul>
+          </div>
         </section>
+
+        {headings.length > 1 && (
+          <nav
+            aria-label="Case study sections"
+            className="mb-10 rounded-xl border border-border bg-surface/40 p-4"
+          >
+            <p className="mb-3 font-mono text-xs uppercase tracking-[0.25em] text-accent">
+              Read path
+            </p>
+            <div className="grid gap-2 sm:grid-cols-2">
+              {headings.map((heading) => (
+                <a
+                  key={heading.id}
+                  href={`#${heading.id}`}
+                  className="inline-flex min-h-11 items-center rounded-lg px-3 py-2 text-sm text-muted transition-colors hover:bg-background hover:text-foreground"
+                >
+                  {heading.text}
+                </a>
+              ))}
+            </div>
+          </nav>
+        )}
 
         <div className="prose-custom">
           <MDXRemote source={study.content} components={mdxComponents} />

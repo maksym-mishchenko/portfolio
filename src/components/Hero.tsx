@@ -5,6 +5,9 @@ import { motion, useReducedMotion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { track } from "@vercel/analytics";
 import { TerminalTyping } from "./TerminalTyping";
+import { SITE } from "@/lib/constants";
+
+const PROOF_POINTS = ["Microsoft Security", "Identity governance", "AI-agent automation"];
 
 export function Hero() {
   const prefersReducedMotion = useReducedMotion();
@@ -13,11 +16,21 @@ export function Hero() {
     <section className="relative flex min-h-screen flex-col items-center justify-center px-6 py-28 text-center">
       <div className="mx-auto max-w-3xl">
         <h1 className="text-4xl font-bold tracking-tight text-[#fafafa] sm:text-5xl lg:text-6xl">
-          Maksym Mishchenko
+          {SITE.name}
         </h1>
         <p className="mt-4 text-lg leading-relaxed text-[#a1a1aa] sm:text-xl">
-          Software engineer at Microsoft Security, building AI-agent automation on the side.
+          I turn messy security and developer workflows into reliable systems, with AI-agent automation on the side.
         </p>
+        <div className="mt-5 flex flex-wrap justify-center gap-2">
+          {PROOF_POINTS.map((point) => (
+            <span
+              key={point}
+              className="rounded-full border border-[#27272a] bg-[#18181b]/70 px-3 py-1.5 text-xs font-medium text-[#d4d4d8]"
+            >
+              {point}
+            </span>
+          ))}
+        </div>
       </div>
 
       {/* CTA buttons */}

@@ -11,6 +11,7 @@ import { Quiz } from "./interactive/Quiz";
 import { BarChart } from "./interactive/BarChart";
 import { CompareTable } from "./interactive/CompareTable";
 import { Timeline } from "./interactive/Timeline";
+import { slugifyHeading } from "@/lib/mdx-headings";
 
 function extractText(children: React.ReactNode): string {
   if (typeof children === "string") return children;
@@ -22,10 +23,7 @@ function extractText(children: React.ReactNode): string {
 }
 
 function slugify(text: string): string {
-  return text
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "");
+  return slugifyHeading(text);
 }
 
 function Heading({

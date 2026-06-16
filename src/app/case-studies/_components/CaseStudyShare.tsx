@@ -1,19 +1,15 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import type { ReactNode } from "react";
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { getCaseStudyBySlug } from "@/lib/case-studies";
-import { getAllShareKitSlugs, getShareKitBySlug } from "@/lib/case-study-share-kits";
+import { getShareKitBySlug } from "@/lib/case-study-share-kits";
 
-interface Props {
-  params: Promise<{ slug: string }>;
+interface CaseStudyShareProps {
+  slug: string;
 }
 
-export function generateStaticParams() {
-  return getAllShareKitSlugs().map((slug) => ({ slug }));
-}
-
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
+export function getCaseStudyShareMetadata(slug: string): Metadata {
   const study = getCaseStudyBySlug(slug);
   const shareKit = getShareKitBySlug(slug);
 
@@ -30,7 +26,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-function ShareCard({ title, children }: { title: string; children: React.ReactNode }) {
+function ShareCard({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section className="rounded-xl border border-border bg-surface p-5">
       <h2 className="text-sm font-mono text-accent mb-3">{title}</h2>
@@ -39,8 +35,7 @@ function ShareCard({ title, children }: { title: string; children: React.ReactNo
   );
 }
 
-export default async function CaseStudySharePage({ params }: Props) {
-  const { slug } = await params;
+export function CaseStudyShare({ slug }: CaseStudyShareProps) {
   const study = getCaseStudyBySlug(slug);
   const shareKit = getShareKitBySlug(slug);
 

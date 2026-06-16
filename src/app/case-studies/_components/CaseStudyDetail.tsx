@@ -1,23 +1,17 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { MDXRemote } from "next-mdx-remote/rsc";
-import { getAllCaseStudySlugs, getCaseStudyBySlug } from "@/lib/case-studies";
+import { getCaseStudyBySlug } from "@/lib/case-studies";
 import { getShareKitBySlug } from "@/lib/case-study-share-kits";
-import { mdxComponents } from "@/components/mdx";
+import { extractSecondLevelHeadings, slugifyHeading } from "@/lib/mdx-headings";
 import { safeJsonLd, techArticleSchema } from "@/lib/jsonld";
-import { extractSecondLevelHeadings } from "@/lib/mdx-headings";
 
-interface Props {
-  params: Promise<{ slug: string }>;
+interface CaseStudyDetailProps {
+  slug: string;
 }
 
-export async function generateStaticParams() {
-  return getAllCaseStudySlugs().map((slug) => ({ slug }));
-}
-
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
+export function getCaseStudyDetailMetadata(slug: string): Metadata {
   const study = getCaseStudyBySlug(slug);
   if (!study) return {};
 
@@ -36,8 +30,62 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function CaseStudyPage({ params }: Props) {
-  const { slug } = await params;
+function renderInlineText(text: string): ReactNode[] {
+  return text.split(/(`[^`]+`)/).map((part, index) => {
+    if (part.startsWith("`") && part.endsWith("`")) {
+      return (
+        <code key={`${part}-${index}`} className="rounded bg-surface px-1.5 py-0.5 text-sm text-foreground">
+          {part.slice(1, -1)}
+        </code>
+      );
+    }
+
+    return part;
+  });
+}
+
+function CaseStudyBody({ content }: { content: string }) {
+  const blocks = content.trim().split(/\n{2,}/);
+
+  return (
+    <>
+      {blocks.map((block) => {
+        if (block.startsWith("## ")) {
+          const heading = block.slice(3).trim();
+          const id = slugifyHeading(heading);
+
+          return (
+            <h2 key={block} id={id} className="text-2xl font-bold mt-8 mb-3 font-heading scroll-mt-20 group">
+              <a href={`#${id}`} className="no-underline hover:underline">
+                {heading}
+              </a>
+            </h2>
+          );
+        }
+
+        if (block.split("\n").every((line) => line.startsWith("- "))) {
+          return (
+            <ul key={block} className="list-disc pl-6 mb-4 space-y-2 text-muted">
+              {block.split("\n").map((line) => (
+                <li key={line} className="leading-relaxed pl-1">
+                  {renderInlineText(line.slice(2))}
+                </li>
+              ))}
+            </ul>
+          );
+        }
+
+        return (
+          <p key={block} className="text-muted leading-relaxed mb-4">
+            {renderInlineText(block.replace(/\n/g, " "))}
+          </p>
+        );
+      })}
+    </>
+  );
+}
+
+export function CaseStudyDetail({ slug }: CaseStudyDetailProps) {
   const study = getCaseStudyBySlug(slug);
   if (!study) notFound();
 
@@ -131,7 +179,7 @@ export default async function CaseStudyPage({ params }: Props) {
         )}
 
         <div className="prose-custom">
-          <MDXRemote source={study.content} components={mdxComponents} />
+          <CaseStudyBody content={study.content} />
         </div>
       </article>
 

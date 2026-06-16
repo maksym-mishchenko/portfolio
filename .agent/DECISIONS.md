@@ -10,6 +10,11 @@
 **Rejected:** <alternatives and why not> (optional)
 
 -->
+## [2026-06-16] Concrete case-study routes for Cloudflare Workers  #infra
+**What:** Replaced generic case-study detail routes with concrete `/case-studies/mcpgate-v1-1` and `/case-studies/mcpgate-v1-1/share` routes, added bundled runtime fallback data, and rendered the flagship case-study body without route-time MDX evaluation.
+**Why:** OpenNext generated the pages during `next build`, but the Cloudflare Worker returned 404/500 because runtime route handling could not rely on filesystem-backed MDX content and MDX evaluation in the Worker.
+**Rejected:** Keeping only `[slug]` routes, because Worker preview reproduced the production 404; keeping `MDXRemote` on the detail route, because Worker preview reproduced a 500 after data was bundled.
+
 ## [2026-06-16] Cloudflare Worker free-plan size guard  #infra
 **What:** Removed dynamic `next/og` special routes, switched Mermaid MDX rendering to a lightweight source fallback, and added a Wrangler dry-run upload-size guard before Cloudflare deploy.
 **Why:** The merged Workers deployment failed with Cloudflare error `10027` because the OpenNext Worker exceeded the free-plan 3 MiB gzip limit. The guard makes size regressions fail before the real deploy request.

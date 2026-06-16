@@ -39,4 +39,5 @@
 - Framer Motion for UI animations
 - Security headers applied globally via next.config.ts
 - In-memory rate limiting on contact form (resets on cold start)
-- Cloudflare deployment readiness uses Workers with `@opennextjs/cloudflare` because API routes and `next/image` support require a full-stack Next.js runtime rather than static Pages.
+- Cloudflare deployment uses Workers with `@opennextjs/cloudflare` because API routes and `next/image` support require a full-stack Next.js runtime rather than static Pages.
+- The Cloudflare deploy workflow includes a `wrangler deploy --dry-run` upload-size guard before the real deploy. The Worker must stay under Cloudflare's 3 MiB free-plan gzip limit, so dynamic `next/og` image routes and the Mermaid browser runtime are intentionally excluded from the Worker bundle.

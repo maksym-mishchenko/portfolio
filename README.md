@@ -4,7 +4,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 [![Vercel](https://img.shields.io/badge/Deployed_on-Vercel-000?logo=vercel)](https://mmishchenko.dev)
-[![Cloudflare](https://img.shields.io/badge/Cloudflare-ready-F38020?logo=cloudflare&logoColor=white)](https://developers.cloudflare.com/workers/framework-guides/web-apps/nextjs/)
+[![Cloudflare](https://img.shields.io/badge/Cloudflare-Workers%20guarded-F38020?logo=cloudflare&logoColor=white)](https://developers.cloudflare.com/workers/framework-guides/web-apps/nextjs/)
 
 My personal portfolio and blog — built with Next.js 16 (App Router), MDX, and interactive animated components.
 
@@ -16,7 +16,7 @@ My personal portfolio and blog — built with Next.js 16 (App Router), MDX, and 
 - **Automated devlog pipeline** — LinkedIn posts auto-expand into long-form blog articles via GPT-4o
 - **Dark theme** with spotlight hover effects and smooth Framer Motion animations
 - **RSS feed** at `/blog/feed.xml`
-- **SEO optimized** — dynamic sitemap, OpenGraph images, canonical URLs, security headers
+- **SEO optimized** — dynamic sitemap, static OpenGraph fallback, canonical URLs, security headers
 - **Contact form** powered by Resend API
 - **Responsive** — mobile-first design
 
@@ -31,7 +31,7 @@ My personal portfolio and blog — built with Next.js 16 (App Router), MDX, and 
 | Blog | MDX via next-mdx-remote/rsc |
 | Syntax Highlighting | sugar-high |
 | Email | Resend API |
-| Deployment | Vercel; Cloudflare Workers-ready via OpenNext |
+| Deployment | Vercel; Cloudflare Workers via OpenNext with a size dry-run guard |
 | Domain | Cloudflare DNS |
 
 ## 🚀 Getting Started
@@ -58,6 +58,9 @@ This app is full-stack Next.js (App Router plus API routes), so Cloudflare readi
 # Build and preview in the Workers runtime
 npm run preview
 
+# Build and check the Worker upload size before deploying
+npm run cf-dry-run
+
 # Build and deploy to Cloudflare Workers
 npm run deploy
 
@@ -72,6 +75,13 @@ Required Cloudflare setup:
 - Set `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN` as GitHub repository secrets for `.github/workflows/cloudflare-deploy.yml`.
 - Add runtime secrets in Cloudflare, not in source: `RESEND_API_KEY`, `CONTACT_EMAIL`, `GITHUB_TOKEN`, `BLOG_PUBLISH_SECRET`, and `STAGING_SECRET`.
 - Route `mmishchenko.dev` to the `mmishchenko-portfolio` Worker after the first successful deploy.
+
+Free-plan deployment notes:
+
+- Cloudflare rejects Worker uploads above the 3 MiB gzip size limit with error code `10027`.
+- The deploy workflow builds the OpenNext bundle, runs `wrangler deploy --dry-run` as a size guard, and only deploys after that guard passes.
+- Dynamic `next/og` image routes were removed because `@vercel/og` bundles WASM into the Worker. Metadata now uses the existing static avatar image instead of generated per-route OpenGraph images.
+- Mermaid MDX diagrams render as source blocks to avoid bundling the Mermaid browser runtime into the Worker. Current posts do not use Mermaid diagrams.
 
 ## 📁 Project Structure
 

@@ -10,6 +10,11 @@
 **Rejected:** <alternatives and why not> (optional)
 
 -->
+## [2026-06-16] Cloudflare Worker free-plan size guard  #infra
+**What:** Removed dynamic `next/og` special routes, switched Mermaid MDX rendering to a lightweight source fallback, and added a Wrangler dry-run upload-size guard before Cloudflare deploy.
+**Why:** The merged Workers deployment failed with Cloudflare error `10027` because the OpenNext Worker exceeded the free-plan 3 MiB gzip limit. The guard makes size regressions fail before the real deploy request.
+**Rejected:** Static Pages export, because it would drop the current API routes and full-stack Next.js behavior; claiming Workers production readiness without a size guard, because main had already failed at deploy time.
+
 ## [2026-06-16] Cloudflare Workers target for Next.js deployment  #infra
 **What:** Added OpenNext Cloudflare adapter configuration and Wrangler JSONC for a Cloudflare Workers deployment target.
 **Why:** The portfolio has App Router route handlers, runtime secrets, and `next/image`, so static Cloudflare Pages would not preserve existing full-stack behavior.

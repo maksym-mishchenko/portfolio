@@ -61,7 +61,7 @@ export function blogPostingSchema(post: {
     description: post.description,
     datePublished: post.date,
     url: `${SITE.url}/blog/${post.slug}`,
-    image: `${SITE.url}/blog/${post.slug}/opengraph-image`,
+    image: SITE.image,
     author: {
       "@type": "Person",
       name: SITE.name,
@@ -95,7 +95,7 @@ export function techArticleSchema(study: {
     headline: study.title,
     description: study.summary,
     datePublished: study.date,
-    image: `${SITE.url}/opengraph-image`,
+    image: SITE.image,
     author: {
       "@type": "Person",
       name: SITE.name,

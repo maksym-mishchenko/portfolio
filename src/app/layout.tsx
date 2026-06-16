@@ -4,6 +4,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
+import { SITE } from "@/lib/constants";
 import "./globals.css";
 
 const inter = Inter({
@@ -31,14 +32,14 @@ export const metadata: Metadata = {
     siteName: "mmishchenko.dev",
     locale: "en_US",
     type: "website",
-    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Maksym Mishchenko portfolio" }],
+    images: [{ url: SITE.image, width: 512, height: 512, alt: `${SITE.name} profile photo` }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Maksym Mishchenko — Software Engineer",
     description:
       "Software Engineer at Microsoft. Building tools that solve real problems.",
-    images: ["/opengraph-image"],
+    images: [SITE.image],
   },
   robots: { index: true, follow: true },
   alternates: { canonical: "https://mmishchenko.dev" },

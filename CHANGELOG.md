@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 - Tightened staging publish and contact response parsing so strict typecheck stays green during deployment validation.
+- Reduced the Cloudflare Worker bundle below the free-plan upload limit by removing dynamic `next/og` routes, replacing Mermaid rendering with a lightweight fallback, and adding a Wrangler dry-run deploy guard.
 
 ## [0.2.0] - 2026-06-07
 

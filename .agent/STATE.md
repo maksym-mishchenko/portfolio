@@ -26,6 +26,7 @@ Last updated: 2026-06-16 by Copilot
 - Final recruiter-readiness polish complete: warmer homepage positioning, more scannable long-form article/case-study pages, stronger case-study outcome callouts, and more comfortable mobile resume spacing.
 - Cloudflare deployment readiness configured for the full-stack Next.js app via OpenNext on Workers, including Wrangler config, deploy workflow, static asset headers, and setup docs.
 - Staging publish and contact JSON response handling now use explicit guards so strict typecheck passes reliably.
+- Cloudflare Worker size fix complete: dynamic `next/og` routes removed, Mermaid runtime replaced with a source fallback, and deploy workflow guarded by `wrangler deploy --dry-run` before the real deploy.
 
 ## In progress
 - None.

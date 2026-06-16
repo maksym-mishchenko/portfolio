@@ -1,5 +1,5 @@
 # State — portfolio
-Last updated: 2026-06-15 by Copilot
+Last updated: 2026-06-16 by Copilot
 
 ## Done
 - Phase 1 complete: /resume print-to-PDF, per-post OG images, JSON-LD Person/BlogPosting,
@@ -24,6 +24,8 @@ Last updated: 2026-06-15 by Copilot
 - Resume PDF action now triggers browser print/save before non-critical analytics, so blocked analytics cannot break the button.
 - UX polish pass complete: contrast, no-JS homepage resilience, contact form announcements, nav semantics/touch targets, canonical metadata, resume date ranges, direct PDF, favicon fallback, and duplicate blog-list cleanup.
 - Final recruiter-readiness polish complete: warmer homepage positioning, more scannable long-form article/case-study pages, stronger case-study outcome callouts, and more comfortable mobile resume spacing.
+- Cloudflare deployment readiness configured for the full-stack Next.js app via OpenNext on Workers, including Wrangler config, deploy workflow, static asset headers, and setup docs.
+- Staging publish and contact JSON response handling now use explicit guards so strict typecheck passes reliably.
 
 ## In progress
 - None.

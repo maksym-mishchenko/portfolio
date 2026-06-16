@@ -4,6 +4,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 [![Vercel](https://img.shields.io/badge/Deployed_on-Vercel-000?logo=vercel)](https://mmishchenko.dev)
+[![Cloudflare](https://img.shields.io/badge/Cloudflare-ready-F38020?logo=cloudflare&logoColor=white)](https://developers.cloudflare.com/workers/framework-guides/web-apps/nextjs/)
 
 My personal portfolio and blog — built with Next.js 16 (App Router), MDX, and interactive animated components.
 
@@ -30,7 +31,7 @@ My personal portfolio and blog — built with Next.js 16 (App Router), MDX, and 
 | Blog | MDX via next-mdx-remote/rsc |
 | Syntax Highlighting | sugar-high |
 | Email | Resend API |
-| Deployment | Vercel |
+| Deployment | Vercel; Cloudflare Workers-ready via OpenNext |
 | Domain | Cloudflare DNS |
 
 ## 🚀 Getting Started
@@ -48,6 +49,29 @@ npm run build
 # Lint
 npm run lint
 ```
+
+## Cloudflare deployment
+
+This app is full-stack Next.js (App Router plus API routes), so Cloudflare readiness uses Cloudflare Workers with the OpenNext adapter instead of static Pages.
+
+```bash
+# Build and preview in the Workers runtime
+npm run preview
+
+# Build and deploy to Cloudflare Workers
+npm run deploy
+
+# Regenerate Worker environment types after wrangler.jsonc changes
+npm run cf-typegen
+```
+
+Required Cloudflare setup:
+
+- Create or use a Cloudflare account with Workers enabled.
+- Enable Cloudflare Images transformations for the zone because the app uses `next/image`.
+- Set `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN` as GitHub repository secrets for `.github/workflows/cloudflare-deploy.yml`.
+- Add runtime secrets in Cloudflare, not in source: `RESEND_API_KEY`, `CONTACT_EMAIL`, `GITHUB_TOKEN`, `BLOG_PUBLISH_SECRET`, and `STAGING_SECRET`.
+- Route `mmishchenko.dev` to the `mmishchenko-portfolio` Worker after the first successful deploy.
 
 ## 📁 Project Structure
 

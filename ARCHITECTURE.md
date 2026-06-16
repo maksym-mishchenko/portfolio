@@ -4,7 +4,7 @@
 
 ```
 ┌──────────────────────────────────────────┐
-│              Vercel Edge                  │
+│  Vercel today / Cloudflare Workers-ready  │
 ├──────────────────────────────────────────┤
 │  Next.js 16 App Router                   │
 │  ┌──────────────┐  ┌─────────────────┐   │
@@ -39,3 +39,4 @@
 - Framer Motion for UI animations
 - Security headers applied globally via next.config.ts
 - In-memory rate limiting on contact form (resets on cold start)
+- Cloudflare deployment readiness uses Workers with `@opennextjs/cloudflare` because API routes and `next/image` support require a full-stack Next.js runtime rather than static Pages.

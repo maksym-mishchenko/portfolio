@@ -10,6 +10,11 @@
 **Rejected:** <alternatives and why not> (optional)
 
 -->
+## [2026-06-16] Cloudflare Workers target for Next.js deployment  #infra
+**What:** Added OpenNext Cloudflare adapter configuration and Wrangler JSONC for a Cloudflare Workers deployment target.
+**Why:** The portfolio has App Router route handlers, runtime secrets, and `next/image`, so static Cloudflare Pages would not preserve existing full-stack behavior.
+**Rejected:** Static Pages export, because it would drop API routes and server runtime behavior.
+
 ## [2026-06-14] App review hardening  #api
 **What:** Blog publish now validates payloads with Zod and serializes frontmatter with `gray-matter`; contact form returns 503 when email delivery is not configured and avoids logging submitted PII; URL-live drafts now emit noindex metadata.
 **Why:** Public endpoints and staged content should fail explicitly, preserve valid content shape, and avoid accidental indexing or silent message loss.

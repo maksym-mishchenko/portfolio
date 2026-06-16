@@ -8,6 +8,14 @@ import { SectionReveal } from "./SectionReveal";
 
 type FormState = "idle" | "submitting" | "success" | "error";
 
+function getResponseError(data: unknown): string | null {
+  if (typeof data === "object" && data !== null && "error" in data && typeof data.error === "string") {
+    return data.error;
+  }
+
+  return null;
+}
+
 export function Contact() {
   const [state, setState] = useState<FormState>("idle");
   const [error, setError] = useState("");
@@ -42,7 +50,7 @@ export function Contact() {
 
       if (!res.ok) {
         const body = await res.json().catch(() => ({ error: "Something went wrong" }));
-        throw new Error(body.error || `Error ${res.status}`);
+        throw new Error(getResponseError(body) ?? `Error ${res.status}`);
       }
 
       setState("success");

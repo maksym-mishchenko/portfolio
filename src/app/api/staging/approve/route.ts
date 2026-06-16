@@ -1,8 +1,26 @@
 import { NextRequest } from "next/server";
+import { z } from "zod";
 
 const STAGING_SECRET = process.env.STAGING_SECRET ?? "";
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN ?? "";
 const REPO = "maksym-mishchenko/portfolio";
+
+const approveRequestSchema = z.object({
+  slug: z.string().regex(/^[a-z0-9-]+$/),
+});
+
+const githubFileSchema = z.object({
+  content: z.string().min(1),
+  sha: z.string().min(1),
+});
+
+const githubWriteResultSchema = z.object({
+  commit: z
+    .object({
+      sha: z.string().min(1),
+    })
+    .optional(),
+});
 
 function isAuthorized(request: NextRequest): boolean {
   const cookieStore = request.cookies;
@@ -21,10 +39,11 @@ export async function POST(request: NextRequest) {
     return Response.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  const { slug } = body as { slug?: string };
-  if (!slug || !/^[a-z0-9-]+$/.test(slug)) {
+  const parsed = approveRequestSchema.safeParse(body);
+  if (!parsed.success) {
     return Response.json({ error: "Invalid slug" }, { status: 400 });
   }
+  const { slug } = parsed.data;
 
   if (!GITHUB_TOKEN) {
     return Response.json({ error: "GitHub token not configured" }, { status: 500 });
@@ -45,8 +64,12 @@ export async function POST(request: NextRequest) {
     return Response.json({ error: "Post not found" }, { status: 404 });
   }
 
-  const fileData = await existing.json();
-  const currentContent = Buffer.from(fileData.content, "base64").toString("utf-8");
+  const fileData = githubFileSchema.safeParse(await existing.json());
+  if (!fileData.success) {
+    return Response.json({ error: "Unexpected GitHub file response" }, { status: 502 });
+  }
+
+  const currentContent = Buffer.from(fileData.data.content, "base64").toString("utf-8");
 
   // Remove draft: true from frontmatter
   const updated = currentContent
@@ -63,7 +86,7 @@ export async function POST(request: NextRequest) {
     body: JSON.stringify({
       message: `blog: publish "${slug}"`,
       content: Buffer.from(updated).toString("base64"),
-      sha: fileData.sha,
+      sha: fileData.data.sha,
     }),
   });
 
@@ -72,11 +95,11 @@ export async function POST(request: NextRequest) {
     return Response.json({ error: "GitHub API error", details: err }, { status: 502 });
   }
 
-  const result = await res.json();
+  const result = githubWriteResultSchema.safeParse(await res.json());
 
   return Response.json({
     success: true,
     url: `https://mmishchenko.dev/blog/${slug}`,
-    commit: result.commit?.sha?.slice(0, 7),
+    commit: result.success ? result.data.commit?.sha.slice(0, 7) : undefined,
   });
 }

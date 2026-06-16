@@ -7,6 +7,25 @@ interface Props {
   drafts: BlogPostMeta[];
 }
 
+function getResponseError(data: unknown): string {
+  if (typeof data === "object" && data !== null && "error" in data && typeof data.error === "string") {
+    return data.error;
+  }
+
+  return "Something went wrong";
+}
+
+function getPublishResult(data: unknown): { url: string; commit?: string } | null {
+  if (typeof data !== "object" || data === null || !("url" in data) || typeof data.url !== "string") {
+    return null;
+  }
+
+  return {
+    url: data.url,
+    commit: "commit" in data && typeof data.commit === "string" ? data.commit : undefined,
+  };
+}
+
 export default function StagingDashboard({ drafts }: Props) {
   const [items, setItems] = useState(drafts);
   const [approving, setApproving] = useState<string | null>(null);
@@ -21,12 +40,18 @@ export default function StagingDashboard({ drafts }: Props) {
     });
     setApproving(null);
     if (res.ok) {
-      const data = await res.json();
-      setResults((r) => ({ ...r, [slug]: `✅ Published — ${data.url} (commit ${data.commit})` }));
+      const data = getPublishResult(await res.json());
+      if (!data) {
+        setResults((r) => ({ ...r, [slug]: "❌ Error: Unexpected publish response" }));
+        return;
+      }
+
+      const commit = data.commit ? ` (commit ${data.commit})` : "";
+      setResults((r) => ({ ...r, [slug]: `✅ Published — ${data.url}${commit}` }));
       setItems((prev) => prev.filter((p) => p.slug !== slug));
     } else {
-      const err = await res.json();
-      setResults((r) => ({ ...r, [slug]: `❌ Error: ${err.error}` }));
+      const err = await res.json().catch(() => null);
+      setResults((r) => ({ ...r, [slug]: `❌ Error: ${getResponseError(err)}` }));
     }
   }
 

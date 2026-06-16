@@ -25,6 +25,97 @@ function calculateReadingTime(content: string): string {
   return `${minutes} min read`;
 }
 
+const MCPGATE_CASE_STUDY_CONTENT = `## Executive summary
+
+mcpgate v1.1.0 reduced a practical AI-agent security risk: malicious or compromised tools could return instructions that look like ordinary tool output but are actually prompt injection aimed at the agent.
+
+The fix was not another prompt. I added deterministic reverse-channel gating so warning content is detected before it reaches the agent, preserved the audit trail, and verified both successful and blocked paths before release.
+
+## Why this mattered
+
+AI agents do not only receive instructions from users. They also receive data from tools. If a tool result says "ignore previous instructions" or attempts to leak credentials, that content can influence the next model step unless the gateway treats inbound tool output as untrusted.
+
+For mcpgate, the product promise is simple: route MCP traffic through a security gateway that can inspect, decide, and record what happened. v1.1.0 extended that promise from outbound requests to inbound tool responses.
+
+## Threat model
+
+The main risk was reverse-channel prompt injection: unsafe instructions hidden inside tool responses. The gateway needed to catch high-signal patterns without introducing an LLM dependency or turning the CLI into a complex policy service.
+
+The design used deterministic heuristics because they are local, reviewable, cheap to run, and easy to test. The tradeoff is that heuristics are not a complete security boundary, so the release framed them as risk reduction and audit signal rather than perfect detection.
+
+## Constraints
+
+- No LLM dependency in the hot path.
+- Local-first CLI behavior.
+- Fail-closed behavior when \`block_on_warn\` is enabled.
+- Audit entries must explain what happened.
+- Human approval boundaries must remain explicit.
+- No secrets should be committed or logged as implementation artifacts.
+
+## Architecture
+
+The gateway scans outbound tool calls and inbound tool responses. When the scanner finds known prompt-injection or exfiltration signatures, it records a warning. In observe mode, warnings are visible in audit output. With \`block_on_warn\` enabled, the gateway blocks warned inbound content before it reaches the agent.
+
+The important architecture decision was symmetry: both successful tool results and error responses are untrusted input. A tool can poison either channel, so both channels need the same inspection path.
+
+## Review finding
+
+During review, I found that the first implementation scanned \`resp.Result\` but missed \`resp.Error\`. That left a bypass where unsafe instructions could be returned as an error and still reach the agent.
+
+The fix was to scan both channels and add regression coverage for the error path. That review loop is the part of the story that matters most: the goal was not just to ship the feature, but to catch the bypass before release.
+
+## Release outcome
+
+The release moved to the fixed commit before publishing v1.1.0. The final version included reverse-channel gating, audit warnings, and regression coverage for the result and error paths.
+
+## What this demonstrates
+
+- Security mindset: model tool output as untrusted input.
+- Product judgment: ship deterministic risk reduction without overbuilding.
+- Review discipline: find and fix bypasses before release.
+- Engineering communication: document the security boundary and remaining limits.
+
+## Next steps
+
+The next useful improvements are stronger policy configuration, fuzz cases for scanner inputs, and broader transport coverage. Those are follow-up releases, not prerequisites for the first public case study.
+`;
+
+const BUNDLED_CASE_STUDIES: CaseStudy[] = [
+  {
+    slug: "mcpgate-v1-1",
+    title: "mcpgate v1.1.0: Securing AI Agent Tool Calls",
+    summary:
+      "How I shipped reverse-channel prompt-injection defenses for an MCP security gateway, caught an error-channel bypass in review, and released a safer v1.1.0.",
+    project: "mcpgate",
+    date: "2026-06-01",
+    tags: ["AI Security", "MCP", "Go", "Agent Governance"],
+    outcome: [
+      "Identified reverse-channel prompt-injection risk in tool results",
+      "Shipped deterministic inbound gating for result and error channels",
+      "Verified the release with regression coverage before publishing v1.1.0",
+    ],
+    readingTime: calculateReadingTime(MCPGATE_CASE_STUDY_CONTENT),
+    content: MCPGATE_CASE_STUDY_CONTENT,
+  },
+];
+
+function toCaseStudyMeta(study: CaseStudy): CaseStudyMeta {
+  return {
+    slug: study.slug,
+    title: study.title,
+    summary: study.summary,
+    project: study.project,
+    date: study.date,
+    tags: study.tags,
+    outcome: study.outcome,
+    readingTime: study.readingTime,
+  };
+}
+
+function getBundledCaseStudyBySlug(slug: string): CaseStudy | null {
+  return BUNDLED_CASE_STUDIES.find((study) => study.slug === slug) ?? null;
+}
+
 function stringField(data: Record<string, unknown>, key: string, slug: string): string {
   const value = data[key];
   if (typeof value !== "string" || value.trim() === "") {
@@ -92,33 +183,26 @@ function readCaseStudyFile(filename: string): CaseStudy {
 }
 
 export function getAllCaseStudies(): CaseStudyMeta[] {
-  if (!fs.existsSync(CASE_STUDIES_DIR)) return [];
+  const caseStudies = fs.existsSync(CASE_STUDIES_DIR)
+    ? fs
+        .readdirSync(CASE_STUDIES_DIR)
+        .filter((filename) => filename.endsWith(".mdx"))
+        .map(readCaseStudyFile)
+    : BUNDLED_CASE_STUDIES;
 
-  return fs
-    .readdirSync(CASE_STUDIES_DIR)
-    .filter((filename) => filename.endsWith(".mdx"))
-    .map(readCaseStudyFile)
-    .map((study) => ({
-      slug: study.slug,
-      title: study.title,
-      summary: study.summary,
-      project: study.project,
-      date: study.date,
-      tags: study.tags,
-      outcome: study.outcome,
-      readingTime: study.readingTime,
-    }))
+  return caseStudies
+    .map(toCaseStudyMeta)
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 }
 
 export function getCaseStudyBySlug(slug: string): CaseStudy | null {
   const filePath = path.join(CASE_STUDIES_DIR, `${slug}.mdx`);
-  if (!fs.existsSync(filePath)) return null;
+  if (!fs.existsSync(filePath)) return getBundledCaseStudyBySlug(slug);
   return readCaseStudyFile(`${slug}.mdx`);
 }
 
 export function getAllCaseStudySlugs(): string[] {
-  if (!fs.existsSync(CASE_STUDIES_DIR)) return [];
+  if (!fs.existsSync(CASE_STUDIES_DIR)) return BUNDLED_CASE_STUDIES.map((study) => study.slug);
 
   return fs
     .readdirSync(CASE_STUDIES_DIR)

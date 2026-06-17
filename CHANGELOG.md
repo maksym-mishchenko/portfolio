@@ -16,6 +16,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Changed
 - Tightened staging publish and contact response parsing so strict typecheck stays green during deployment validation.
 - Reduced the Cloudflare Worker bundle below the free-plan upload limit by removing dynamic `next/og` routes, replacing Mermaid rendering with a lightweight fallback, and adding a Wrangler dry-run deploy guard.
+- Refreshed ESLint 10 tracking for issue #20: latest re-test is still blocked by the bundled `eslint-plugin-react` stack in `eslint-config-next`, so ESLint stays on the current baseline until upstream compatibility lands.
 
 ### Fixed
 - Fixed broken Cloudflare Worker case-study links by serving the flagship mcpgate case study from concrete static routes with bundled runtime content.

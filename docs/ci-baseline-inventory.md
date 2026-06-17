@@ -30,11 +30,11 @@
 
 | Gate | Source workflow/job | Required in this phase | Reason |
 | --- | --- | --- | --- |
-| lint | CI / lint | planned yes after live proof | Existing lint signal is deterministic and can emit a normalized job name. |
-| typecheck | CI / typecheck | planned yes after live proof | Existing strict TypeScript check is deterministic and can emit a normalized job name. |
+| lint | CI / lint | yes | Existing lint signal emitted terminal success on PR #50. |
+| typecheck | CI / typecheck | yes | Existing strict TypeScript check emitted terminal success on PR #50. |
 | test | none | no | No `npm test` script or test files are present yet, so a required test gate would be synthetic. |
-| build | CI / build | planned yes after live proof | Existing Next.js build is deterministic and can emit a normalized job name. |
-| security | CI / security | planned yes after live proof | Blocking scope is limited to high-confidence secret patterns in added diff lines. |
+| build | CI / build | yes | Existing Next.js build emitted terminal success on PR #50 and terminal failure on negative PR #51. |
+| security | CI / security | yes | Blocking scope is limited to high-confidence secret patterns in added diff lines and emitted terminal success on PR #50. |
 
 ## Security scan scope
 
@@ -61,24 +61,28 @@
 ## Transition safety
 
 - Temporary maintainer bypass enabled during rollout: no
-- Positive test PR: pending live verification
-- Negative test PR: pending live verification
-- Bypass removal PR or API update: pending live verification
-- Required checks will not be added to `main` until the normalized gates emit terminal statuses on the normalization PR.
-- Existing branch protection/ruleset settings will be preserved or strengthened only after positive proof; no force-push/delete allowance or broad bypass will be introduced.
+- Positive test PR: https://github.com/maksym-mishchenko/portfolio/pull/50
+- Negative test PR: https://github.com/maksym-mishchenko/portfolio/pull/51 (closed unmerged)
+- Bypass removal PR or API update: not applicable; no temporary bypass was created.
+- Required checks were added to `main` only after the normalized gates emitted terminal statuses on PR #50.
+- Branch protection now disallows force pushes and deletions, enforces admins, requires conversation resolution, and has no bypass actors/rulesets.
 
 ## Captured governance state
 
-- Branch protection: No branch protection returned by API; add later only after checks are normalized and proven.
+- Branch protection: enabled on `main` after PR #50 proof. Required status checks are strict and require `lint`, `typecheck`, `build`, and `security`; admins are enforced; force pushes/deletions disabled; conversation resolution required; review requirements remain unset.
 - Repository rulesets returned: 0
 
 ## Enforcement evidence
 
-- Normalization PR: pending
-- Normalization head SHA: pending
-- Terminal required-gate evidence: pending
-- Applied required contexts: pending
-- Branch protection/ruleset evidence: pending
-- Negative PR: pending
-- Negative blocked-merge evidence: pending
-- Caveats: dependency audit is advisory until deploy/build-tool advisories are remediated or scoped to a reliable runtime-only surface.
+- Normalization PR: https://github.com/maksym-mishchenko/portfolio/pull/50
+- Normalization head SHA: `04a298e596b7ddbc6e2e2b1488032e2e366e1749`
+- Terminal required-gate evidence on PR #50:
+  - `lint`: SUCCESS, https://github.com/maksym-mishchenko/portfolio/actions/runs/27683907744/job/81877869486
+  - `typecheck`: SUCCESS, https://github.com/maksym-mishchenko/portfolio/actions/runs/27683907744/job/81877869488
+  - `build`: SUCCESS, https://github.com/maksym-mishchenko/portfolio/actions/runs/27683907744/job/81877869470
+  - `security`: SUCCESS, https://github.com/maksym-mishchenko/portfolio/actions/runs/27683907744/job/81877869497
+- Applied required contexts: `lint`, `typecheck`, `build`, `security` on default branch `main`, with strict up-to-date checks.
+- Branch protection/ruleset evidence: branch protection API returned required contexts `lint`, `typecheck`, `build`, `security`; `enforce_admins.enabled=true`; `allow_force_pushes.enabled=false`; `allow_deletions.enabled=false`; `required_conversation_resolution.enabled=true`; `restrictions=null`; repository rulesets `[]`.
+- Negative PR: https://github.com/maksym-mishchenko/portfolio/pull/51, head SHA `45cc3ca9a523d9895bb2d0746c8b8b3db92e35ba`, closed unmerged.
+- Negative blocked-merge evidence: PR #51 `mergeStateStatus=BLOCKED`; `build` terminal FAILURE at https://github.com/maksym-mishchenko/portfolio/actions/runs/27684616464/job/81880210823 while `lint`, `typecheck`, `security`, and `state-freshness` were terminal SUCCESS.
+- Caveats: dependency audit is advisory until deploy/build-tool advisories are remediated or scoped to a reliable runtime-only surface; full-history/working-tree Gitleaks, GitGuardian, Vercel, and deploy signals remain non-required.

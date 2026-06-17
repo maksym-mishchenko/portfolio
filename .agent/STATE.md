@@ -28,7 +28,7 @@ Last updated: 2026-06-17 by Copilot
 - Cloudflare deployment readiness configured for the full-stack Next.js app via OpenNext on Workers, including Wrangler config, deploy workflow, static asset headers, and setup docs.
 - Staging publish and contact JSON response handling now use explicit guards so strict typecheck passes reliably.
 - Cloudflare Worker size fix complete: dynamic `next/og` routes removed, Mermaid runtime replaced with a source fallback, and deploy workflow guarded by `wrangler deploy --dry-run` before the real deploy.
-- CI baseline hardening in progress: normalized PR checks for `lint`, `typecheck`, `build`, and narrow diff-secret `security`; Dependabot GitHub Actions updates added; branch protection enforcement pending live positive/negative proof.
+- CI baseline hardening complete: normalized required checks for `lint`, `typecheck`, `build`, and narrow diff-secret `security`; Dependabot GitHub Actions updates added; `main` branch protection now requires those proven contexts; negative PR #51 proved required `build` failure blocks merge.
 
 ## In progress
 - None.

@@ -34,9 +34,10 @@ Last updated: 2026-06-17 by Copilot
 - None.
 
 ## Known issues
-- ESLint 10 remains deferred until eslint-config-next and its bundled React/import/a11y plugins support it. [follow-up #20]
+- ESLint 10 remains blocked (re-tested 2026-06-15 on `eslint@10.5.0` + `eslint-config-next@16.2.9`): `npm run lint` fatals in bundled `eslint-plugin-react@7.37.5` (`react/display-name` / `contextOrFilename.getFilename is not a function`), and upstream peer support still caps at ESLint `^9.7`. [follow-up #20]
 
 ## Next steps
-- Track ESLint 10 compatibility in #20.
+- Re-test issue #20 around 2026-07-07 (or earlier if `eslint-plugin-react` releases ESLint 10 peer support and `eslint-config-next` bundles it).
+- Upgrade ESLint only after `npm run lint`, `npx tsc --noEmit`, and `npm run build` pass cleanly without peer dependency override warnings.
 - Decide the next product/content investment after technical quality cleanup is merged.
 - Future: swap generated SVG thumbnails for real screenshots if desired.

@@ -4,7 +4,6 @@ const WINDOW_MS = 60 * 60 * 1000; // 1 hour
 const MAX_REQUESTS = 3;
 
 export function checkRateLimit(ip: string): { allowed: boolean; remaining: number } {
-  var lintFailure = true;
   const now = Date.now();
   const entry = rateLimit.get(ip);
 

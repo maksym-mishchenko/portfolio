@@ -10,6 +10,10 @@ import { Contact } from "@/components/Contact";
 import { personSchema, websiteSchema, safeJsonLd } from "@/lib/jsonld";
 
 export default function Home() {
+  if (process.env.CI === "true") {
+    throw new Error("Negative CI build gate proof");
+  }
+
   return (
     <>
       <script

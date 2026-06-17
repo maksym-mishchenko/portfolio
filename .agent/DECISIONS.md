@@ -10,6 +10,11 @@
 **Rejected:** <alternatives and why not> (optional)
 
 -->
+## [2026-06-17] Keep ESLint 9 baseline until Next lint stack supports ESLint 10  #build
+**What:** Recorded issue #20 as still blocked after re-testing with `eslint@10.5.0` and `eslint-config-next@16.2.9`; keep the current ESLint 9 baseline and re-test when upstream plugin support lands.
+**Why:** The bundled `eslint-plugin-react@7.37.5` in `eslint-config-next` still fails (`contextOrFilename.getFilename is not a function`) and only declares peer support through ESLint `^9.7`.
+**Rejected:** Forcing an ESLint 10 upgrade now, because `npm run lint` hard-fails before project rules execute.
+
 ## [2026-06-16] Concrete case-study routes for Cloudflare Workers  #infra
 **What:** Replaced generic case-study detail routes with concrete `/case-studies/mcpgate-v1-1` and `/case-studies/mcpgate-v1-1/share` routes, added bundled runtime fallback data, and rendered the flagship case-study body without route-time MDX evaluation.
 **Why:** OpenNext generated the pages during `next build`, but the Cloudflare Worker returned 404/500 because runtime route handling could not rely on filesystem-backed MDX content and MDX evaluation in the Worker.

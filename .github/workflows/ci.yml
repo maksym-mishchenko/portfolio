@@ -3,13 +3,18 @@ name: CI
 on:
   pull_request:
     branches: [main]
+  push:
+    branches: [main]
 
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
-  quality:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -24,8 +29,85 @@ jobs:
       - name: Lint
         run: npm run lint
 
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
       - name: Typecheck
         run: npx tsc --noEmit
 
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
       - name: Build
         run: npm run build
+
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Diff secret scan
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            base="$(git rev-parse HEAD^1)"
+            head="$(git rev-parse HEAD)"
+          else
+            base="${{ github.event.before }}"
+            head="${{ github.sha }}"
+          fi
+
+          if [ -z "$base" ] || [[ "$base" =~ ^0+$ ]]; then
+            base="$(git rev-list --max-parents=0 "$head")"
+          fi
+
+          added_lines="$(git diff --unified=0 "$base" "$head" -- . \
+            | grep -E '^\+' \
+            | grep -Ev '^\+\+\+' || true)"
+
+          if [ -z "$added_lines" ]; then
+            echo "No added lines to scan."
+            exit 0
+          fi
+
+          patterns=(
+            '-----BEGIN (RSA |DSA |EC |OPENSSH |PGP )?PRIVATE KEY-----'
+            'AKIA[0-9A-Z]{16}'
+            'ASIA[0-9A-Z]{16}'
+            'ghp_[A-Za-z0-9_]{36,}'
+            'github_pat_[A-Za-z0-9_]{20,}'
+            'xox[baprs]-[A-Za-z0-9-]{20,}'
+            'sk-[A-Za-z0-9]{32,}'
+            'AIza[0-9A-Za-z_-]{35}'
+          )
+
+          for pattern in "${patterns[@]}"; do
+            if printf '%s\n' "$added_lines" | grep -Eiq -- "$pattern"; then
+              echo "::error::Potential high-confidence secret pattern found in added lines."
+              exit 1
+            fi
+          done
+
+          echo "No high-confidence secret patterns found in added lines."

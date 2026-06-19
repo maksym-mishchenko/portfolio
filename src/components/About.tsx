@@ -6,6 +6,7 @@ import Image from "next/image";
 import { track } from "@vercel/analytics";
 import { ABOUT, SITE } from "@/lib/constants";
 import { SectionReveal } from "./SectionReveal";
+import { SectionHeader } from "./SectionHeader";
 
 function GithubIcon({ size = 20 }: { size?: number }) {
   return (
@@ -27,9 +28,11 @@ export function About() {
   return (
     <section id="about" className="py-24 px-6">
       <div className="max-w-4xl mx-auto">
-        <SectionReveal>
-          <h2 className="text-3xl font-mono font-bold mb-16 text-center">About</h2>
-        </SectionReveal>
+        <SectionHeader
+          title="About me"
+          subtitle="Where I come from, and what I spend my time on outside the day job."
+          className="mb-12"
+        />
 
         <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-12 items-start">
           <SectionReveal delay={0.1}>

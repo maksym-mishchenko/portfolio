@@ -40,26 +40,28 @@ export function StickyNav() {
           className="fixed top-0 left-0 right-0 z-50 flex justify-center px-4 pt-3"
           aria-label="Site navigation"
         >
-          <div className="flex items-center gap-1 overflow-x-auto rounded-full border border-border bg-surface/90 backdrop-blur-md px-3 py-1.5 shadow-lg">
-            {NAV_LINKS.map(({ label, href }) =>
-              href.startsWith("#") ? (
-                <a
-                  key={href}
-                  href={href}
-                  className="hidden min-h-11 items-center rounded-full px-3 py-2 text-sm text-muted transition-colors hover:bg-background hover:text-foreground sm:inline-flex"
-                >
-                  {label}
-                </a>
-              ) : (
-                <Link
-                  key={href}
-                  href={href}
-                  className="inline-flex min-h-11 items-center whitespace-nowrap rounded-full px-3 py-2 text-sm text-muted transition-colors hover:bg-background hover:text-foreground"
-                >
-                  {label}
-                </Link>
-              )
-            )}
+          <div className="flex max-w-full items-center overflow-hidden rounded-full border border-border bg-surface/90 backdrop-blur-md shadow-lg">
+            <div className="flex items-center gap-1 overflow-x-auto snap-x px-3 py-1.5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              {NAV_LINKS.map(({ label, href }) =>
+                href.startsWith("#") ? (
+                  <a
+                    key={href}
+                    href={href}
+                    className="hidden min-h-11 snap-start items-center whitespace-nowrap rounded-full px-3 py-2 text-sm text-muted transition-colors hover:bg-background hover:text-foreground sm:inline-flex"
+                  >
+                    {label}
+                  </a>
+                ) : (
+                  <Link
+                    key={href}
+                    href={href}
+                    className="inline-flex min-h-11 snap-start items-center whitespace-nowrap rounded-full px-3 py-2 text-sm text-muted transition-colors hover:bg-background hover:text-foreground"
+                  >
+                    {label}
+                  </Link>
+                )
+              )}
+            </div>
           </div>
         </motion.nav>
       )}

@@ -10,6 +10,11 @@
 **Rejected:** <alternatives and why not> (optional)
 
 -->
+## [2026-06-19] Generated blog bundle for Cloudflare Workers  #infra
+**What:** Added a generated `src/lib/blog.generated.ts` bundle from `content/blog/*.mdx` and made the blog loader fall back to it when runtime filesystem content is unavailable.
+**Why:** Cloudflare Workers can render the blog index without access to the repository `content/blog` directory; the fallback preserves URL-live posts, RSS, sitemap, and static params.
+**Rejected:** Hand-maintaining post data in source, because it would drift from MDX content; relying only on runtime `fs`, because production rendered 0 posts.
+
 ## [2026-06-17] Keep ESLint 9 baseline until Next lint stack supports ESLint 10  #build
 **What:** Recorded issue #20 as still blocked after re-testing with `eslint@10.5.0` and `eslint-config-next@16.2.9`; keep the current ESLint 9 baseline and re-test when upstream plugin support lands.
 **Why:** The bundled `eslint-plugin-react@7.37.5` in `eslint-config-next` still fails (`contextOrFilename.getFilename is not a function`) and only declares peer support through ESLint `^9.7`.

@@ -31,6 +31,9 @@ jobs:
       - name: Typecheck
         run: npx tsc --noEmit
 
+      - name: Generate blog content bundle
+        run: npm run generate:blog-bundle
+
       - name: Build Cloudflare Worker
         run: npx opennextjs-cloudflare build
 

@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { TECH_STACK } from "@/lib/constants";
 import { SectionReveal } from "./SectionReveal";
+import { SectionHeader } from "./SectionHeader";
 
 const containerVariants = {
   hidden: {},
@@ -20,9 +21,11 @@ export function TechStack() {
   return (
     <section id="stack" className="py-24 px-6">
       <div className="max-w-4xl mx-auto">
-        <SectionReveal>
-          <h2 className="text-3xl font-mono font-bold mb-16 text-center">Tech Stack</h2>
-        </SectionReveal>
+        <SectionHeader
+          title="Tools I reach for"
+          subtitle="Grouped by what I use them for, not a checklist of everything I've touched."
+          className="mb-12"
+        />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {TECH_STACK.map((category, catIndex) => (

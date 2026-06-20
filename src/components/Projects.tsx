@@ -15,7 +15,7 @@ function GithubIcon({ size = 16 }: { size?: number }) {
   );
 }
 import { PROJECTS, type Project } from "@/lib/constants";
-import { SectionReveal } from "./SectionReveal";
+import { SectionHeader } from "./SectionHeader";
 
 function ProjectCard({ project, index, featured }: { project: Project; index: number; featured?: boolean }) {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
@@ -133,9 +133,11 @@ export function Projects() {
   return (
     <section id="projects" className="py-24 px-6">
       <div className="max-w-5xl mx-auto">
-        <SectionReveal>
-          <h2 className="text-3xl font-mono font-bold mb-16 text-center">Projects</h2>
-        </SectionReveal>
+        <SectionHeader
+          title="Selected work"
+          subtitle="A security gateway for AI agents, this site, and a couple of experiments. Each card notes what I'd improve next."
+          className="mb-12"
+        />
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {featured.map((project, i) => (

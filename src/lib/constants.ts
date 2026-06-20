@@ -31,6 +31,7 @@ export const PROJECTS: Project[] = [
     tech: ["Go", "MCP", "AI Security", "SQLite"],
     github: "https://github.com/maksym-mishchenko/mcpgate",
     featured: true,
+    thumbnail: "/images/portfolio/mcpgate.svg",
     learned: "Agent tool output is untrusted input; security controls need to inspect both result and error channels.",
     caseStudySlug: "mcpgate-v1-1",
   },

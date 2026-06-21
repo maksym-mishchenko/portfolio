@@ -1,5 +1,5 @@
 # State — portfolio
-Last updated: 2026-06-19 by Copilot
+Last updated: 2026-06-21 by Copilot
 
 ## Done
 - Broken case-study links fixed for Cloudflare Workers by routing the flagship case-study pages through concrete static routes, bundling the mcpgate case-study fallback data for Worker runtime, and replacing route-time MDX rendering with a lightweight Markdown renderer for the case-study detail page.
@@ -30,6 +30,7 @@ Last updated: 2026-06-19 by Copilot
 - Cloudflare Worker size fix complete: dynamic `next/og` routes removed, Mermaid runtime replaced with a source fallback, and deploy workflow guarded by `wrangler deploy --dry-run` before the real deploy.
 - CI baseline hardening complete: normalized required checks for `lint`, `typecheck`, `build`, and narrow diff-secret `security`; Dependabot GitHub Actions updates added; `main` branch protection now requires those proven contexts; negative PR #51 proved required `build` failure blocks merge.
 - Blog index fixed for Cloudflare Workers by generating a checked-in blog MDX bundle, falling back to it when runtime filesystem content is unavailable, and wiring bundle generation into build/deploy scripts.
+- Resume action buttons moved into the resume header below contact links, with top spacing added so the fixed site nav no longer overlaps the PDF/print controls.
 
 ## In progress
 - None.

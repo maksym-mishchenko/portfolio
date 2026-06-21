@@ -21,12 +21,7 @@ export default function ResumePage() {
   const certifications = resumeJourney.filter((n) => n.icon === "☁️");
 
   return (
-    <main id="main" className="min-h-screen">
-      {/* Actions bar — hidden on print */}
-      <div className="max-w-5xl mx-auto px-6 pt-6 print:hidden">
-        <ResumeActions />
-      </div>
-
+    <main id="main" className="min-h-screen pt-24 sm:pt-28 print:pt-0">
       {/* Resume document */}
       <div className="resume-doc max-w-5xl mx-auto px-4 sm:px-6 pb-16 print:px-0 print:pb-0 print:max-w-none">
 
@@ -56,6 +51,7 @@ export default function ResumePage() {
               {SITE.email.replace("mailto:", "")}
             </a>
           </div>
+          <ResumeActions />
         </header>
 
         {/* ── Two-column body ── */}

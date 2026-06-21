@@ -15,7 +15,7 @@ export function ResumeActions() {
   }
 
   return (
-    <div className="flex flex-wrap gap-3 print:hidden mb-8">
+    <div className="mt-6 flex flex-wrap gap-3 print:hidden">
       <a
         href="/resume.pdf"
         download

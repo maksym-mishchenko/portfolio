@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { MDXRemote } from "next-mdx-remote/rsc";
 import { getPostBySlug, getAllSlugs, getAllPosts } from "@/lib/blog";
 import type { BlogPostMeta } from "@/lib/blog";
-import { mdxComponents } from "@/components/mdx";
 import { blogPostingSchema, safeJsonLd } from "@/lib/jsonld";
 import { extractSecondLevelHeadings } from "@/lib/mdx-headings";
+import { BlogPostBody } from "@/components/BlogPostBody";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -133,7 +132,7 @@ export default async function BlogPostPage({ params }: Props) {
         )}
 
         <div className="prose-custom">
-          <MDXRemote source={post.content} components={mdxComponents} />
+          <BlogPostBody content={post.content} />
         </div>
       </article>
 

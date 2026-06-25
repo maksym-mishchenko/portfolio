@@ -1,5 +1,5 @@
 # State — portfolio
-Last updated: 2026-06-23 by Hermes (CI redundancy consolidation — see PR #59)
+Last updated: 2026-06-26 by Copilot (Spec Kit initialization)
 
 ## Done
 - Broken case-study links fixed for Cloudflare Workers by routing the flagship case-study pages through concrete static routes, bundling the mcpgate case-study fallback data for Worker runtime, and replacing route-time MDX rendering with a lightweight Markdown renderer for the case-study detail page.
@@ -32,6 +32,7 @@ Last updated: 2026-06-23 by Hermes (CI redundancy consolidation — see PR #59)
 - Blog index fixed for Cloudflare Workers by generating a checked-in blog MDX bundle, falling back to it when runtime filesystem content is unavailable, and wiring bundle generation into build/deploy scripts.
 - Resume action buttons moved into the resume header below contact links, with top spacing added so the fixed site nav no longer overlaps the PDF/print controls.
 - Blog post pages fixed for Cloudflare Workers by replacing runtime `next-mdx-remote/rsc` rendering with a Worker-safe Markdown/MDX-subset renderer that preserves supported interactive components.
+- Spec Kit initialized for the repository with Copilot integration, shell scripts, bundled templates, workflow metadata, and agent-context wiring.
 
 ## In progress
 - None.

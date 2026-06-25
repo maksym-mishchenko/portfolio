@@ -19,7 +19,7 @@ jobs:
     # Override per repo with the AGENT_CI_RUNNER variable if needed.
     runs-on: ${{ vars.AGENT_CI_RUNNER || 'self-hosted' }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - name: Check .agent/STATE.md freshness

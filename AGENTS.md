@@ -3,6 +3,8 @@
 > **Personal portfolio site (maksym.dev)**
 > Stack: TypeScript/Next.js
 
+
+> 📍 **Project status / focus tier:** see [PORTFOLIO.md](https://github.com/maksym-mishchenko/openclaw-workspace/blob/main/PORTFOLIO.md) in `openclaw-workspace` (canonical source).
 ## Quick Start
 
 See `docs/adr/` for architectural decisions.

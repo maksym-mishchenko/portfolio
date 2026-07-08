@@ -13,7 +13,8 @@
     "cf-dry-run": "npm run generate:blog-bundle && opennextjs-cloudflare build && wrangler deploy --dry-run",
     "deploy": "npm run generate:blog-bundle && opennextjs-cloudflare build && wrangler deploy",
     "upload": "npm run generate:blog-bundle && opennextjs-cloudflare build && opennextjs-cloudflare upload",
-    "cf-typegen": "rm -rf .open-next && wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
+    "cf-typegen": "rm -rf .open-next && wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
+    "test": "vitest run"
   },
   "dependencies": {
     "@opennextjs/cloudflare": "^1.19.11",
@@ -41,6 +42,7 @@
     "sharp": "^0.34.5",
     "tailwindcss": "^4.3.0",
     "typescript": "~6.0.3",
+    "vitest": "^4.1.10",
     "wrangler": "^4.100.0"
   },
   "overrides": {

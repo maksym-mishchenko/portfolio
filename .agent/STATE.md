@@ -1,5 +1,5 @@
 # State — portfolio
-Last updated: 2026-07-26 by copilot-cli (refresh freshness date for PR #66)
+Last updated: 2026-07-30 by copilot-cli (refresh freshness date for PR #67)
 
 ## Done
 - Broken case-study links fixed for Cloudflare Workers by routing the flagship case-study pages through concrete static routes, bundling the mcpgate case-study fallback data for Worker runtime, and replacing route-time MDX rendering with a lightweight Markdown renderer for the case-study detail page.
@@ -33,6 +33,7 @@ Last updated: 2026-07-26 by copilot-cli (refresh freshness date for PR #66)
 - Resume action buttons moved into the resume header below contact links, with top spacing added so the fixed site nav no longer overlaps the PDF/print controls.
 - Blog post pages fixed for Cloudflare Workers by replacing runtime `next-mdx-remote/rsc` rendering with a Worker-safe Markdown/MDX-subset renderer that preserves supported interactive components.
 - Spec Kit initialized for the repository with Copilot integration, shell scripts, bundled templates, workflow metadata, and agent-context wiring.
+- Bumped `actions/setup-node` from 6.5.0 to 7.0.0 in CI and Cloudflare deploy workflows. [PR #67]
 
 ## In progress
 - None.

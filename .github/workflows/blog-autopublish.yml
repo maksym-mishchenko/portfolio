@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - "content/blog/**.mdx"
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -20,9 +21,14 @@ jobs:
       - name: Get new/modified blog posts
         id: changed
         run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "files=" >> "$GITHUB_OUTPUT"
+            echo "Manual validation run — no content will be published"
+            exit 0
+          fi
           # Only include files that still exist (skip deletions)
           FILES=$(git diff --name-only HEAD~1 HEAD -- 'content/blog/*.mdx' \
-            | while read f; do [ -f "$f" ] && echo "$f"; done \
+            | while read -r f; do [ -f "$f" ] && echo "$f"; done \
             | tr '\n' ' ')
           echo "files=$FILES" >> "$GITHUB_OUTPUT"
           echo "Changed MDX files: $FILES"

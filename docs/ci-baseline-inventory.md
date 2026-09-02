@@ -1,5 +1,7 @@
 # CI Baseline Inventory
 
+Current inventory note (2026-09-02): the advisory agent-state-freshness workflow was retired. Historical enforcement evidence below is preserved as point-in-time evidence and does not describe the current workflow set.
+
 ## Repository
 
 - Repo: maksym-mishchenko/portfolio
@@ -12,7 +14,6 @@
 
 | Workflow | Path | State |
 | --- | --- | --- |
-| agent-state-freshness | .github/workflows/agent-state-freshness.yml | active |
 | Blog Auto-Publish | .github/workflows/blog-autopublish.yml | active |
 | CI | .github/workflows/ci.yml | active |
 | Cloudflare Deploy | .github/workflows/cloudflare-deploy.yml | active |
@@ -47,7 +48,6 @@
 
 - `test`: not configured because the repository has no test script or test files.
 - `gitleaks / scan` and `Secret Scan / Gitleaks`: retained as advisory full-history/working-tree secret scans.
-- `agent-state-freshness / state-freshness`: advisory because it depends on a self-hosted runner and freshness policy rather than core build correctness.
 - `deploy` and `Vercel`: deploy/provider signals are not required during CI baseline enforcement.
 
 ## Deploy or release behavior

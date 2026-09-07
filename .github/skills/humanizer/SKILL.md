@@ -1,6 +1,13 @@
 ---
 name: Markdown Humanizer
-description: Transforms markdown files by removing AI writing patterns and adding human voice. Use when editing portfolio files, documentation, blog posts, or any markdown content to make it sound more natural and authentic. Detects and fixes: inflated importance language, promotional tone, superficial analysis, em dash overuse, rule of three patterns, AI vocabulary, negative parallelisms, excessive conjunctive phrases, bolded lists, and uniform sentence structure.
+description: >-
+  Transforms markdown files by removing AI writing patterns and adding human
+  voice. Use when editing portfolio files, documentation, blog posts, or any
+  markdown content to make it sound more natural and authentic. Detects and
+  fixes: inflated importance language, promotional tone, superficial analysis,
+  em dash overuse, rule of three patterns, AI vocabulary, negative
+  parallelisms, excessive conjunctive phrases, bolded lists, and uniform
+  sentence structure.
 ---
 
 # Markdown Humanizer
